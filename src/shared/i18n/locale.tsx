@@ -6,12 +6,12 @@ const DEFAULT_LOCALE: Locale = "ko";
 
 export const LOCALES: readonly Locale[] = ["ko", "en", "zh", "ja"];
 
-/** 언어 선택 화면 라벨 (자기 언어로 표기) */
-export const LOCALE_LABELS: Record<Locale, string> = {
-  ko: "한국어",
-  en: "English",
-  zh: "简体中文",
-  ja: "日本語",
+/** 언어 선택/표시용 메타 (code=칩, label=자기 언어명, sub=영문명) */
+export const LOCALE_META: Record<Locale, { code: string; label: string; sub: string }> = {
+  ko: { code: "KO", label: "한국어", sub: "Korean" },
+  en: { code: "EN", label: "English", sub: "English" },
+  zh: { code: "ZH", label: "简体中文", sub: "Chinese" },
+  ja: { code: "JA", label: "日本語", sub: "Japanese" },
 };
 
 interface I18nValue {
