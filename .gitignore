@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+
+# Claude local settings (machine-specific)
+.claude/settings.local.json
+
+# Node (frontend, 향후)
+node_modules/
+dist/
+build/
+.env
+.env.*
+!.env.example

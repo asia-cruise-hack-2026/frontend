@@ -1,0 +1,39 @@
+{
+  "_meta": {
+    "source": "제주관광 빅데이터플랫폼 (data.ijto.or.kr)",
+    "indicator": "크루즈 입도객(월별)",
+    "regSn": 59,
+    "theme": "입도(themeCd=08)",
+    "api": "POST https://data.ijto.or.kr/api/dataPick/chart/renderChart.do",
+    "requestBody": {"regSn": "59", "chartIndex": 0, "searchDataBgnDt": "", "searchDataEndDt": ""},
+    "headers": {"content-type": "application/json", "x-requested-with": "XMLHttpRequest"},
+    "auth": "익명 (JSESSIONID 자동발급, 로그인 불필요)",
+    "license": "공공누리 제1유형",
+    "dataSource": "제주관광협회",
+    "updateCycle": "매주 (차기등록 매월 25일 이전)",
+    "capturedAt": "2026-07-21",
+    "fields": {
+      "dateVal": "YYYYMM",
+      "sumVal": "월 입도객 수(명)",
+      "sumVal_mom": "전월 대비 증감률(%)",
+      "sumVal_yoy": "전년 동월 대비 증감률(%)"
+    }
+  },
+  "range": ["202507", "202607"],
+  "data": [
+    {"dateVal": "202507", "sumVal": 87043, "sumVal_mom": -2.61, "sumVal_yoy": 70.41},
+    {"dateVal": "202508", "sumVal": 76019, "sumVal_mom": -12.67, "sumVal_yoy": 24.97},
+    {"dateVal": "202509", "sumVal": 70149, "sumVal_mom": -7.72, "sumVal_yoy": 12.63},
+    {"dateVal": "202510", "sumVal": 75711, "sumVal_mom": 7.93, "sumVal_yoy": 35.30},
+    {"dateVal": "202511", "sumVal": 57270, "sumVal_mom": -24.36, "sumVal_yoy": 39.01},
+    {"dateVal": "202512", "sumVal": 16528, "sumVal_mom": -71.14, "sumVal_yoy": -29.24},
+    {"dateVal": "202601", "sumVal": 17368, "sumVal_mom": 5.08, "sumVal_yoy": -44.66},
+    {"dateVal": "202602", "sumVal": 37457, "sumVal_mom": 115.67, "sumVal_yoy": -10.97},
+    {"dateVal": "202603", "sumVal": 48355, "sumVal_mom": 29.09, "sumVal_yoy": -12.55},
+    {"dateVal": "202604", "sumVal": 71928, "sumVal_mom": 48.75, "sumVal_yoy": -0.71},
+    {"dateVal": "202605", "sumVal": 80342, "sumVal_mom": 11.70, "sumVal_yoy": -2.91},
+    {"dateVal": "202606", "sumVal": 71322, "sumVal_mom": -11.23, "sumVal_yoy": -20.20},
+    {"dateVal": "202607", "sumVal": 34109, "sumVal_mom": -52.18, "sumVal_yoy": -60.81}
+  ],
+  "note": "통계표(view.do)에는 선박별 상세(입항년월, 선박명, 총승객수, 한국인/외국인승객수)도 제공됨. 예: 202607 Adora Magic City 12,382명, MSC Bellissima 5,395명."
+}

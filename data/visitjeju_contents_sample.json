@@ -1,0 +1,41 @@
+{
+  "_meta": {
+    "source": "비짓제주 (visitjeju.net) — 제주도 공식 관광정보 포털",
+    "api": "GET https://api.visitjeju.net/api/contents/list",
+    "auth": "익명 (iceJWT 쿠키 자동발급, sub=Anonymous). CORS: Origin/Referer https://www.visitjeju.net 필요",
+    "capturedAt": "2026-07-21",
+    "params": {
+      "_siteId": "jejuavj (필수)",
+      "locale": "kr | en | jp | cn ...",
+      "device": "pc | mobile",
+      "contentscd": "카테고리: c1 관광지 / c2 쇼핑 / c3 숙박 / c4 음식점 / c5 축제·행사 / c6 테마여행 / c7 정보",
+      "region1cd": "시 단위 (region1 제주시 / region2 서귀포시)",
+      "region2cd": "읍면동 코드 (예: 17 성산, 15 조천, 23 안덕)",
+      "tag": "태그 필터 (예: 웰니스, 무장애관광, 반려동물)",
+      "q": "검색어 (교차 카테고리 검색)",
+      "sorting": "예: 'markcnt desc, title_kr asc' (인기순), 최신순 등",
+      "pageSize": "페이지당 건수",
+      "page": "페이지 번호"
+    },
+    "categoryTotals": {"관광지_c1": 1340, "쇼핑_c2": 262, "숙박_c3": 915, "음식점_c4": 1864, "축제행사_c5": 709, "테마여행_c6": 745, "정보_c7": 2, "전체": 5838}
+  },
+  "itemFields": [
+    "contentsid", "title", "contentscd(분류)", "region1cd/region2cd(지역)", "address/roadaddress",
+    "latitude/longitude(좌표)", "phoneno", "tag/alltag", "introduction(요약)", "sbst(상세설명)",
+    "readcnt(조회)", "likecnt(좋아요)", "reviewcnt(리뷰)", "markcnt(북마크=인기지표)", "snssharecnt",
+    "catemappList(3단계 분류: cate1/cate2/cate3)", "repPhoto(대표사진 CDN webp)", "reservelink(예약링크)"
+  ],
+  "sampleItems_관광지_인기순": [
+    {"title": "성산일출봉", "contentsid": "CONT_000000000500349", "region": "서귀포시 성산", "coord": [33.462147, 126.936424], "markcnt": 4972, "readcnt": 857848, "cate": "관광지>자연>오름", "tag": "세계자연유산,유네스코,무장애관광,포토스팟"},
+    {"title": "사려니숲길", "contentsid": "CONT_000000000500281", "region": "제주시 조천", "coord": [33.4180631, 126.6534847], "markcnt": 3998, "cate": "관광지>도보>생태·숲길", "tag": "한라산둘레길,힐링제주,삼나무"},
+    {"title": "카멜리아힐", "contentsid": "CNTS_000000000001195", "region": "서귀포시 안덕", "coord": [33.289135, 126.37011], "markcnt": 3983, "cate": "관광지>테마관광지>테마공원", "tag": "수목원,동백,무장애관광,반려동물동반입장"}
+  ],
+  "sampleSearch_q_크루즈": {
+    "totalCount": 4,
+    "items": [
+      {"title": "2025 서귀포 크루즈 페스타", "contentscd": "c5 축제/행사", "region": "서귀포시"},
+      {"title": "강정크루즈여객터미널", "contentscd": "c1 관광지", "region": "서귀포시"},
+      {"title": "제13회 제주국제크루즈포럼", "contentscd": "c5 축제/행사", "region": "서귀포시"}
+    ]
+  }
+}
