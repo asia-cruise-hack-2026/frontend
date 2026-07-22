@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/wanted-design-system-2064fe32-020b-43a1-be54-2d86c1d84f93/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/wanted-design-system-2064fe32-020b-43a1-be54-2d86c1d84f93/tokens/fig-tokens.css">
+<link rel="stylesheet" href="_ds/wanted-design-system-2064fe32-020b-43a1-be54-2d86c1d84f93/tokens/typography.css">
+<link rel="stylesheet" href="_ds/wanted-design-system-2064fe32-020b-43a1-be54-2d86c1d84f93/tokens/base.css">
+<link rel="stylesheet" href="_ds/wanted-design-system-2064fe32-020b-43a1-be54-2d86c1d84f93/styles.css">
+<script src="_ds/wanted-design-system-2064fe32-020b-43a1-be54-2d86c1d84f93/_ds_bundle.js"></script>
+<script src="image-slot.js"></script>
+<style>
+  body{margin:0;background:var(--background-normal-alternative);}
+  :root{--primary-normal-8:color-mix(in srgb, var(--primary-normal-4) 8%, transparent);}
+  a{color:var(--primary-normal-4);} a:hover{color:var(--primary-strong);}
+  .tp-scroll{-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .tp-scroll::-webkit-scrollbar{display:none;}
+  @keyframes tp-pulse{0%{transform:scale(.5);opacity:.65}100%{transform:scale(2.6);opacity:0}}
+  @keyframes tp-spin{to{transform:rotate(360deg)}}
+  @keyframes tp-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  @keyframes tp-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes tp-blink{0%,100%{opacity:.35}50%{opacity:1}}
+</style>
+</helmet>
+<template id="__bundler_thumbnail" data-bg-color="#0066FF">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#0066FF"></rect>
+    <path d="M240 560c40 22 80 22 120 0s80-22 120 0 80 22 120 0 80-22 120 0 80 22 120 0 80-22 120 0" fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round" opacity="0.55"></path>
+    <path d="M600 250c-70 0-126 56-126 126 0 92 126 214 126 214s126-122 126-214c0-70-56-126-126-126z" fill="#ffffff"></path>
+    <circle cx="600" cy="376" r="52" fill="#0066FF"></circle>
+  </svg>
+</template>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;font-family:var(--font-sans);box-sizing:border-box;">
+  <div style="width:390px;height:844px;background:var(--background-normal-normal);border-radius:46px;box-shadow:0 30px 90px rgba(0,0,0,.22),inset 0 0 0 1px rgba(0,0,0,.04);overflow:hidden;position:relative;display:flex;flex-direction:column;">
+
+    <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-weight:600;font-size:15px;color:var(--label-normal);flex-shrink:0;z-index:5;">
+      <span>9:41</span>
+      <span style="display:flex;gap:8px;align-items:center;">
+        <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--primary-normal-4);background:var(--fill-normal);border-radius:999px;padding:2px 8px;">
+          <span style="display:inline-flex;color:var(--primary-normal-4)"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="globe" size="13" hint-size="13px,13px"></x-import></span>{{ langShort }}</span>
+        <span style="width:22px;height:11px;border:1.4px solid var(--label-normal);border-radius:3px;position:relative;"><span style="position:absolute;inset:1.5px;width:70%;background:var(--label-normal);border-radius:1px;"></span></span>
+      </span>
+    </div>
+
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;position:relative;">
+
+      <!-- ===================== LANGUAGE SELECT ===================== -->
+      <sc-if value="{{ isLang }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:1;display:flex;flex-direction:column;padding:16px 24px 28px;overflow-y:auto;" class="tp-scroll">
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+          <div style="display:inline-flex;align-items:center;gap:6px;align-self:flex-start;background:var(--fill-normal);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600;color:var(--label-neutral);margin-bottom:18px;">
+          <span style="display:inline-flex;color:var(--status-positive)"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="verifiedCheckFill" size="15" hint-size="15px,15px"></x-import></span>{{ T.official_badge }}
+        </div><div style="width:60px;height:60px;border-radius:18px;background:var(--primary-normal-4);display:flex;align-items:center;justify-content:center;color:#fff;margin-bottom:22px;">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1"></path><path d="M4 18l-1 -5h18l-2 4"></path><path d="M5 13v-6h8l4 6"></path><path d="M7 7v-4h-1"></path></svg>
+          </div>
+          <div style="font-weight:700;font-size:15px;color:var(--primary-normal-4);letter-spacing:.02em;">Omong</div>
+          <h1 style="margin:6px 0 8px;font-weight:700;font-size:27px;line-height:1.32;letter-spacing:-0.02em;color:var(--label-normal);">{{ T.choose_language }}</h1>
+          <p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:var(--label-alternative);">{{ T.lang_sub }}</p>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ langOptions }}" as="lg" hint-placeholder-count="4">
+              <button onClick="{{ lg.pick }}" style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:14px;background:{{ lg.bg }};box-shadow:{{ lg.ring }};border:none;cursor:pointer;text-align:left;transition:box-shadow .12s;">
+                <span style="width:38px;height:38px;border-radius:11px;background:var(--fill-normal);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--label-neutral);flex-shrink:0;">{{ lg.code }}</span>
+                <span style="flex:1;min-width:0;">
+                  <span style="display:block;font-weight:600;font-size:16px;color:var(--label-normal);">{{ lg.label }}</span>
+                  <span style="display:block;font-size:13px;color:var(--label-alternative);">{{ lg.sub }}</span>
+                </span>
+                <sc-if value="{{ lg.active }}"><span style="display:inline-flex;color:var(--primary-normal-4)"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="circleCheckFill" size="22" hint-size="22px,22px"></x-import></span></sc-if>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="margin-top:18px;">
+          <x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" onClick="{{ confirmLang }}" hint-size="100%,48px">{{ T.continue }}</x-import>
+          
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== CRUISE SELECT ===================== -->
+      <sc-if value="{{ isCruise }}">
+      <div style="flex:1;display:flex;flex-direction:column;padding:20px 24px 24px;overflow-y:auto;" class="tp-scroll">
+        <div style="display:inline-flex;align-items:center;gap:6px;align-self:flex-start;background:var(--fill-normal);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600;color:var(--label-neutral);margin-bottom:18px;">
+          <span style="display:inline-flex;color:var(--status-positive)"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="verifiedCheckFill" size="15" hint-size="15px,15px"></x-import></span>{{ T.official_badge }}
+        </div>
+        <h1 style="margin:0 0 8px;font-weight:700;font-size:24px;line-height:1.36;letter-spacing:-0.02em;color:var(--label-normal);">{{ T.cruise_q }}</h1>
+        <p style="margin:0 0 22px;font-size:15px;line-height:1.55;color:var(--label-alternative);">{{ T.cruise_q_sub }}</p>
+        <x-import component-from-global-scope="WantedDesignSystem_2064fe.Select" value="{{ cruiseId }}" options="{{ cruiseOptions }}" onChange="{{ onCruiseChange }}" placeholder="{{ T.select_cruise }}" hint-size="100%,48px"></x-import>
+
+        <sc-if value="{{ hasCruise }}">
+        <div style="margin-top:20px;border-radius:18px;background:var(--background-normal-normal);box-shadow:inset 0 0 0 1px var(--line-normal-neutral);overflow:hidden;animation:tp-fade .3s ease both;">
+          <div style="display:flex;align-items:center;gap:12px;padding:16px 18px;background:var(--primary-normal-4);color:#fff;">
+            <span style="display:inline-flex;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1"></path><path d="M4 18l-1 -5h18l-2 4"></path><path d="M5 13v-6h8l4 6"></path><path d="M7 7v-4h-1"></path></svg></span>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:17px;">{{ cruise.ship }}</div>
+              <div style="font-size:13px;opacity:.85;">{{ cruise.line }}</div>
+            </div>
+          </div>
+          <div style="padding:6px 18px;">
+            <div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line-normal-neutral);">
+              <span style="display:inline-flex;color:var(--primary-normal-4)"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="locationFill" size="20" hint-size="20px,20px"></x-import></span>
+              <span style="flex:1;font-size:13px;color:var(--label-alternative);">{{ T.docking_port }}</span>
+              <span style="font-weight:600;font-size:15px;color:var(--label-normal);">{{ cruise.portName }}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line-normal-neutral); border-style: none">
+              <span style="display:inline-flex;color:var(--primary-normal-4)"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="clockFill" size="20" hint-size="20px,20px"></x-import></span>
+              <span style="flex:1;font-size:13px;color:var(--label-alternative);">{{ T.time_in_jeju }}</span>
+              <span style="font-weight:700;font-size:15px;color:var(--primary-normal-4);">{{ cruise.stayLabel }} · {{ cruise.arr }}–{{ cruise.dep }}</span>
+            </div>
+            
+          </div>
+        </div>
+        </sc-if>
+
+        <div style="flex:1;"></div>
+        <div style="margin-top:22px;">
+          <x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" disabled="{{ noCruise }}" onClick="{{ startApp }}" hint-size="100%,48px">{{ T.get_started }}</x-import>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== HOME ===================== -->
+      <sc-if value="{{ rHome }}">
+      <div style="flex:1;overflow-y:auto;background:var(--background-normal-alternative);" class="tp-scroll">
+        <sc-if value="{{ homeTrustShow }}">
+        
+        </sc-if>
+        <div style="padding:18px 20px 8px;background:var(--background-normal-normal);">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+            <div style="min-width:0;">
+              <div style="font-size:13px;color:var(--label-alternative);">{{ T.hello }}</div>
+              <div style="font-weight:700;font-size:20px;color:var(--label-normal);margin-top:2px;letter-spacing:-0.02em;">{{ cruise.ship }}</div>
+            </div>
+            <span style="flex-shrink:0;display:inline-flex;align-items:center;gap:5px;background:var(--fill-normal);color:var(--label-neutral);border-radius:999px;padding:6px 11px;font-size:12px;font-weight:700;margin-top:2px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1"></path><path d="M4 18l-1 -5h18l-2 4"></path><path d="M5 13v-6h8l4 6"></path><path d="M7 7v-4h-1"></path></svg>{{ cruise.portName }}</span>
+          </div>
+          <div style="margin-top:14px;background:linear-gradient(135deg,var(--primary-normal-4),#2E7BFF);border-radius:16px;padding:16px 18px;color:#fff;">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;">
+              <div style="font-size: 14px; opacity: .92; font-weight: 600">{{ T.until_departure }}</div>
+              <div style="display:flex;align-items:baseline;gap:3px;">
+                <span style="font-weight:800;font-size:28px;line-height:1;letter-spacing:-0.02em;">{{ cruise.remH }}</span>
+                <span style="font-size:13px;font-weight:600;opacity:.9;margin-right:5px;">{{ cruise.unitH }}</span>
+                <span style="font-weight:800;font-size:28px;line-height:1;letter-spacing:-0.02em;">{{ cruise.remMin }}</span>
+                <span style="font-size:13px;font-weight:600;opacity:.9;">{{ cruise.unitM }}</span>
+              </div>
+            </div>
+            <div style="margin-top:14px;height:7px;border-radius:999px;background:rgba(255,255,255,.28);overflow:hidden;">
+              <div style="width:{{ cruise.stayPct }}%;height:100%;border-radius:999px;background:#fff;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;opacity:.9;font-weight:600;">
+              <span>{{ T.arrive_label }} {{ cruise.arr }}</span><span>{{ T.board_by }} {{ cruise.boardBy }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:16px 20px 4px;">
+          <div style="background:var(--background-normal-normal);border-radius:20px;box-shadow:0 8px 26px rgba(15,40,80,.08),inset 0 0 0 1px var(--line-normal-neutral);overflow:hidden;">
+            
+            <div style="position:relative;height:270px;background:#CFE4F2;">
+              <iframe src="{{ homeMapLiveSrc }}" title="Jeju map" style="width:100%;height:100%;border:none;display:block;"></iframe>
+              <button onClick="{{ openMapFull }}" style="position:absolute;inset:0;border:none;background:transparent;cursor:pointer;z-index:410;"></button>
+              <span style="position:absolute;bottom:10px;right:10px;z-index:420;pointer-events:none;background:rgba(255,255,255,.95);border-radius:9px;padding:6px;color:var(--label-normal);display:inline-flex;box-shadow:0 1px 5px rgba(0,0,0,.2);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg></span>
+              <span style="position:absolute;top:10px;left:12px;pointer-events:none;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);border-radius:999px;padding:5px 11px;font-size:11px;font-weight:700;color:var(--label-normal);display:inline-flex;align-items:center;gap:5px;z-index:400;"><span style="display:inline-flex;color:var(--primary-normal-4);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="location" size="13" hint-size="13px,13px"></x-import></span>{{ cruise.portName }}</span>
+              <sc-if value="{{ homeTaxiFloat }}"><span style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);z-index:430;pointer-events:none;background:var(--label-normal);color:#fff;border-radius:999px;padding:7px 14px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;box-shadow:0 3px 12px rgba(0,0,0,.25);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M15 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6m-6 -6h15m-6 0v-5"></path></svg>{{ homePickupEta }} · {{ T.taxi_coming }}</span></sc-if>
+            </div>
+            <div style="height:1px;background:var(--line-normal-neutral);"></div>
+            <div style="padding:12px 16px 14px;">
+              <sc-if value="{{ homeModeEmpty }}">
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                  <button onClick="{{ aiFill }}" style="width:100%;height:48px;border-radius:12px;border:none;cursor:pointer;font-weight:700;font-size:15px;color:#fff;background:linear-gradient(135deg,#9747FF,#6A5CFF);display:inline-flex;align-items:center;justify-content:center;gap:7px;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="sparkleFill" size="18" hint-size="18px,18px"></x-import>{{ T.home_ai_fill }}</button><button onClick="{{ addPlace }}" style="width:100%;height:48px;border-radius:12px;border:1.5px solid var(--line-normal-normal);background:var(--background-normal-normal);cursor:pointer;font-weight:700;font-size:15px;color:var(--label-normal);display:inline-flex;align-items:center;justify-content:center;gap:7px;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="plus" size="19" hint-size="19px,19px"></x-import>{{ T.home_add }}</button>
+                  
+                </div>
+              </sc-if>
+              <sc-if value="{{ homeModePlan }}">
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                  <x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" onClick="{{ viewRoute }}" hint-size="100%,46px">{{ T.home_view_route }}</x-import>
+                  <div style="display:flex;gap:10px;">
+                    
+                    
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ homeModeConfirmed }}">
+                <div style="display:flex;gap:10px;align-items:stretch;">
+                  <button onClick="{{ addPlace }}" style="flex-shrink:0;height:46px;padding:0 16px;border-radius:12px;border:1.5px solid var(--line-normal-normal);background:var(--background-normal-normal);cursor:pointer;font-weight:600;font-size:14px;color:var(--label-normal);display:inline-flex;align-items:center;gap:6px;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="plus" size="18" hint-size="18px,18px"></x-import>{{ T.home_add }}</button>
+                  <div style="flex:1;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" onClick="{{ callTaxiLater }}" hint-size="100%,46px">{{ T.call_taxi_home }}</x-import></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ homeModeCalled }}">
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <span style="flex:1;display:inline-flex;align-items:center;gap:7px;background:#EAF7EE;color:var(--status-positive);border-radius:12px;padding:12px 14px;font-weight:700;font-size:14px;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="circleCheckFill" size="18" hint-size="18px,18px"></x-import>{{ T.status_called }}</span>
+                  <button onClick="{{ viewRoute }}" style="flex-shrink:0;height:46px;padding:0 16px;border-radius:12px;border:1.5px solid var(--line-normal-normal);background:var(--background-normal-normal);cursor:pointer;font-weight:600;font-size:14px;color:var(--label-normal);">{{ T.home_view_route }}</button>
+                </div>
+              </sc-if>
+            </div>
+            <div style="height:1px;background:var(--line-normal-neutral);"></div>
+            <div style="padding:16px 18px 18px;">
+              <sc-if value="{{ hasPkg }}">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                <span style="font-weight:700;font-size:14px;color:var(--label-normal);">{{ T.in_progress }}</span>
+                <button onClick="{{ viewRoute }}" style="border:none;background:none;cursor:pointer;font-size:13px;font-weight:700;color:var(--primary-normal-4);display:inline-flex;align-items:center;gap:3px;">{{ T.view_detail }}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+              </div>
+              <div style="display:flex;gap:13px;">
+                <div style="width:32px;display:flex;flex-direction:column;align-items:center;flex-shrink:0;padding-top:3px;">
+                  <span style="width:13px;height:13px;border-radius:999px;background:var(--status-positive);box-shadow:0 0 0 4px #EAF7EE;flex-shrink:0;"></span>
+                  <span style="flex:1;width:2px;background:var(--line-normal-neutral);margin-top:4px;min-height:14px;"></span>
+                </div>
+                <div style="flex:1;min-width:0;padding-bottom:8px;">
+                  <div style="font-size:11px;font-weight:700;color:var(--status-positive);">{{ T.cur_loc }}</div>
+                  <div style="font-weight:600;font-size:15px;color:var(--label-normal);">{{ pickupName }}</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:13px;align-items:stretch;margin:-2px 0 6px;">
+                <div style="width:32px;display:flex;justify-content:center;flex-shrink:0;"><span style="width:2px;background:var(--line-normal-neutral);"></span></div>
+                <span style="display:inline-flex;align-items:center;gap:5px;background:var(--background-normal-alternative);border-radius:999px;padding:4px 11px;font-size:11px;font-weight:600;color:var(--label-neutral);align-self:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M15 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6m-6 -6h15m-6 0v-5"></path></svg>{{ homeFirstLegLabel }}</span>
+              </div>
+              <div style="display:flex;gap:13px;">
+                <div style="width:32px;display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+                  <span style="width:30px;height:30px;border-radius:999px;background:var(--primary-normal-4);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</span>
+                </div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:11px;font-weight:700;color:var(--primary-normal-4);">{{ T.next_loc }}</div>
+                  <div style="font-weight:600;font-size:15px;color:var(--label-normal);">{{ homeNextName }}</div>
+                  <div style="font-size:12px;color:var(--label-alternative);margin-top:2px;">{{ homeNextTime }}</div>
+                </div>
+              </div>
+              <sc-if value="{{ homeHasMore }}">
+              <button onClick="{{ viewRoute }}" style="width:100%;margin-top:14px;border:none;background:var(--background-normal-alternative);border-radius:12px;padding:12px;cursor:pointer;font-size:13px;font-weight:600;color:var(--primary-normal-4);">{{ homeMoreLabel }}</button>
+              </sc-if>
+              </sc-if>
+              <sc-if value="{{ noPkg }}">
+              <div style="display:flex;gap:13px;">
+                <div style="width:32px;display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+                  <span style="width:30px;height:30px;border-radius:999px;border:2px dashed var(--line-normal-normal);flex-shrink:0;"></span>
+                </div>
+                <button onClick="{{ aiFill }}" style="flex:1;text-align:left;border:1.5px dashed var(--line-normal-normal);background:var(--background-normal-alternative);border-radius:14px;padding:14px 15px;cursor:pointer;">
+                  <div style="font-weight:600;font-size:14px;color:var(--label-normal);">{{ T.home_empty_t }}</div>
+                  <div style="font-size:12px;color:var(--label-alternative);margin-top:3px;line-height:1.45;">{{ T.home_empty_s }}</div>
+                </button>
+              </div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:16px;"></div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== EXPLORE (MAP) ===================== -->
+      <sc-if value="{{ rExplore }}">
+      <div style="flex:1;overflow-y:auto;background:var(--background-normal-alternative);" class="tp-scroll">
+        <div style="padding:14px 20px 8px;background:var(--background-normal-normal);">
+          <div style="font-weight:700;font-size:20px;color:var(--label-normal);">{{ T.spot_map }}</div>
+          <div style="display:inline-flex;align-items:center;gap:6px;margin-top:5px;font-size:13px;color:var(--label-alternative);"><span style="display:inline-flex;color:var(--primary-normal-4)"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="location" size="15" hint-size="15px,15px"></x-import></span>{{ cruise.portName }}</div>
+        </div>
+        <div style="position:relative;height:250px;margin:0;background:linear-gradient(180deg,#CFE4F2 0%,#BFDCF0 100%);overflow:hidden;">
+          <div style="position:absolute;left:-8%;top:{{ landTop }};width:116%;height:70%;background:linear-gradient(160deg,#DDEBCF,#E9F2E0);border-radius:48% 52% 46% 54%/60% 56% 44% 40%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.5);"></div>
+          <div style="position:absolute;left:50%;top:{{ portTop }};transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:3px;z-index:3;">
+            <span style="background:var(--label-normal);color:#fff;border-radius:999px;padding:3px 9px;font-size:10px;font-weight:700;display:inline-flex;align-items:center;gap:3px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1"></path><path d="M4 18l-1 -5h18l-2 4"></path><path d="M5 13v-6h8l4 6"></path><path d="M7 7v-4h-1"></path></svg>{{ cruise.portName }}</span>
+          </div>
+          <sc-for list="{{ spots }}" as="sp" hint-placeholder-count="4">
+            <button onClick="{{ sp.open }}" style="position:absolute;left:{{ sp.x }};top:{{ sp.y }};transform:translate(-50%,-100%);border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;z-index:4;padding:0;">
+              <span style="background:{{ sp.pinColor }};color:#fff;font-weight:600;font-size:11px;white-space:nowrap;border-radius:999px;padding:4px 10px;box-shadow:0 3px 10px rgba(0,0,0,.22);">{{ sp.name }}</span>
+              <span style="width:2px;height:9px;background:{{ sp.pinColor }};"></span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-weight:700;font-size:17px;color:var(--label-normal);">{{ T.main_spots }}</span>
+        </div>
+        <p style="margin:0;padding:0 20px 12px;font-size:13px;line-height:1.5;color:var(--label-alternative);">{{ T.pick_main_hint }}</p>
+        <div style="display:flex;flex-direction:column;gap:10px;padding:0 20px;">
+          <sc-for list="{{ spots }}" as="sp" hint-placeholder-count="4">
+            <div style="display:flex;gap:12px;background:var(--background-normal-normal);border-radius:16px;padding:12px;box-shadow:inset 0 0 0 1px var(--line-normal-neutral);">
+              <button onClick="{{ sp.open }}" style="flex:0 0 60px;height:60px;border:none;cursor:pointer;border-radius:12px;background:{{ sp.color }};color:{{ sp.iconColor }};display:flex;align-items:center;justify-content:center;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ sp.icon }}" size="26" hint-size="26px,26px"></x-import></button>
+              <div style="flex:1;min-width:0;cursor:pointer;" onClick="{{ sp.open }}">
+                <div style="font-weight:600;font-size:15px;color:var(--label-normal);">{{ sp.name }}</div>
+                <div style="font-size:12px;color:var(--label-alternative);margin-top:2px;">{{ sp.cat }} · {{ sp.km }}km · {{ T.approx }} {{ sp.min }}{{ T.min }}</div>
+                <div style="font-size:12px;color:var(--label-neutral);margin-top:5px;line-height:1.45;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">{{ sp.blurb }}</div>
+                <div style="display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;">
+                  <sc-for list="{{ sp.themeTags }}" as="tg" hint-placeholder-count="2"><span style="font-size:10px;font-weight:600;color:{{ tg.fg }};background:{{ tg.bg }};border-radius:999px;padding:2px 8px;">{{ tg.label }}</span></sc-for>
+                </div>
+              </div>
+              <button onClick="{{ sp.toggle }}" style="align-self:center;flex-shrink:0;border:none;cursor:pointer;border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:{{ sp.addBg }};color:{{ sp.addColor }};"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ sp.addIcon }}" size="20" hint-size="20px,20px"></x-import></button>
+            </div>
+          </sc-for>
+        </div>
+        <div style="height:96px;"></div>
+      </div>
+      <sc-if value="{{ hasPkg }}">
+      <div style="position:absolute;left:0;right:0;bottom:0;padding:12px 20px 16px;background:linear-gradient(180deg,rgba(255,255,255,0),var(--background-normal-normal) 34%);z-index:6;">
+        <x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" onClick="{{ goPackage }}" hint-size="100%,48px">{{ pkgCta }}</x-import>
+      </div>
+      </sc-if>
+      </sc-if>
+
+      <!-- ===================== SPOT DETAIL ===================== -->
+      <sc-if value="{{ rSpot }}">
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
+        <div style="flex:1;overflow-y:auto;" class="tp-scroll">
+          <div style="position:relative;height:170px;background:{{ curSpot.color }};display:flex;align-items:center;justify-content:center;color:{{ curSpot.iconColor }};">
+            <x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ curSpot.icon }}" size="56" hint-size="56px,56px"></x-import>
+            <button onClick="{{ back }}" style="position:absolute;top:14px;left:16px;width:36px;height:36px;border-radius:999px;border:none;cursor:pointer;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;color:var(--label-normal);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="arrowLeft" size="22" hint-size="22px,22px"></x-import></button>
+          </div>
+          <div style="padding:18px 20px 8px;">
+            <div style="display:inline-flex;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.ContentBadge" color="primary" size="small" hint-size="auto,24px">{{ curSpot.cat }}</x-import></div>
+            <h1 style="margin:10px 0 4px;font-weight:700;font-size:23px;letter-spacing:-0.02em;color:var(--label-normal);">{{ curSpot.name }}</h1>
+            <div style="font-size:13px;color:var(--label-alternative);">{{ curSpot.km }}km {{ T.from_port }} · {{ T.approx }} {{ curSpot.min }}{{ T.min }}</div>
+            <p style="margin:14px 0 0;font-size:15px;line-height:1.6;color:var(--label-neutral);">{{ curSpot.blurb }}</p>
+          </div>
+          <div style="padding:18px 20px 4px;font-weight:700;font-size:16px;color:var(--label-normal);">{{ T.nearby_subs }}</div>
+          <div style="display:flex;flex-direction:column;gap:10px;padding:6px 20px 0;">
+            <sc-for list="{{ curSpot.subs }}" as="sub" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:12px;background:var(--background-normal-alternative);border-radius:14px;padding:13px 14px;">
+                <span style="width:38px;height:38px;border-radius:10px;background:var(--background-normal-normal);box-shadow:inset 0 0 0 1px var(--line-normal-neutral);display:flex;align-items:center;justify-content:center;color:var(--primary-normal-4);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="pinFill" size="18" hint-size="18px,18px"></x-import></span>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-weight:600;font-size:14px;color:var(--label-normal);">{{ sub.name }}</div>
+                  <div style="font-size:12px;color:var(--label-alternative);">{{ sub.type }} · {{ sub.blurb }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="height:150px;"></div>
+        </div>
+        <div style="padding:12px 20px 18px;border-top:1px solid var(--line-normal-neutral);display:flex;flex-direction:column;gap:10px;flex-shrink:0;">
+          
+          <x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" onClick="{{ goThisOnly }}" hint-size="100%,48px">{{ T.spot_go_only }}</x-import>
+          <button onClick="{{ addThenPick }}" style="height:48px;border-radius:12px;border:1.5px solid var(--line-normal-normal);background:var(--background-normal-normal);cursor:pointer;font-weight:700;font-size:15px;color:var(--label-normal);display:flex;align-items:center;justify-content:center;gap:7px;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="plus" size="18" hint-size="18px,18px"></x-import>{{ T.spot_add_more }}</button>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== AI CONCEPT ===================== -->
+      <sc-if value="{{ rConcept }}">
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
+        <div style="height:52px;display:flex;align-items:center;padding:0 8px;flex-shrink:0;">
+          <button onClick="{{ back }}" style="width:40px;height:40px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--label-normal);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="arrowLeft" size="24" hint-size="24px,24px"></x-import></button>
+        </div>
+        <div style="padding:0 24px 8px;flex-shrink:0;">
+          <div style="display:inline-flex;align-items:center;gap:6px;background:#F3ECFF;color:#8B3FF0;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;margin-bottom:14px;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="sparkleFill" size="14" hint-size="14px,14px"></x-import>AI</div>
+          <h1 style="margin:0 0 6px;font-weight:700;font-size:24px;line-height:1.34;letter-spacing:-0.02em;color:var(--label-normal);">{{ T.concept_title }}</h1>
+          <p style="margin:0;font-size:14px;line-height:1.55;color:var(--label-alternative);">{{ T.concept_sub }}</p>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:14px 24px 24px;" class="tp-scroll">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <sc-for list="{{ conceptOptions }}" as="c" hint-placeholder-count="4">
+              <button onClick="{{ c.pick }}" style="text-align:left;border:none;cursor:pointer;background:var(--background-normal-normal);border-radius:18px;padding:18px 16px;box-shadow:inset 0 0 0 1px var(--line-normal-neutral);display:flex;flex-direction:column;gap:38px;min-height:150px;">
+                <span style="width:46px;height:46px;border-radius:13px;background:{{ c.iconBg }};color:{{ c.iconFg }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <sc-if value="{{ c.isHigh }}"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="starFill" size="24" hint-size="24px,24px"></x-import></sc-if>
+                  <sc-if value="{{ c.isNature }}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21c.5 -4.5 2.5 -8 7 -10"></path><path d="M9 18c6.218 0 10.5 -3.288 11 -12v-2h-4.014c-9 0 -11.986 4 -12 9c0 1 0 3 2 5h3l.014 0"></path></svg></sc-if>
+                  <sc-if value="{{ c.isFood }}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1.918 0 3.52 1.35 3.91 3.151a4 4 0 0 1 2.09 7.723l0 7.126h-12v-7.126a4 4 0 1 1 2.092 -7.723a4 4 0 0 1 3.908 -3.151"></path><path d="M6.161 17.009l11.839 -.009"></path></svg></sc-if>
+                  <sc-if value="{{ c.isPhoto }}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2"></path><path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path></svg></sc-if>
+                </span>
+                <span>
+                  <span style="display:block;font-weight:700;font-size:16px;color:var(--label-normal);">{{ c.label }}</span>
+                  <span style="display:block;font-size:12px;color:var(--label-alternative);margin-top:3px;line-height:1.4;">{{ c.sub }}</span>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:16px;background:var(--background-normal-alternative);border-radius:12px;padding:12px 14px;">
+            <span style="display:inline-flex;color:#8B3FF0;flex-shrink:0;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="sparkleFill" size="16" hint-size="16px,16px"></x-import></span>
+            <span style="font-size:12px;color:var(--label-neutral);line-height:1.45;">{{ T.concept_go }}</span>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== THEME + SPOTS (combined) ===================== -->
+      <sc-if value="{{ rTheme }}">
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
+        <div style="height:52px;display:flex;align-items:center;padding:0 8px;flex-shrink:0;">
+          <button onClick="{{ doneAddSpots }}" style="width:40px;height:40px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--label-normal);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="arrowLeft" size="24" hint-size="24px,24px"></x-import></button>
+        </div>
+        <div style="padding:2px 20px 12px;flex-shrink:0;">
+          <h1 style="margin:0 0 6px;font-weight:700;font-size:22px;line-height:1.36;letter-spacing:-0.02em;color:var(--label-normal);">{{ T.pick_title }}</h1>
+          <p style="margin:0;font-size:14px;line-height:1.5;color:var(--label-alternative);">{{ T.pick_sub }}</p>
+        </div>
+        <div style="display:flex;gap:8px;overflow-x:auto;padding:2px 20px 14px;flex-shrink:0;" class="tp-scroll">
+          <button onClick="{{ themeNature.toggle }}" style="flex:0 0 auto;display:flex;align-items:center;gap:7px;border:none;cursor:pointer;border-radius:999px;padding:9px 15px 9px 12px;background:{{ themeNature.chipBg }};box-shadow:{{ themeNature.ring }};color:{{ themeNature.chipFg }};font-weight:600;font-size:13px;">
+            <span style="display:inline-flex;color:{{ themeNature.iconFg }};"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-4.3.9-7.4 4.2-7.4 9.2 0 3.1 2 5.3 5.1 5.3C15.9 17.5 19 11 19 4.6c-3 0-5.8.9-7 4.4"></path><path d="M8.2 17.2c1-4.3 3.2-7.4 6.3-9.4"></path></svg></span>{{ themeNature.label }}</button>
+          <button onClick="{{ themeFood.toggle }}" style="flex:0 0 auto;display:flex;align-items:center;gap:7px;border:none;cursor:pointer;border-radius:999px;padding:9px 15px 9px 12px;background:{{ themeFood.chipBg }};box-shadow:{{ themeFood.ring }};color:{{ themeFood.chipFg }};font-weight:600;font-size:13px;">
+            <span style="display:inline-flex;color:{{ themeFood.iconFg }};"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 2.5v7a1.8 1.8 0 0 0 3.6 0v-7M9.3 9.5V21M15 2.5v6.5a2 2 0 0 0 2 2h.6V21M17.6 2.5v6"></path></svg></span>{{ themeFood.label }}</button>
+          <button onClick="{{ themeShopping.toggle }}" style="flex:0 0 auto;display:flex;align-items:center;gap:7px;border:none;cursor:pointer;border-radius:999px;padding:9px 15px 9px 12px;background:{{ themeShopping.chipBg }};box-shadow:{{ themeShopping.ring }};color:{{ themeShopping.chipFg }};font-weight:600;font-size:13px;">
+            <span style="display:inline-flex;color:{{ themeShopping.iconFg }};"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 8h11l-.9 11.2a1 1 0 0 1-1 .8H8.4a1 1 0 0 1-1-.8L6.5 8Z"></path><path d="M9.2 8V6.5a2.8 2.8 0 0 1 5.6 0V8"></path></svg></span>{{ themeShopping.label }}</button>
+          <button onClick="{{ themePhoto.toggle }}" style="flex:0 0 auto;display:flex;align-items:center;gap:7px;border:none;cursor:pointer;border-radius:999px;padding:9px 15px 9px 12px;background:{{ themePhoto.chipBg }};box-shadow:{{ themePhoto.ring }};color:{{ themePhoto.chipFg }};font-weight:600;font-size:13px;">
+            <span style="display:inline-flex;color:{{ themePhoto.iconFg }};"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="camera" size="17" hint-size="17px,17px"></x-import></span>{{ themePhoto.label }}</button>
+        </div>
+        <sc-if value="{{ pickBudgetShow }}">
+        <div style="margin:0 20px 12px;border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:10px;background:{{ pickBg }};flex-shrink:0;">
+          <span style="display:inline-flex;color:{{ pickFg }};flex-shrink:0;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ pickIcon }}" size="18" hint-size="18px,18px"></x-import></span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:700;font-size:13px;color:{{ pickFg }};">{{ pickStatusTitle }}</div>
+            <div style="font-size:11px;color:var(--label-alternative);margin-top:1px;">{{ T.budget_est }} {{ pickBudgetMain }} · {{ T.budget_stay }} {{ pickStay }}</div>
+          </div>
+          <span style="font-weight:700;font-size:13px;color:{{ pickFg }};flex-shrink:0;">{{ pickStatusLabel }}</span>
+        </div>
+        </sc-if>
+        <div style="flex:1;overflow-y:auto;padding:2px 20px 20px;" class="tp-scroll">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <span style="font-size:13px;font-weight:600;color:var(--label-neutral);">{{ pickHeading }}</span>
+            <sc-if value="{{ hasThemeFilter }}"><button onClick="{{ clearThemes }}" style="border:none;background:none;cursor:pointer;font-size:12px;color:var(--primary-normal-4);font-weight:600;">{{ T.show_all }}</button></sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ pickSpots }}" as="sp" hint-placeholder-count="4">
+              <div style="display:flex;gap:12px;background:var(--background-normal-normal);border-radius:16px;padding:12px;box-shadow:{{ sp.cardRing }};">
+                <span style="flex:0 0 60px;height:60px;border-radius:12px;background:{{ sp.color }};color:{{ sp.iconColor }};display:flex;align-items:center;justify-content:center;position:relative;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ sp.icon }}" size="26" hint-size="26px,26px"></x-import></span>
+                <div style="flex:1;min-width:0;cursor:pointer;" onClick="{{ sp.open }}">
+                  <div style="font-weight:600;font-size:15px;color:var(--label-normal);">{{ sp.name }}</div>
+                  <div style="font-size:12px;color:var(--label-alternative);margin-top:2px;">{{ sp.cat }} · {{ sp.km }}km · {{ T.approx }} {{ sp.min }}{{ T.min }}</div>
+                  <div style="display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;">
+                    <sc-for list="{{ sp.themeTags }}" as="tg" hint-placeholder-count="2"><span style="font-size:10px;font-weight:600;color:{{ tg.fg }};background:{{ tg.bg }};border-radius:999px;padding:2px 8px;">{{ tg.label }}</span></sc-for>
+                  </div>
+                </div>
+                <button onClick="{{ sp.toggle }}" style="align-self:center;flex-shrink:0;border:none;cursor:pointer;border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:{{ sp.addBg }};color:{{ sp.addColor }};"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ sp.addIcon }}" size="20" hint-size="20px,20px"></x-import></button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding:12px 20px 18px;border-top:1px solid var(--line-normal-neutral);flex-shrink:0;">
+          <sc-if value="{{ spotpickIsAi }}"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" disabled="{{ spotpickDisabled }}" onClick="{{ confirmSpotpick }}" hint-size="100%,48px">{{ spotpickCta }}</x-import></sc-if>
+          <sc-if value="{{ spotpickIsPlan }}"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" onClick="{{ doneAddSpots }}" hint-size="100%,48px">{{ spotpickDoneCta }}</x-import></sc-if>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== AI PACKAGE ===================== -->
+      <sc-if value="{{ rPackage }}">
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
+        <div style="height:52px;display:flex;align-items:center;padding:0 8px;flex-shrink:0;">
+          <button onClick="{{ back }}" style="width:40px;height:40px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--label-normal);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="arrowLeft" size="24" hint-size="24px,24px"></x-import></button>
+        </div>
+        <sc-if value="{{ aiRunning }}">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;text-align:center;">
+          <div style="position:relative;width:88px;height:88px;display:flex;align-items:center;justify-content:center;margin-bottom:26px;">
+            <span style="position:absolute;inset:0;border-radius:999px;background:#8B3FF0;opacity:.18;animation:tp-pulse 1.6s ease-out infinite;"></span>
+            <span style="width:72px;height:72px;border-radius:22px;background:linear-gradient(135deg,#9747FF,#6A5CFF);display:flex;align-items:center;justify-content:center;color:#fff;animation:tp-float 2.4s ease-in-out infinite;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="sparkleFill" size="34" hint-size="34px,34px"></x-import></span>
+          </div>
+          <div style="font-weight:700;font-size:19px;color:var(--label-normal);">{{ T.ai_making }}</div>
+          <div style="width:100%;margin-top:24px;display:flex;flex-direction:column;gap:14px;text-align:left;">
+            <sc-for list="{{ aiSteps }}" as="step" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:12px;opacity:{{ step.opacity }};transition:opacity .3s;">
+                <sc-if value="{{ step.done }}"><span style="display:inline-flex;color:#8B3FF0"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="circleCheckFill" size="22" hint-size="22px,22px"></x-import></span></sc-if>
+                <sc-if value="{{ step.active }}"><span style="width:22px;height:22px;border-radius:999px;border:2.5px solid #E4D5FA;border-top-color:#8B3FF0;animation:tp-spin .7s linear infinite;flex-shrink:0;"></span></sc-if>
+                <sc-if value="{{ step.pending }}"><span style="width:22px;height:22px;border-radius:999px;background:var(--fill-normal);flex-shrink:0;"></span></sc-if>
+                <span style="font-size:15px;font-weight:{{ step.weight }};color:{{ step.textColor }};">{{ step.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        </sc-if>
+        <sc-if value="{{ pkgReady }}">
+        <div style="flex:1;overflow-y:auto;padding:0 20px 20px;" class="tp-scroll">
+          
+          <sc-if value="{{ pkgShowHead }}">
+          <h1 style="margin:12px 0 4px;font-weight:700;font-size:23px;letter-spacing:-0.02em;color:var(--label-normal);">{{ T.package_ready }}</h1>
+          <p style="margin:0 0 16px;font-size:14px;line-height:1.5;color:var(--label-alternative);">{{ T.package_sub }}</p>
+          </sc-if>
+          <div style="display:flex;align-items:center;gap:10px;background:{{ fitsBg }};border-radius:14px;padding:13px 16px;margin-bottom:18px;">
+            <span style="display:inline-flex;color:{{ fitsFg }}"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ fitsIcon }}" size="22" hint-size="22px,22px"></x-import></span>
+            <div style="flex:1;"><div style="font-size:12px;color:var(--label-alternative);">{{ T.total_course }} · {{ courseTime }}</div><div style="font-weight:700;font-size:14px;color:{{ fitsFg }};">{{ fitsLabel }}</div></div>
+          </div>
+          
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-weight:700;font-size:15px;color:var(--label-normal);">{{ T.route_stops }}</span>
+            <sc-if value="{{ pkgEditable }}"><button onClick="{{ toggleEditPkg }}" style="border:none;background:none;cursor:pointer;font-size:13px;font-weight:700;color:var(--primary-normal-4);display:inline-flex;align-items:center;gap:4px;padding:4px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L18.5 9.5a2 2 0 0 0-2.8-2.8L5 17.2V20z"></path><path d="M14 6.5l3 3"></path></svg>{{ editPkgLabel }}</button></sc-if>
+            <sc-if value="{{ routeLocked }}"><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--status-positive);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="circleCheckFill" size="14" hint-size="14px,14px"></x-import>{{ T.status_called }}</span></sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;">
+            <sc-for list="{{ itinerary }}" as="it" hint-placeholder-count="3">
+              <div style="display:flex;gap:14px;">
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                  <span style="width:30px;height:30px;border-radius:999px;background:var(--primary-normal-4);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">{{ it.no }}</span>
+                  <sc-if value="{{ it.line }}"><span style="flex:1;width:2px;background:var(--line-normal-neutral);margin:2px 0;"></span></sc-if>
+                </div>
+                <div style="flex:1;min-width:0;padding-bottom:16px;">
+                  <div style="font-weight:600;font-size:15px;color:var(--label-normal);">{{ it.name }}</div>
+                  <div style="font-size:12px;color:var(--label-alternative);margin-top:2px;">{{ it.cat }} · {{ it.time }}</div>
+                </div>
+                <sc-if value="{{ editPkg }}">
+                <div style="display:flex;align-items:center;gap:6px;padding-bottom:16px;flex-shrink:0;">
+                  <button onClick="{{ it.swap }}" style="height:30px;padding:0 11px;border:none;background:var(--fill-normal);border-radius:8px;cursor:pointer;color:var(--label-neutral);display:inline-flex;align-items:center;gap:5px;font:700 12px/1 var(--font-sans);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3 -3"></path><path d="M20 16h-13l3 3"></path></svg>{{ T.swap_action }}</button>
+                  <button onClick="{{ it.remove }}" style="width:30px;height:30px;border:none;background:#FDECEC;border-radius:8px;cursor:pointer;color:#E23B3B;display:flex;align-items:center;justify-content:center;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="close" size="16" hint-size="16px,16px"></x-import></button>
+                </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ pkgEmpty }}">
+          <div style="text-align:center;font-size:13px;color:var(--label-assistive);padding:6px 0 12px;">{{ T.pkg_empty }}</div>
+          </sc-if>
+          <sc-if value="{{ pkgEditable }}">
+          <sc-if value="{{ pkgCanAdd }}">
+          <button onClick="{{ addPkgMore }}" style="width:100%;margin-top:8px;border:1.5px dashed var(--line-normal-normal);background:var(--background-normal-normal);border-radius:12px;padding:13px;cursor:pointer;font-weight:600;font-size:14px;color:var(--primary-normal-4);display:flex;align-items:center;justify-content:center;gap:6px;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="plus" size="18" hint-size="18px,18px"></x-import>{{ T.home_add }}</button>
+          </sc-if>
+          <sc-if value="{{ noAddRoom }}">
+          <div style="width:100%;margin-top:8px;border:1.5px dashed rgba(232,130,14,.4);background:#FFF7EC;border-radius:12px;padding:12px 14px;display:flex;align-items:flex-start;gap:9px;">
+            <span style="display:inline-flex;color:#B5620A;flex-shrink:0;margin-top:1px;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="triangleExclamationFill" size="18" hint-size="18px,18px"></x-import></span>
+            <div><div style="font-weight:700;font-size:13px;color:var(--label-normal);">{{ T.add_full }}</div><div style="font-size:12px;color:var(--label-alternative);margin-top:2px;line-height:1.45;">{{ T.add_full_sub }}</div></div>
+          </div>
+          </sc-if>
+          </sc-if>
+          <sc-if value="{{ routeLocked }}">
+          <div style="width:100%;margin-top:8px;border-radius:12px;background:var(--primary-normal-8);padding:12px 14px;display:flex;align-items:flex-start;gap:9px;">
+            <span style="display:inline-flex;color:var(--primary-normal-4);flex-shrink:0;margin-top:1px;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="circleCheckFill" size="18" hint-size="18px,18px"></x-import></span>
+            <div><div style="font-weight:700;font-size:13px;color:var(--label-normal);">{{ T.status_called }}</div><div style="font-size:12px;color:var(--label-alternative);margin-top:2px;line-height:1.45;">{{ T.route_locked }}</div></div>
+          </div>
+          </sc-if>
+        </div>
+        <div style="padding:12px 20px 18px;border-top:1px solid var(--line-normal-neutral);flex-shrink:0;">
+          <sc-if value="{{ pkgEditable }}"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" disabled="{{ pkgEmpty }}" onClick="{{ goTransport }}" hint-size="100%,48px">{{ T.transport_cta }}</x-import></sc-if>
+          <sc-if value="{{ routeLocked }}"><button onClick="{{ finishFlow }}" style="width:100%;height:48px;border-radius:12px;border:1.5px solid var(--line-normal-normal);background:var(--background-normal-normal);cursor:pointer;font-weight:700;font-size:15px;color:var(--label-normal);">{{ T.final_cta }}</button></sc-if>
+        </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <!-- ===================== TRANSPORT SELECT ===================== -->
+      <sc-if value="{{ rTransport }}">
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
+        <div style="height:52px;display:flex;align-items:center;padding:0 8px;flex-shrink:0;">
+          <button onClick="{{ back }}" style="width:40px;height:40px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--label-normal);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="arrowLeft" size="24" hint-size="24px,24px"></x-import></button>
+        </div>
+        <div style="padding:0 20px 10px;flex-shrink:0;">
+          <h1 style="margin:0 0 6px;font-weight:700;font-size:22px;letter-spacing:-0.02em;color:var(--label-normal);">{{ T.transport_title }}</h1>
+          <p style="margin:0;font-size:14px;line-height:1.5;color:var(--label-alternative);">{{ T.transport_sub }}</p>
+          <div style="width:100%;box-sizing:border-box;margin-top:18px;position:relative;background:var(--fill-normal);color:var(--label-alternative);font-size:11.5px;font-weight:500;line-height:1.4;padding:8px 12px;border-radius:9px;text-align:center;word-break:keep-all;">{{ T.global_tip }}<span style="position:absolute;top:100%;left:66%;transform:translateX(-50%) rotate(45deg);width:8px;height:8px;background:var(--fill-normal);margin-top:-4px;border-radius:1px;"></span></div>
+          <div style="display:flex;justify-content:center;margin-top:12px;">
+            <x-import component-from-global-scope="WantedDesignSystem_2064fe.SegmentedControl" items="{{ svcItems }}" active-index="{{ svcActiveIndex }}" on-change="{{ onSvcChange }}" hint-size="240px,40px"></x-import>
+          </div>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:14px 20px 20px;" class="tp-scroll">
+          <sc-if value="{{ taxiIsGlobal }}">
+          <div style="border-radius:14px;background:var(--primary-normal-8);padding:14px;margin-bottom:16px;animation:tp-fade .25s ease both;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="width:36px;height:36px;border-radius:10px;background:var(--primary-normal-4);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="globe" size="20" hint-size="20px,20px"></x-import></span>
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:700;font-size:15px;color:var(--label-normal);">{{ T.global_title }}</div>
+                <div style="font-size:11px;font-weight:600;color:var(--primary-normal-4);margin-top:1px;">{{ T.global_partner }}</div>
+              </div>
+            </div>
+            <p style="margin:10px 0 0;font-size:13px;line-height:1.5;color:var(--label-neutral);text-wrap:pretty;">{{ T.global_desc }}</p>
+            <div style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:var(--background-normal-normal);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:600;color:var(--label-neutral);"><span style="display:inline-flex;color:var(--status-positive)"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="verifiedCheckFill" size="14" hint-size="14px,14px"></x-import></span>{{ T.global_langs }}</div>
+            <button onClick="{{ toggleGlobalPolicy }}" style="margin-top:10px;display:inline-flex;align-items:center;gap:5px;border:none;cursor:pointer;background:none;padding:2px 0;">
+              <span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--label-alternative);"><span style="display:inline-flex;color:var(--label-assistive);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v4h1"></path></svg></span>{{ T.gt_policy_title }}</span>
+              <sc-if value="{{ globalPolicyOpen }}"><span style="display:inline-flex;color:var(--label-assistive);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"></path></svg></span></sc-if>
+              <sc-if value="{{ policyClosed }}"><span style="display:inline-flex;color:var(--label-assistive);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></span></sc-if>
+            </button>
+            <sc-if value="{{ globalPolicyOpen }}">
+            <div style="margin-top:8px;background:var(--background-normal-normal);border-radius:10px;padding:13px;display:flex;flex-direction:column;gap:10px;animation:tp-fade .2s ease both;">
+              <div style="display:flex;gap:9px;align-items:flex-start;"><span style="width:5px;height:5px;border-radius:999px;background:var(--primary-normal-4);flex-shrink:0;margin-top:7px;"></span><p style="margin:0;font-size:12.5px;line-height:1.55;color:var(--label-neutral);text-wrap:pretty;">{{ T.gt_policy1 }}</p></div>
+              <div style="display:flex;gap:9px;align-items:flex-start;"><span style="width:5px;height:5px;border-radius:999px;background:var(--primary-normal-4);flex-shrink:0;margin-top:7px;"></span><p style="margin:0;font-size:12.5px;line-height:1.55;color:var(--label-neutral);text-wrap:pretty;">{{ T.gt_policy2 }}</p></div>
+            </div>
+            </sc-if>
+          </div>
+          </sc-if>
+          <sc-if value="{{ taxiNotGlobal }}">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <button onClick="{{ transport.taxi.select }}" style="display:flex;align-items:center;gap:14px;text-align:left;border:none;cursor:pointer;border-radius:16px;padding:16px;background:{{ transport.taxi.bg }};box-shadow:{{ transport.taxi.ring }};">
+              <span style="width:48px;height:48px;border-radius:13px;background:#EAF7EE;color:var(--status-positive);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M15 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6m-6 -6h15m-6 0v-5"></path></svg></span>
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:700;font-size:16px;color:var(--label-normal);">{{ T.car_normal }}</div>
+                <div style="font-size:12px;color:var(--label-alternative);margin-top:2px;">{{ T.car_normal_sub }}</div>
+              </div>
+              <div style="text-align:right;flex-shrink:0;">
+                <div style="font-weight:700;font-size:15px;color:var(--label-normal);">{{ transport.taxi.cost }}</div>
+                <div style="font-size:12px;color:var(--label-alternative);margin-top:2px;">{{ transport.taxi.time }}</div>
+              </div>
+            </button>
+            <button onClick="{{ transport.van.select }}" style="display:flex;align-items:center;gap:14px;text-align:left;border:none;cursor:pointer;border-radius:16px;padding:16px;background:{{ transport.van.bg }};box-shadow:{{ transport.van.ring }};">
+              <span style="width:48px;height:48px;border-radius:13px;background:#E7F1FF;color:var(--primary-normal-4);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16V8.5A1.5 1.5 0 0 1 4.5 7H14l5 5V16"></path><path d="M3 16h16M4.6 16v1.6M17.4 16v1.6M9 7v5M3.5 12H19"></path><circle cx="7" cy="16" r="1.6"></circle><circle cx="16" cy="16" r="1.6"></circle></svg></span>
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:700;font-size:16px;color:var(--label-normal);">{{ T.car_van }}</div>
+                <div style="font-size:12px;color:var(--label-alternative);margin-top:2px;">{{ T.car_van_sub }}</div>
+              </div>
+              <div style="text-align:right;flex-shrink:0;">
+                <div style="font-weight:700;font-size:15px;color:var(--label-normal);">{{ transport.van.cost }}</div>
+                <div style="font-size:12px;color:var(--label-alternative);margin-top:2px;">{{ transport.van.time }}</div>
+              </div>
+            </button>
+          </div>
+          </sc-if>
+          <sc-if value="{{ taxiIsGlobal }}">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <sc-for list="{{ globalCars }}" as="g" hint-placeholder-count="4">
+              <button onClick="{{ g.select }}" style="display:flex;align-items:center;gap:14px;text-align:left;border:none;cursor:pointer;border-radius:16px;padding:16px;background:{{ g.bg }};box-shadow:{{ g.ring }};">
+                <image-slot id="gtaxi-{{ g.key }}" shape="rounded" radius="13" fit="cover" placeholder="{{ g.name }}" style="width:56px;height:56px;flex-shrink:0;"></image-slot>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-weight:700;font-size:16px;color:var(--label-normal);">{{ g.name }}</div>
+                  <div style="font-size:12px;color:var(--label-alternative);margin-top:2px;">{{ g.capLabel }} · {{ T.gt_over }} {{ g.over }}</div>
+                </div>
+                <div style="text-align:right;flex-shrink:0;">
+                  <div style="font-weight:700;font-size:15px;color:var(--label-normal);">{{ g.day }}</div>
+                  <div style="font-size:12px;color:var(--label-alternative);margin-top:2px;">{{ T.gt_day }}</div>
+                </div>
+              </button>
+            </sc-for>
+          </div>
+          </sc-if>
+          
+        </div>
+        <div style="padding:12px 20px 18px;border-top:1px solid var(--line-normal-neutral);flex-shrink:0;">
+          <x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" disabled="{{ noTransport }}" onClick="{{ confirmTransport }}" hint-size="100%,48px">{{ T.transport_cta }}</x-import>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== FINAL ROUTE ===================== -->
+      <sc-if value="{{ rFinalRoute }}">
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
+        <div style="flex:1;overflow-y:auto;" class="tp-scroll">
+          <div style="height:52px;display:flex;align-items:center;padding:0 8px;">
+            <button onClick="{{ back }}" style="width:40px;height:40px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--label-normal);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="arrowLeft" size="24" hint-size="24px,24px"></x-import></button>
+          </div>
+          <div style="padding:0 20px 12px;">
+            <h1 style="margin:0 0 4px;font-weight:700;font-size:22px;letter-spacing:-0.02em;color:var(--label-normal);">{{ T.final_title }}</h1>
+          </div>
+          <div style="position:relative;height:220px;margin:0 20px;border-radius:18px;background:linear-gradient(180deg,#CFE4F2 0%,#BFDCF0 100%);overflow:hidden;">
+            <div style="position:absolute;left:-8%;top:{{ landTop }};width:116%;height:70%;background:linear-gradient(160deg,#DDEBCF,#E9F2E0);border-radius:48% 52% 46% 54%/60% 56% 44% 40%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.5);"></div>
+            <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points="{{ finalPolyline }}" fill="none" stroke="var(--primary-normal-4)" stroke-width="0.8" stroke-dasharray="2.4 2" vector-effect="non-scaling-stroke"></polyline></svg>
+            <div style="position:absolute;left:50%;top:{{ portTop }};transform:translate(-50%,-50%);z-index:3;">
+              <span style="background:var(--label-normal);color:#fff;border-radius:999px;padding:3px 9px;font-size:10px;font-weight:700;">{{ cruise.portName }}</span>
+            </div>
+            <sc-for list="{{ finalPins }}" as="fp" hint-placeholder-count="3">
+              <span style="position:absolute;left:{{ fp.x }};top:{{ fp.y }};transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;z-index:4;">
+                <span style="width:22px;height:22px;border-radius:999px;background:var(--primary-normal-4);color:#fff;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.25);">{{ fp.no }}</span>
+              </span>
+            </sc-for>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;padding:16px 20px 4px;">
+            <sc-for list="{{ finalStops }}" as="it" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="width:24px;height:24px;border-radius:999px;background:var(--primary-normal-4);color:#fff;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">{{ it.no }}</span>
+                <span style="flex:1;font-weight:600;font-size:14px;color:var(--label-normal);">{{ it.name }}</span>
+                <span style="font-size:12px;color:var(--label-alternative);">{{ it.time }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 20px 4px;">
+            <div style="background:var(--background-normal-normal);border-radius:14px;padding:14px;box-shadow:inset 0 0 0 1px var(--line-normal-neutral);"><div style="font-size:12px;color:var(--label-alternative);">{{ T.final_time }}</div><div style="font-weight:700;font-size:17px;color:var(--label-normal);margin-top:3px;">{{ finalTime }}</div></div>
+            <div style="background:var(--background-normal-normal);border-radius:14px;padding:14px;box-shadow:inset 0 0 0 1px var(--line-normal-neutral);"><div style="font-size:12px;color:var(--label-alternative);">{{ T.final_cost }}</div><div style="font-weight:700;font-size:17px;color:var(--label-normal);margin-top:3px;">{{ finalCost }}</div></div>
+          </div>
+          
+          <div style="height:96px;"></div>
+        </div>
+        <div style="padding:12px 20px 18px;border-top:1px solid var(--line-normal-neutral);flex-shrink:0;display:flex;flex-direction:column;gap:10px;">
+          <x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" onClick="{{ confirmNow }}" hint-size="100%,48px">{{ T.confirm_now }}</x-import>
+          <button onClick="{{ confirmLater }}" style="width:100%;height:48px;border-radius:12px;border:1.5px solid var(--line-normal-normal);background:var(--background-normal-normal);cursor:pointer;font-weight:700;font-size:15px;color:var(--label-normal);">{{ T.confirm_later }}</button>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== SHOP ===================== -->
+      <sc-if value="{{ rShop }}">
+      <div style="flex:1;overflow-y:auto;background:var(--background-normal-alternative);" class="tp-scroll">
+        <div style="padding:14px 20px 10px;background:var(--background-normal-normal);position:sticky;top:0;z-index:3;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+            <div style="font-weight:700;font-size:20px;color:var(--label-normal);">{{ T.shop_title }}</div>
+            <button onClick="{{ goCheckout }}" style="position:relative;width:40px;height:40px;border:none;background:none;cursor:pointer;color:var(--label-normal);display:flex;align-items:center;justify-content:center;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M15 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M17 17h-11v-14h-2"></path><path d="M6 5l14 1l-1 7h-13"></path></svg>
+              <sc-if value="{{ hasCart }}"><span style="position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 4px;box-sizing:border-box;background:var(--status-negative);color:#fff;border-radius:999px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">{{ cartCount }}</span></sc-if>
+            </button>
+          </div>
+          <div style="display:flex;gap:8px;overflow-x:auto;margin-top:12px;" class="tp-scroll">
+            <sc-for list="{{ shopCats }}" as="c" hint-placeholder-count="5">
+              <button onClick="{{ c.select }}" style="flex:0 0 auto;border:none;cursor:pointer;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:{{ c.weight }};color:{{ c.color }};background:{{ c.bg }};box-shadow:{{ c.ring }};">{{ c.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin:14px 20px 6px;background:#EAF7EE;border-radius:12px;padding:10px 12px;">
+          <span style="display:inline-flex;color:var(--status-positive)"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="verifiedCheckFill" size="16" hint-size="16px,16px"></x-import></span>
+          <span style="font-size: 12px; color: var(--label-neutral); line-height: 1.4; font-weight: 500">{{ T.shop_trust }}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:8px 20px 20px;">
+          <sc-for list="{{ products }}" as="pr" hint-placeholder-count="6">
+            <div onClick="{{ pr.open }}" style="cursor:pointer;background:var(--background-normal-normal);border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line-normal-neutral);display:flex;flex-direction:column;">
+              <div style="position:relative;height:96px;background:{{ pr.color }};display:flex;align-items:center;justify-content:center;color:{{ pr.iconColor }};">
+                <x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ pr.icon }}" size="30" hint-size="30px,30px"></x-import>
+                <span style="position:absolute;top:8px;left:8px;display:inline-flex;align-items:center;gap:3px;background:{{ pr.sm.bg }};color:{{ pr.sm.color }};border-radius:999px;padding:3px 8px;font-size:10px;font-weight:700;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ pr.sm.icon }}" size="12" hint-size="12px,12px"></x-import>{{ pr.sm.label }}</span>
+              </div>
+              <div style="padding:11px 12px 13px;flex:1;display:flex;flex-direction:column;">
+                <div style="font-weight:600;font-size:14px;line-height:1.35;color:var(--label-normal);">{{ pr.name }}</div>
+                <div style="font-size:12px;line-height:1.4;color:var(--label-alternative);margin-top:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">{{ pr.desc }}</div>
+                <div style="font-weight:700;font-size:15px;color:var(--label-normal);margin-top:8px;">{{ pr.priceLabel }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== PRODUCT DETAIL ===================== -->
+      <sc-if value="{{ rProduct }}">
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
+        <div style="flex:1;overflow-y:auto;" class="tp-scroll">
+          <div style="position:relative;height:190px;background:{{ curProduct.color }};display:flex;align-items:center;justify-content:center;color:{{ curProduct.iconColor }};">
+            <x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ curProduct.icon }}" size="60" hint-size="60px,60px"></x-import>
+            <button onClick="{{ back }}" style="position:absolute;top:14px;left:16px;width:36px;height:36px;border-radius:999px;border:none;cursor:pointer;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;color:var(--label-normal);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="arrowLeft" size="22" hint-size="22px,22px"></x-import></button>
+          </div>
+          <div style="padding:18px 20px 4px;">
+            <div style="display:inline-flex;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.ContentBadge" size="small" hint-size="auto,24px">{{ curProduct.catLabel }}</x-import></div>
+            <h1 style="margin:10px 0 4px;font-weight:700;font-size:22px;letter-spacing:-0.02em;color:var(--label-normal);">{{ curProduct.name }}</h1>
+            <div style="font-weight:700;font-size:20px;color:var(--label-normal);margin-top:6px;">{{ curProduct.priceLabel }}</div>
+          </div>
+          <div style="margin:14px 20px 0;border-radius:14px;background:{{ curProduct.sm.bg }};padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;color:{{ curProduct.sm.color }};"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ curProduct.sm.icon }}" size="20" hint-size="20px,20px"></x-import>{{ curProduct.sm.label }}</div>
+          </div>
+          <div style="padding:18px 20px 4px;font-weight:700;font-size:16px;color:var(--label-normal);">{{ T.customs_line_info }}</div>
+          <div style="padding:6px 20px 0;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;gap:12px;background:var(--background-normal-alternative);border-radius:12px;padding:13px 14px;">
+              <span style="flex-shrink:0;color:var(--label-neutral);display:inline-flex;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="passportFill" size="20" hint-size="20px,20px"></x-import></span>
+              <div><div style="font-weight:600;font-size:13px;color:var(--label-normal);">{{ T.customs_note }}</div><div style="font-size:13px;line-height:1.5;color:var(--label-neutral);margin-top:2px;">{{ curProduct.customs }}</div></div>
+            </div>
+            <div style="display:flex;gap:12px;background:var(--background-normal-alternative);border-radius:12px;padding:13px 14px;">
+              <span style="flex-shrink:0;color:var(--label-neutral);display:inline-flex;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1"></path><path d="M4 18l-1 -5h18l-2 4"></path><path d="M5 13v-6h8l4 6"></path><path d="M7 7v-4h-1"></path></svg></span>
+              <div><div style="font-weight:600;font-size:13px;color:var(--label-normal);">{{ T.line_note }}</div><div style="font-size:13px;line-height:1.5;color:var(--label-neutral);margin-top:2px;">{{ curProduct.line }}</div></div>
+            </div>
+          </div>
+          <div style="padding:18px 20px 4px;font-weight:700;font-size:16px;color:var(--label-normal);">{{ T.receive_how }}</div>
+          <div style="padding:6px 20px 0;display:flex;flex-direction:column;gap:8px;">
+            <sc-for list="{{ deliveryOptions }}" as="d" hint-placeholder-count="3">
+              <button onClick="{{ d.select }}" style="display:flex;align-items:center;gap:12px;border:none;cursor:pointer;text-align:left;border-radius:12px;padding:13px 14px;background:{{ d.bg }};box-shadow:{{ d.ring }};">
+                <span style="width:20px;height:20px;border-radius:999px;box-shadow:inset 0 0 0 2px {{ d.dot }};display:flex;align-items:center;justify-content:center;"><sc-if value="{{ d.active }}"><span style="width:10px;height:10px;border-radius:999px;background:var(--primary-normal-4);"></span></sc-if></span>
+                <span style="font-size:14px;font-weight:{{ d.weight }};color:var(--label-normal);">{{ d.label }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="height:120px;"></div>
+        </div>
+        <div style="padding:12px 20px 18px;border-top:1px solid var(--line-normal-neutral);display:flex;gap:10px;flex-shrink:0;">
+          <button onClick="{{ curProduct.add }}" style="height:48px;padding:0 18px;border-radius:12px;border:none;cursor:pointer;font-weight:600;font-size:15px;background:var(--fill-normal);color:var(--label-neutral);white-space:nowrap;">{{ T.add_cart }}</button>
+          <x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" onClick="{{ buyNow }}" hint-size="100%,48px">{{ T.buy_now }}</x-import>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== CHECKOUT ===================== -->
+      <sc-if value="{{ rCheckout }}">
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
+        <div style="height:52px;display:flex;align-items:center;gap:6px;padding:0 8px;flex-shrink:0;border-bottom:1px solid var(--line-normal-neutral);">
+          <button onClick="{{ back }}" style="width:40px;height:40px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--label-normal);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="arrowLeft" size="24" hint-size="24px,24px"></x-import></button>
+          <span style="font-weight:700;font-size:17px;color:var(--label-normal);">{{ T.go_cart }}</span>
+        </div>
+        <sc-if value="{{ orderDone }}">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;text-align:center;">
+          <span style="width:76px;height:76px;border-radius:999px;background:#EAF7EE;color:var(--status-positive);display:flex;align-items:center;justify-content:center;margin-bottom:20px;animation:tp-fade .3s ease both;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="circleCheckFill" size="46" hint-size="46px,46px"></x-import></span>
+          <div style="font-weight:700;font-size:21px;color:var(--label-normal);">{{ T.order_done }}</div>
+          <p style="margin:10px 0 26px;font-size:14px;line-height:1.55;color:var(--label-alternative);">{{ T.order_done_sub }}</p>
+          <x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" onClick="{{ navShop }}" hint-size="auto,48px">{{ T.shop_title }}</x-import>
+        </div>
+        </sc-if>
+        <sc-if value="{{ checkoutOpen }}">
+        <div style="flex:1;overflow-y:auto;padding:16px 20px 20px;" class="tp-scroll">
+          <sc-if value="{{ hasCart }}">
+          <div style="font-weight:700;font-size:15px;color:var(--label-normal);margin-bottom:10px;">{{ T.order_summary }}</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ cartItems }}" as="ci" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:12px;background:var(--background-normal-normal);border-radius:14px;padding:12px;box-shadow:inset 0 0 0 1px var(--line-normal-neutral);">
+                <span style="width:44px;height:44px;border-radius:10px;background:{{ ci.color }};color:{{ ci.iconColor }};display:flex;align-items:center;justify-content:center;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ ci.icon }}" size="22" hint-size="22px,22px"></x-import></span>
+                <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:14px;color:var(--label-normal);">{{ ci.name }}</div><div style="display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;color:{{ ci.sm.color }};margin-top:3px;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ ci.sm.icon }}" size="12" hint-size="12px,12px"></x-import>{{ ci.sm.label }}</div></div>
+                <div style="font-weight:700;font-size:14px;color:var(--label-normal);">{{ ci.priceLabel }}</div>
+                <button onClick="{{ ci.remove }}" style="border:none;background:none;cursor:pointer;color:var(--label-assistive);display:flex;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="close" size="18" hint-size="18px,18px"></x-import></button>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-top:18px;border-radius:16px;background:#FFF4E5;box-shadow:inset 0 0 0 1px rgba(232,130,14,.3);padding:16px;">
+            <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;color:#B5620A;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="triangleExclamationFill" size="20" hint-size="20px,20px"></x-import>{{ T.confirm_before_pay }}</div>
+            <p style="margin:8px 0 12px;font-size:13px;line-height:1.5;color:var(--label-neutral);">{{ T.confirm_import_desc }}</p>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <sc-for list="{{ cartItems }}" as="ci" hint-placeholder-count="2">
+                <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:9px 12px;">
+                  <span style="display:inline-flex;color:{{ ci.sm.color }}"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ ci.sm.icon }}" size="16" hint-size="16px,16px"></x-import></span>
+                  <span style="flex:1;font-size:13px;font-weight:600;color:var(--label-normal);">{{ ci.name }}</span>
+                  <span style="font-size:12px;font-weight:700;color:{{ ci.sm.color }};">{{ ci.sm.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <button onClick="{{ toggleAgree }}" style="display:flex;align-items:center;gap:10px;width:100%;border:none;background:none;cursor:pointer;text-align:left;margin-top:14px;padding:0;">
+              <span style="width:22px;height:22px;border-radius:6px;flex-shrink:0;background:{{ agreeBg }};box-shadow:inset 0 0 0 2px {{ agreeBorder }};display:flex;align-items:center;justify-content:center;color:#fff;"><sc-if value="{{ importAgree }}"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="check" size="16" hint-size="16px,16px"></x-import></sc-if></span>
+              <span style="font-size:13px;line-height:1.45;font-weight:600;color:var(--label-normal);">{{ T.agree_import }}</span>
+            </button>
+          </div>
+          </sc-if>
+          <sc-if value="{{ cartEmpty }}"><div style="padding:60px 0;text-align:center;color:var(--label-assistive);font-size:14px;">{{ T.cart_empty }}</div></sc-if>
+        </div>
+        <sc-if value="{{ hasCart }}">
+        <div style="padding:12px 20px 18px;border-top:1px solid var(--line-normal-neutral);flex-shrink:0;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span style="font-size:14px;color:var(--label-alternative);">{{ T.total }}</span><span style="font-weight:700;font-size:20px;color:var(--label-normal);">{{ cartTotal }}</span></div>
+          <x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" disabled="{{ payDisabled }}" onClick="{{ pay }}" hint-size="100%,48px">{{ T.pay }}</x-import>
+        </div>
+        </sc-if>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <!-- ===================== MOVE / TAXI ===================== -->
+      <sc-if value="{{ rMove }}">
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0;background:var(--background-normal-alternative);">
+        <sc-if value="{{ taxiMapShow }}">
+        <div style="position:relative;background:#CFE4F2;height:{{ taxiMapH }};flex-shrink:0;">
+          <iframe src="{{ taxiMapSrc }}" title="taxi map" style="width:100%;height:100%;border:none;display:block;"></iframe>
+          <sc-if value="{{ taxiCanBack }}"><button onClick="{{ taxiStepBack }}" style="position:absolute;top:14px;left:16px;width:38px;height:38px;border-radius:999px;border:none;cursor:pointer;background:rgba(255,255,255,.95);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;color:var(--label-normal);box-shadow:0 2px 8px rgba(0,0,0,.15);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="arrowLeft" size="22" hint-size="22px,22px"></x-import></button></sc-if>
+        </div>
+        </sc-if>
+        <div style="flex:1;overflow-y:auto;background:var(--background-normal-normal);border-radius:20px 20px 0 0;margin-top:-18px;position:relative;z-index:2;box-shadow:0 -6px 20px rgba(0,0,0,.06);" class="tp-scroll">
+          <div style="width:38px;height:4px;border-radius:999px;background:var(--line-normal-normal);margin:10px auto 2px;"></div>
+
+          <sc-if value="{{ stepPickup }}">
+          <div style="padding:12px 20px 22px;">
+            <div style="font-weight:700;font-size:19px;color:var(--label-normal);margin-bottom:14px;">{{ T.pickup_title }}</div>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--background-normal-alternative);border-radius:12px;padding:12px 14px;margin-bottom:16px;">
+              <span style="display:inline-flex;color:var(--label-assistive);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg></span>
+              <span style="font-size:14px;color:var(--label-assistive);">{{ T.pickup_search }}</span>
+            </div>
+            <button onClick="{{ confirmPickup }}" style="width:100%;display:flex;align-items:center;gap:12px;text-align:left;border:none;cursor:pointer;background:var(--primary-normal-8);border-radius:14px;padding:14px;margin-bottom:8px;box-shadow:inset 0 0 0 1.5px var(--primary-normal-4);">
+              <span style="width:38px;height:38px;border-radius:999px;background:var(--primary-normal-4);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path><circle cx="12" cy="12" r="4"></circle></svg></span>
+              <div style="flex:1;min-width:0;"><div style="font-size:11px;font-weight:700;color:var(--primary-normal-4);">{{ T.cur_loc_auto }}</div><div style="font-weight:700;font-size:15px;color:var(--label-normal);">{{ pickupName }}</div></div>
+              <span style="display:inline-flex;color:var(--primary-normal-4);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="circleCheckFill" size="22" hint-size="22px,22px"></x-import></span>
+            </button>
+            <div style="font-size:12px;font-weight:600;color:var(--label-assistive);margin:16px 0 4px;">{{ T.recent_places }}</div>
+            <button onClick="{{ confirmPickup }}" style="width:100%;display:flex;align-items:center;gap:12px;text-align:left;border:none;cursor:pointer;background:none;border-radius:12px;padding:11px 4px;">
+              <span style="width:36px;height:36px;border-radius:10px;background:var(--fill-normal);color:var(--label-neutral);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1"></path><path d="M4 18l-1 -5h18l-2 4"></path><path d="M5 13v-6h8l4 6"></path><path d="M7 7v-4h-1"></path></svg></span>
+              <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:14px;color:var(--label-normal);">{{ T.place_terminal }}</div><div style="font-size:12px;color:var(--label-alternative);">{{ pickupName }}</div></div>
+            </button>
+            <button onClick="{{ confirmPickup }}" style="width:100%;display:flex;align-items:center;gap:12px;text-align:left;border:none;cursor:pointer;background:none;border-radius:12px;padding:11px 4px;">
+              <span style="width:36px;height:36px;border-radius:10px;background:var(--fill-normal);color:var(--label-neutral);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 5l8 6.5"></path><path d="M6 10v9h12v-9"></path></svg></span>
+              <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:14px;color:var(--label-normal);">{{ T.place_hotel }}</div><div style="font-size:12px;color:var(--label-alternative);">Jeju Shinhwa World</div></div>
+            </button>
+            <div style="margin-top:16px;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" onClick="{{ confirmPickup }}" hint-size="100%,48px">{{ T.next_step }}</x-import></div>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ stepDest }}">
+          <div style="padding:8px 20px 22px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+              <button onClick="{{ taxiStepBack }}" style="width:36px;height:36px;flex-shrink:0;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--label-normal);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="arrowLeft" size="24" hint-size="24px,24px"></x-import></button>
+              <div style="flex:1;display:flex;align-items:center;gap:8px;background:var(--background-normal-alternative);border-radius:12px;padding:11px 14px;">
+                <span style="display:inline-flex;color:var(--label-assistive);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg></span>
+                <input value="{{ taxiQuery }}" onChange="{{ setTaxiQuery }}" placeholder="{{ T.where_to }}" style="flex:1;min-width:0;border:none;background:none;outline:none;font-size:15px;font-weight:600;color:var(--label-normal);font-family:var(--font-sans);">
+              </div>
+            </div>
+            <sc-if value="{{ showFavs }}">
+            
+            
+            </sc-if>
+            <div style="font-size:12px;font-weight:600;color:var(--label-assistive);margin:8px 0 2px;">{{ T.search_results }}</div>
+            <sc-for list="{{ destResults }}" as="d" hint-placeholder-count="5">
+              <button onClick="{{ d.pick }}" style="width:100%;display:flex;align-items:center;gap:12px;text-align:left;border:none;cursor:pointer;background:none;padding:12px 4px;border-bottom:1px solid var(--line-normal-neutral);">
+                <span style="width:36px;height:36px;border-radius:10px;flex-shrink:0;background:var(--fill-normal);color:var(--primary-normal-4);display:flex;align-items:center;justify-content:center;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="pinFill" size="18" hint-size="18px,18px"></x-import></span>
+                <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:15px;color:var(--label-normal);">{{ d.name }}</div><div style="font-size:12px;color:var(--label-alternative);">{{ d.cat }} · {{ d.km }}km</div></div>
+              </button>
+            </sc-for>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ stepCar }}">
+          <div style="padding:12px 20px 22px;">
+            <div style="background:var(--background-normal-alternative);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:999px;background:var(--label-neutral);flex-shrink:0;"></span><span style="font-size:13px;font-weight:600;color:var(--label-normal);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ pickupName }}</span></div>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:6px;"><span style="width:8px;height:8px;border-radius:999px;background:var(--primary-normal-4);flex-shrink:0;"></span><span style="font-size:13px;font-weight:600;color:var(--label-normal);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ taxiDestName }}</span></div>
+              </div>
+              <button onClick="{{ editDestStep }}" style="flex-shrink:0;border:none;background:var(--fill-normal);border-radius:8px;cursor:pointer;padding:7px 12px;font-size:12px;font-weight:700;color:var(--label-neutral);">{{ T.change }}</button>
+            </div>
+            <div style="font-weight:700;font-size:15px;color:var(--label-normal);margin-bottom:10px;">{{ T.select_vehicle }}</div>
+            <div style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 6px;margin:0 -20px;" class="tp-scroll">
+              <sc-for list="{{ carOptions }}" as="c" hint-placeholder-count="2">
+                <button onClick="{{ c.select }}" style="flex:0 0 156px;text-align:left;border:none;cursor:pointer;border-radius:16px;padding:14px;background:{{ c.bg }};box-shadow:{{ c.ring }};display:flex;flex-direction:column;gap:10px;">
+                  <span style="display:flex;align-items:center;justify-content:space-between;">
+                    <span style="width:42px;height:42px;border-radius:11px;background:var(--background-normal-normal);color:var(--label-neutral);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px var(--line-normal-neutral);">
+                      <sc-if value="{{ c.isNormal }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M15 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6m-6 -6h15m-6 0v-5"></path></svg></sc-if>
+                      <sc-if value="{{ c.isVan }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16V8.5A1.5 1.5 0 0 1 4.5 7H14l5 5V16"></path><path d="M3 16h16M4.6 16v1.6M17.4 16v1.6M9 7v5M3.5 12H19"></path><circle cx="7" cy="16" r="1.6"></circle><circle cx="16" cy="16" r="1.6"></circle></svg></sc-if>
+                    </span>
+                    <sc-if value="{{ c.active }}"><span style="display:inline-flex;color:var(--primary-normal-4);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="circleCheckFill" size="20" hint-size="20px,20px"></x-import></span></sc-if>
+                  </span>
+                  <span><span style="display:block;font-weight:700;font-size:15px;color:var(--label-normal);">{{ c.label }}</span><span style="display:block;font-size:12px;color:var(--label-alternative);margin-top:1px;">{{ c.seatsLabel }} · {{ c.eta }}</span></span>
+                  <span style="font-weight:800;font-size:17px;color:var(--label-normal);">{{ c.price }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="margin-top:16px;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" onClick="{{ goCarConfirm }}" hint-size="100%,48px">{{ T.next_step }}</x-import></div>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ stepConfirm }}">
+          <div style="padding:12px 20px 22px;">
+            <div style="font-weight:700;font-size:19px;color:var(--label-normal);margin-bottom:14px;">{{ T.confirm_title }}</div>
+            <div style="background:var(--background-normal-normal);border-radius:16px;box-shadow:inset 0 0 0 1px var(--line-normal-neutral);padding:4px 16px;margin-bottom:12px;">
+              <div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line-normal-neutral);"><span style="width:9px;height:9px;border-radius:999px;background:var(--label-neutral);flex-shrink:0;"></span><div style="flex:1;min-width:0;"><div style="font-size:11px;color:var(--label-assistive);">{{ T.trip_from }}</div><div style="font-weight:600;font-size:14px;color:var(--label-normal);">{{ pickupName }}</div></div></div>
+              <div style="display:flex;align-items:center;gap:12px;padding:13px 0;"><span style="width:9px;height:9px;border-radius:999px;background:var(--primary-normal-4);flex-shrink:0;"></span><div style="flex:1;min-width:0;"><div style="font-size:11px;color:var(--label-assistive);">{{ T.trip_to }}</div><div style="font-weight:600;font-size:14px;color:var(--label-normal);">{{ taxiDestName }}</div></div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;background:var(--background-normal-normal);border-radius:16px;box-shadow:inset 0 0 0 1px var(--line-normal-neutral);padding:14px 16px;margin-bottom:12px;">
+              <span style="width:40px;height:40px;border-radius:11px;background:var(--fill-normal);color:var(--label-neutral);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M15 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6m-6 -6h15m-6 0v-5"></path></svg></span>
+              <div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:15px;color:var(--label-normal);">{{ confirmCarLabel }}</div><div style="font-size:12px;color:var(--label-alternative);">{{ confirmSeats }} · {{ timeLabel }}</div></div>
+              <div style="font-weight:800;font-size:17px;color:var(--label-normal);">{{ farePretty }}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;background:var(--background-normal-normal);border-radius:16px;box-shadow:inset 0 0 0 1px var(--line-normal-neutral);padding:14px 16px;margin-bottom:18px;">
+              <span style="width:40px;height:40px;border-radius:11px;background:var(--primary-normal-8);color:var(--primary-normal-4);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M3 10h18"></path></svg></span>
+              <div style="flex:1;min-width:0;"><div style="font-size:11px;color:var(--label-assistive);">{{ T.pay_method }}</div><div style="font-weight:700;font-size:14px;color:var(--label-normal);">Toss Pay</div></div>
+              <span style="display:inline-flex;color:var(--label-assistive);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></span>
+            </div>
+            <x-import component-from-global-scope="WantedDesignSystem_2064fe.Button" variant="solid" color="primary" size="large" full-width="{{ true }}" onClick="{{ callTaxi }}" hint-size="100%,48px">{{ T.hail }}</x-import>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ stageFinding }}">
+          <div style="padding:20px;text-align:center;">
+            <span style="display:inline-block;width:40px;height:40px;border-radius:999px;border:3px solid var(--line-normal-neutral);border-top-color:var(--primary-normal-4);animation:tp-spin .7s linear infinite;margin-bottom:14px;"></span>
+            <div style="font-weight:700;font-size:16px;color:var(--label-normal);">{{ T.finding_driver }}</div>
+            <div style="font-size:13px;color:var(--label-alternative);margin-top:4px;">{{ taxiDestName }} · {{ farePretty }}</div>
+            <button onClick="{{ cancelTaxi }}" style="width:100%;height:46px;margin-top:18px;border-radius:12px;border:1.5px solid var(--line-normal-normal);background:var(--background-normal-normal);cursor:pointer;font-weight:700;font-size:15px;color:var(--label-normal);">{{ T.cancel }}</button>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ stageAssigned }}">
+          <div style="margin:14px 20px 0;display:flex;align-items:center;gap:8px;">
+            <span style="display:inline-flex;color:var(--primary-normal-4);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="circleCheckFill" size="20" hint-size="20px,20px"></x-import></span>
+            <span style="font-weight:700;font-size:16px;color:var(--label-normal);">{{ T.driver_coming }}</span>
+            <span style="margin-left:auto;font-weight:700;font-size:15px;color:var(--primary-normal-4);">{{ taxiEta }}</span>
+          </div>
+          <div style="margin:12px 20px 20px;background:var(--background-normal-normal);border-radius:16px;box-shadow:inset 0 0 0 1px var(--primary-normal-4);padding:16px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span style="width:48px;height:48px;border-radius:999px;background:var(--fill-normal);color:var(--label-neutral);display:flex;align-items:center;justify-content:center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M15 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6m-6 -6h15m-6 0v-5"></path></svg></span>
+              <div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:16px;color:var(--label-normal);">{{ taxiInfo.name }}</div><div style="font-size:12px;color:var(--label-alternative);">{{ taxiInfo.car }} · {{ T.plate }} {{ taxiInfo.plate }}</div></div>
+              <div style="display:inline-flex;align-items:center;gap:3px;font-weight:700;font-size:14px;color:var(--label-normal);"><span style="display:inline-flex;color:#FFB020"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="starFill" size="14" hint-size="14px,14px"></x-import></span>{{ taxiInfo.rating }}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:14px;">
+              <button onClick="{{ cancelTaxi }}" style="flex:1;height:44px;border-radius:10px;border:1.5px solid var(--line-normal-normal);background:var(--background-normal-normal);cursor:pointer;font-weight:700;font-size:14px;color:var(--label-normal);">{{ T.cancel }}</button>
+              <button style="flex:1;height:44px;border-radius:10px;border:none;cursor:pointer;background:var(--primary-normal-4);color:#fff;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:6px;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="phone" size="18" hint-size="18px,18px"></x-import>{{ T.call }}</button>
+            </div>
+          </div>
+          </sc-if>
+
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== MY ===================== -->
+      <sc-if value="{{ rMy }}">
+      <div style="flex:1;overflow-y:auto;background:var(--background-normal-alternative);" class="tp-scroll">
+        <div style="padding:18px 20px 14px;background:var(--background-normal-normal);">
+          <div style="font-weight:700;font-size:20px;color:var(--label-normal);">{{ T.nav_my }}</div>
+        </div>
+        <div style="margin:14px 20px 0;background:var(--background-normal-normal);border-radius:16px;box-shadow:inset 0 0 0 1px var(--line-normal-neutral);overflow:hidden;">
+          <div style="display:flex;align-items:center;gap:12px;padding:16px;background:var(--primary-normal-4);color:#fff;">
+            <span style="display:inline-flex;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1"></path><path d="M4 18l-1 -5h18l-2 4"></path><path d="M5 13v-6h8l4 6"></path><path d="M7 7v-4h-1"></path></svg></span>
+            <div style="flex:1;"><div style="font-size:12px;opacity:.85;">{{ T.my_cruise }}</div><div style="font-weight:700;font-size:16px;">{{ cruise.ship }}</div></div>
+          </div>
+          <div style="padding:4px 16px;">
+            <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line-normal-neutral);font-size:13px;"><span style="color:var(--label-alternative);">{{ T.docking_port }}</span><span style="font-weight:600;color:var(--label-normal);">{{ cruise.portName }}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line-normal-neutral);font-size:13px;"><span style="color:var(--label-alternative);">{{ T.board_by }}</span><span style="font-weight:700;color:var(--primary-normal-4);">{{ cruise.boardBy }}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:12px 0;font-size:13px;"><span style="color:var(--label-alternative);">{{ T.next_dest }}</span><span style="font-weight:600;color:var(--label-normal);">{{ cruise.nextDest }}</span></div>
+          </div>
+        </div>
+        <div style="margin:14px 20px 0;">
+          <div style="font-weight:700;font-size:14px;color:var(--label-normal);margin-bottom:8px;">{{ T.language }}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <sc-for list="{{ langOptions }}" as="lg" hint-placeholder-count="4">
+              <button onClick="{{ lg.pickOnly }}" style="display:flex;align-items:center;gap:8px;border:none;cursor:pointer;border-radius:12px;padding:12px;background:{{ lg.bg }};box-shadow:{{ lg.ring }};"><span style="width:28px;height:28px;border-radius:8px;background:var(--background-normal-normal);box-shadow:inset 0 0 0 1px var(--line-normal-neutral);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:var(--label-neutral);flex-shrink:0;">{{ lg.code }}</span><span style="font-size:13px;font-weight:600;color:var(--label-normal);">{{ lg.label }}</span></button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="margin:16px 20px 0;background:#EAF3FF;border-radius:16px;padding:16px;">
+          <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;color:var(--primary-normal-4);"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="verifiedCheckFill" size="20" hint-size="20px,20px"></x-import>{{ T.about_trust }}</div>
+          <p style="margin:10px 0 0;font-size:13px;line-height:1.6;color:var(--label-neutral);">{{ T.trust_body }}</p>
+        </div>
+        <div style="height:20px;"></div>
+      </div>
+      </sc-if>
+
+      <!-- FULL-SCREEN MAP -->
+      <sc-if value="{{ mapFull }}">
+      <div style="position:absolute;inset:0;z-index:40;background:#CFE4F2;display:flex;flex-direction:column;">
+        <iframe src="{{ mapSrc }}" title="Jeju map full" style="flex:1;width:100%;border:none;display:block;"></iframe>
+        <button onClick="{{ closeMapFull }}" style="position:absolute;top:16px;left:16px;width:42px;height:42px;border-radius:999px;border:none;cursor:pointer;background:rgba(255,255,255,.96);box-shadow:0 2px 10px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;color:var(--label-normal);z-index:2;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="close" size="24" hint-size="24px,24px"></x-import></button>
+      </div>
+      </sc-if>
+
+      <!-- TOAST -->
+      <sc-if value="{{ toast }}">
+      <div style="position:absolute;left:20px;right:20px;bottom:96px;z-index:20;display:flex;justify-content:center;pointer-events:none;">
+        <div style="background:rgba(23,23,25,.92);color:#fff;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.3);animation:tp-fade .2s ease both;">{{ toast }}</div>
+      </div>
+      </sc-if>
+
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <sc-if value="{{ showNav }}">
+    <div style="display:flex;border-top:1px solid var(--line-normal-neutral);background:var(--background-normal-normal);padding:8px 4px 22px;flex-shrink:0;z-index:8;">
+      <button onClick="{{ navHome }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;color:{{ cHome }};font:600 11px/1 var(--font-sans);">
+        <span style="display:inline-flex;color:{{ cHome }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l-2 0l9 -9l9 9l-2 0"></path><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"></path><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"></path></svg></span>{{ T.nav_home }}
+      </button>
+      <button onClick="{{ navShop }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;color:{{ cShop }};font:600 11px/1 var(--font-sans);">
+        <span style="display:inline-flex;color:{{ cShop }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304"></path><path d="M9 11v-5a3 3 0 0 1 6 0v5"></path></svg></span>{{ T.nav_shop }}
+      </button>
+      <button onClick="{{ navMove }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;color:{{ cMove }};font:600 11px/1 var(--font-sans);">
+        <span style="display:inline-flex;color:{{ cMove }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M15 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6m-6 -6h15m-6 0v-5"></path></svg></span>{{ T.nav_move }}
+      </button>
+      <button onClick="{{ navMy }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;color:{{ cMy }};font:600 11px/1 var(--font-sans);">
+        <span style="display:inline-flex;color:{{ cMy }}"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="navigationMypage" size="24" hint-size="24px,24px"></x-import></span>{{ T.nav_my }}
+      </button>
+    </div>
+    </sc-if>
+
+    <!-- ===================== HOME TAXI FLOATING ===================== -->
+    <sc-if value="{{ homeTaxiFloat }}">
+    <div style="position:absolute;left:12px;right:12px;bottom:88px;z-index:7;background:var(--background-normal-normal);border-radius:18px;box-shadow:0 12px 34px rgba(15,40,80,.20),inset 0 0 0 1px var(--line-normal-neutral);padding:14px 16px 16px;animation:tp-fade .3s ease both;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="width:8px;height:8px;border-radius:999px;background:var(--status-positive);box-shadow:0 0 0 4px #EAF7EE;flex-shrink:0;"></span>
+        <span style="font-weight:700;font-size:15px;color:var(--label-normal);">{{ T.taxi_coming }}</span>
+        <span style="margin-left:auto;font-weight:700;font-size:14px;color:var(--primary-normal-4);">{{ homePickupEta }}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:13px;">
+        <span style="width:46px;height:46px;border-radius:999px;background:var(--fill-normal);color:var(--label-neutral);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M15 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6m-6 -6h15m-6 0v-5"></path></svg></span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;font-size:15px;color:var(--label-normal);">{{ taxiInfo.plate }} · {{ taxiInfo.car }}</div>
+          <div style="font-size:12px;color:var(--label-alternative);margin-top:1px;">{{ taxiInfo.name }}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:13px;">
+        <button style="flex:1;min-width:0;height:46px;border-radius:12px;border:1.5px solid var(--line-normal-normal);background:var(--background-normal-normal);cursor:pointer;display:flex;align-items:center;gap:8px;padding:0 14px;color:var(--label-alternative);font-size:14px;font-weight:600;overflow:hidden;"><span style="display:inline-flex;flex-shrink:0;color:var(--label-assistive);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9h8M8 13h5M12 20l-3-3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-3l-3 3z"></path></svg></span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ T.msg_driver }}</span></button>
+        <button style="width:52px;flex-shrink:0;height:46px;border-radius:12px;border:none;cursor:pointer;background:var(--primary-normal-4);color:#fff;display:flex;align-items:center;justify-content:center;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="phone" size="20" hint-size="20px,20px"></x-import></button>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ===================== SWAP SPOT SHEET ===================== -->
+    <sc-if value="{{ swapOpen }}">
+    <div style="position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;justify-content:flex-end;">
+      <div onClick="{{ closeSwap }}" style="position:absolute;inset:0;background:rgba(0,0,0,.32);"></div>
+      <div style="position:relative;background:var(--background-normal-normal);border-radius:24px 24px 0 0;max-height:74%;display:flex;flex-direction:column;box-shadow:0 -8px 30px rgba(0,0,0,.16);animation:tp-fade .25s ease both;">
+        <div style="padding:16px 22px 10px;flex-shrink:0;">
+          <div style="width:38px;height:4px;border-radius:999px;background:var(--line-normal-normal);margin:0 auto 14px;"></div>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+            <div style="min-width:0;">
+              <div style="font-weight:700;font-size:18px;color:var(--label-normal);">{{ T.swap_title }}</div>
+              <div style="font-size:13px;color:var(--label-alternative);margin-top:3px;line-height:1.45;">{{ swapSub }}</div>
+            </div>
+            <button onClick="{{ closeSwap }}" style="width:34px;height:34px;border:none;background:var(--fill-normal);border-radius:999px;cursor:pointer;color:var(--label-neutral);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="close" size="18" hint-size="18px,18px"></x-import></button>
+          </div>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:6px 22px 26px;display:flex;flex-direction:column;gap:10px;" class="tp-scroll">
+          <sc-for list="{{ swapCandidates }}" as="sp" hint-placeholder-count="4">
+            <button onClick="{{ sp.pick }}" style="display:flex;align-items:center;gap:13px;text-align:left;border:none;cursor:pointer;background:var(--background-normal-alternative);border-radius:14px;padding:12px 14px;">
+              <span style="width:46px;height:46px;border-radius:12px;background:{{ sp.color }};color:{{ sp.iconColor }};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="{{ sp.icon }}" size="24" hint-size="24px,24px"></x-import></span>
+              <span style="flex:1;min-width:0;">
+                <span style="display:block;font-weight:600;font-size:15px;color:var(--label-normal);">{{ sp.name }}</span>
+                <span style="display:block;font-size:12px;color:var(--label-alternative);margin-top:2px;">{{ sp.cat }} · {{ sp.km }}km · {{ T.approx }} {{ sp.min }}{{ T.min }}</span>
+              </span>
+              <span style="display:inline-flex;color:var(--label-assistive);flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></span>
+            </button>
+          </sc-for>
+          <sc-if value="{{ swapEmpty }}">
+          <div style="text-align:center;font-size:13px;color:var(--label-assistive);padding:22px 0;">{{ T.swap_empty }}</div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:438,&quot;height&quot;:900},&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Explore&quot;,&quot;options&quot;:[&quot;Language select&quot;,&quot;Cruise select&quot;,&quot;Theme select&quot;,&quot;Transport select&quot;,&quot;Home&quot;,&quot;Explore&quot;,&quot;Shop&quot;,&quot;Getting around&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Demo&quot;},&quot;defaultLanguage&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;한국어&quot;,&quot;options&quot;:[&quot;English&quot;,&quot;한국어&quot;,&quot;简体中文&quot;,&quot;日本語&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Demo&quot;},&quot;showTrustBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Demo&quot;}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    const langMap={"English":"en","한국어":"ko","简体中文":"zh","日本語":"ja"};
+    const lang=langMap[(props&&props.defaultLanguage)||"English"]||"en";
+    const start=(props&&props.startScreen)||"Language select";
+    let view="lang",route="home",tab="home",cruiseId="",pkgIds=[];
+    if(start==="Cruise select"){view="cruise";cruiseId="msc";}
+    else if(start==="Home"){view="app";route="home";tab="home";cruiseId="msc";}
+    else if(start==="Explore"){view="app";route="explore";tab="explore";cruiseId="msc";}
+    else if(start==="Shop"){view="app";route="shop";tab="shop";cruiseId="msc";}
+    else if(start==="Getting around"){view="app";route="move";tab="move";cruiseId="msc";}
+    else if(start==="Theme select"){view="app";route="theme";tab="home";cruiseId="msc";}
+    else if(start==="Transport select"){view="app";route="transport";tab="home";cruiseId="msc";pkgIds=["yongduam","sarabong"];}
+    this.state={view,lang,cruiseId,route,tab,currentSpotId:null,pkgSpotIds:pkgIds,
+      themeIds:[],transportMode:"taxi",spotpickMode:"ai",
+      aiRunning:false,aiStep:0,pkgReady:false,editPkg:false,
+      currentProductId:null,cart:[],deliveryIdx:0,importAgree:false,orderDone:false,
+      shopCat:"all",taxiDest:"",carType:"normal",taxiService:"normal",taxiStep:"dest",taxiQuery:"",taxiRunning:false,taxiDriver:false,
+      routeConfirmed:false,taxiCalled:false,trustDismissed:false,mapFull:false,swapSpotId:null,globalCarType:"basic",globalPolicyOpen:false,toast:null};
+  }
+  componentWillUnmount(){clearInterval(this._ai);clearTimeout(this._match);clearTimeout(this._taxi);clearTimeout(this._t);}
+
+  // ---- handlers ----
+  setLangSel=(c)=>this.setState({lang:c});
+  confirmLang=()=>this.setState({view:"cruise"});
+  onCruiseChange=(e)=>this.setState({cruiseId:e.target.value});
+  startApp=()=>{ if(this.state.cruiseId) this.setState({view:"app",route:"home",tab:"home",themeIds:[],pkgSpotIds:[],transportMode:null}); };
+  go=(r)=>this.setState({route:r,tab:(["home","explore","shop","move","my"].includes(r)?r:this.state.tab)});
+  navHome=()=>this.go("home"); navExplore=()=>this.go("explore"); navShop=()=>this.go("shop"); navMy=()=>this.go("my");
+  navMove=()=>this.setState({route:"move",tab:"move",taxiStep:"dest",taxiQuery:"",taxiRunning:false,taxiDriver:false,taxiService:"normal"});
+  confirmPickup=()=>this.setState({taxiStep:"car"});
+  pickDest=(id)=>this.setState({taxiDest:id,taxiStep:"pickup",taxiRunning:false,taxiDriver:false});
+  goCarConfirm=()=>{ if(this.state.taxiDest) this.setState({taxiStep:"confirm"}); };
+  editDestStep=()=>this.setState({taxiStep:"dest"});
+  taxiStepBack=()=>this.setState(s=>{const m={pickup:"dest",car:"pickup",confirm:"car"};return {taxiStep:m[s.taxiStep]||"dest"};});
+  setTaxiQuery=(e)=>this.setState({taxiQuery:e.target.value});
+  navExploreAi=()=>this.setState({route:"concept",themeIds:[],pkgSpotIds:[],transportMode:null});
+  _conceptSpots=(key)=>{ const cr=this.CRUISES.find(c=>c.id===this.state.cruiseId); const pk=cr?cr.portKey:"jeju";
+    const themes=this.CONCEPTS[key];
+    let pool=this.SPOTS.filter(s=>s.portKey===pk);
+    let matched=themes?pool.filter(s=>s.themes.some(t=>themes.includes(t))):pool;
+    if(matched.length===0) matched=pool;
+    return matched.slice().sort((a,b)=>a.km-b.km).slice(0,3).map(s=>s.id); };
+  pickConcept=(key)=>{ const ids=this._conceptSpots(key); this.setState({pkgSpotIds:ids,concept:key,pkgBack:"concept"}); this.startAi(); };
+  openSpot=(id)=>this.setState(s=>({route:"spot",currentSpotId:id,spotBack:(s.route==="theme"||s.route==="explore")?s.route:"explore"}));
+  togglePkgSpot=(id)=>this.setState(s=>({pkgSpotIds:s.pkgSpotIds.includes(id)?s.pkgSpotIds.filter(x=>x!==id):[...s.pkgSpotIds,id]}));
+  showToast=(m)=>{clearTimeout(this._t);this.setState({toast:m});this._t=setTimeout(()=>this.setState({toast:null}),1800);};
+  dismissTrust=()=>this.setState({trustDismissed:true});
+  openMapFull=()=>this.setState({mapFull:true});
+  closeMapFull=()=>this.setState({mapFull:false});
+  toggleTheme=(key)=>this.setState(s=>({themeIds:s.themeIds.includes(key)?s.themeIds.filter(k=>k!==key):[...s.themeIds,key]}));
+  clearThemes=()=>this.setState({themeIds:[]});
+  movePkg=(id,dir)=>this.setState(s=>{if(s.taxiCalled)return null;const a=[...s.pkgSpotIds];const i=a.indexOf(id);const j=i+dir;if(i<0||j<0||j>=a.length)return null;const t=a[i];a[i]=a[j];a[j]=t;return{pkgSpotIds:a};});
+  openSwap=(id)=>{ if(this.state.taxiCalled)return; this.setState({swapSpotId:id}); };
+  closeSwap=()=>this.setState({swapSpotId:null});
+  swapPkgSpot=(newId)=>this.setState(s=>{const a=[...s.pkgSpotIds];const i=a.indexOf(s.swapSpotId);if(i<0||a.includes(newId))return{swapSpotId:null};a[i]=newId;return{pkgSpotIds:a,swapSpotId:null};});
+  addPkgMore=()=>{ if(this.state.taxiCalled)return; this.setState({route:"theme",pkgBack:"concept",spotpickMode:"ai"}); };
+  toggleEditPkg=()=>{ if(this.state.taxiCalled)return; this.setState(s=>({editPkg:!s.editPkg})); };
+  confirmRoute=(now)=>{ this.setState({routeConfirmed:true,taxiCalled:!!now,editPkg:false,route:"home",tab:"home"}); this.showToast((now?this.STR.taxi_called_toast:this.STR.route_confirmed_toast)[this.state.lang]); };
+  confirmNow=()=>this.confirmRoute(true);
+  confirmLater=()=>this.confirmRoute(false);
+  callTaxiLater=()=>{ this.setState({taxiCalled:true}); this.showToast(this.STR.taxi_called_toast[this.state.lang]); };
+  startAi=()=>{ clearInterval(this._ai); this.setState({route:"package",aiRunning:true,aiStep:0,pkgReady:false,editPkg:false,routeConfirmed:false,taxiCalled:false});
+    this._ai=setInterval(()=>{ this.setState(s=>{ const n=s.aiStep+1; if(n>=4){clearInterval(this._ai);return{aiStep:4,aiRunning:false,pkgReady:true};} return{aiStep:n}; }); },850); };
+  goPackage=()=>{ this.setState({pkgBack:"explore"}); this.startAi(); };
+  confirmSpotpick=()=>{ if(this.state.pkgSpotIds.length>0){ this.setState({pkgBack:"theme"}); this.startAi(); } };
+  makeAiFromSpot=()=>{ const id=this.state.currentSpotId;
+    this.setState(s=>({pkgSpotIds:s.pkgSpotIds.includes(id)?s.pkgSpotIds:[...s.pkgSpotIds,id],route:"theme",spotpickMode:"ai"})); };
+  openAddSpots=()=>{ if(this.state.taxiCalled)return; this.setState({route:"theme",spotpickMode:"plan"}); };
+  goThisOnly=()=>{ const id=this.state.currentSpotId; this.setState({pkgSpotIds:[id],pkgBack:"home"}); this.startAi(); };
+  addThenPick=()=>{ const id=this.state.currentSpotId; this.setState(s=>({pkgSpotIds:s.pkgSpotIds.includes(id)?s.pkgSpotIds:[...s.pkgSpotIds,id],route:"theme",spotpickMode:"plan"})); };
+  doneAddSpots=()=>this.setState({route:"home",tab:"home"});
+  goTransport=()=>this.setState({route:"transport",transportMode:"taxi"});
+  selectTransport=(m)=>this.setState({transportMode:m});
+  confirmTransport=()=>{ if(this.state.transportMode) this.setState({route:"finalroute"}); };
+  finishFlow=()=>this.setState({route:"home",tab:"home"});
+  openProduct=(id)=>this.setState({route:"product",currentProductId:id,deliveryIdx:0});
+  addToCart=(id)=>{ this.setState(s=>({cart:s.cart.includes(id)?s.cart:[...s.cart,id]})); this.showToast(this.STR.added_cart[this.state.lang]); };
+  removeCart=(id)=>this.setState(s=>({cart:s.cart.filter(x=>x!==id)}));
+  buyNow=()=>{ const id=this.state.currentProductId; this.setState(s=>({cart:s.cart.includes(id)?s.cart:[...s.cart,id],route:"checkout",importAgree:false,orderDone:false})); };
+  goCheckout=()=>this.setState({route:"checkout",importAgree:false,orderDone:false});
+  setDeliveryIdx=(i)=>this.setState({deliveryIdx:i});
+  toggleAgree=()=>this.setState(s=>({importAgree:!s.importAgree}));
+  pay=()=>{ if(this.state.importAgree) this.setState({orderDone:true}); };
+  setTaxiDest=(e)=>this.setState({taxiDest:e.target.value,taxiDriver:false});
+  setCarType=(t)=>this.setState({carType:t,taxiDriver:false});
+  setTaxiService=(s)=>this.setState({taxiService:s,taxiDriver:false,transportMode:s==="global"?"gtaxi":"taxi"});
+  toggleGlobalPolicy=()=>this.setState(s=>({globalPolicyOpen:!s.globalPolicyOpen}));
+  cancelTaxi=()=>{ clearTimeout(this._taxi); this.setState({taxiRunning:false,taxiDriver:false}); };
+  resetTaxiDest=()=>{ clearTimeout(this._taxi); this.setState({taxiDest:"",taxiRunning:false,taxiDriver:false}); };
+  callTaxi=()=>{ if(!this.state.taxiDest) return; clearTimeout(this._taxi); this.setState({taxiRunning:true,taxiDriver:false}); this._taxi=setTimeout(()=>this.setState({taxiRunning:false,taxiDriver:true}),2400); };
+  setShopCat=(c)=>this.setState({shopCat:c});
+  onShopCatChange=(e)=>this.setState({shopCat:e.target.value});
+  back=()=>{ const m={spot:this.state.spotBack||"explore",concept:"home",package:(this.state.pkgBack||"theme"),transport:"package",finalroute:"transport",product:"shop",checkout:"shop"}; this.go(m[this.state.route]||"home"); };
+
+  // ---- data ----
+  STR={
+    choose_language:{ko:"언어를 선택하세요",en:"Choose your language",zh:"请选择语言",ja:"言語を選択"},
+    lang_sub:{ko:"제주 체류 동안 이 언어로 안내해 드릴게요.",en:"We'll guide you in this language throughout your stay in Jeju.",zh:"停留期间将以此语言为您服务。",ja:"済州滞在中はこの言語でご案内します。"},
+    continue:{ko:"계속하기",en:"Continue",zh:"继续",ja:"続ける"},
+    official_badge:{ko:"제주 공식 여행 공공 플랫폼",en:"Jeju official public travel platform",zh:"济州官方公共旅游平台",ja:"済州公式旅行公共プラットフォーム"},
+    powered_tamnao:{ko:"탐나오 공식 제휴",en:"in partnership with Tamnao",zh:"与Tamnao官方合作",ja:"Tamnao公式提携"},
+    cruise_q:{ko:"어떤 크루즈로 오셨나요?",en:"Which cruise did you arrive on?",zh:"您乘坐哪艘邮轮抵达？",ja:"どのクルーズで到着しましたか？"},
+    cruise_q_sub:{ko:"크루즈를 선택하면 체류 시간에 딱 맞는 일정을 추천해 드려요.",en:"Pick your ship and we'll tailor everything to your time ashore.",zh:"选择邮轮后，我们将为您的岸上时间量身推荐。",ja:"船を選ぶと滞在時間に合わせてご提案します。"},
+    select_cruise:{ko:"크루즈 선택",en:"Select your cruise",zh:"选择邮轮",ja:"クルーズを選択"},
+    docking_port:{ko:"정박 항구",en:"Docking port",zh:"停靠港口",ja:"停泊港"},
+    time_in_jeju:{ko:"제주 체류 시간",en:"Time in Jeju",zh:"济州停留时间",ja:"済州滞在時間"},
+    next_dest:{ko:"다음 목적지",en:"Next destination",zh:"下一目的地",ja:"次の目的地"},
+    board_by:{ko:"탑승 마감",en:"Back on board by",zh:"返船截止",ja:"乗船締切"},
+    get_started:{ko:"시작하기",en:"Get started",zh:"开始",ja:"始める"},
+    nav_home:{ko:"홈",en:"Home",zh:"首页",ja:"ホーム"},
+    nav_explore:{ko:"탐방",en:"Explore",zh:"探索",ja:"探索"},
+    nav_shop:{ko:"쇼핑",en:"Shop",zh:"购物",ja:"ショップ"},
+    nav_move:{ko:"이동",en:"Ride",zh:"出行",ja:"移動"},
+    nav_my:{ko:"마이",en:"Me",zh:"我的",ja:"マイ"},
+    until_departure:{ko:"출항까지 남은 시간",en:"Time until departure",zh:"距出航剩余",ja:"出航まで残り"},
+    arrive_label:{ko:"도착",en:"Arrived",zh:"到达",ja:"到着"},
+    hello:{ko:"제주에 오신 것을 환영해요",en:"Welcome to Jeju",zh:"欢迎来到济州",ja:"済州へようこそ"},
+    home_today:{ko:"오늘의 제주 일정",en:"Today in Jeju",zh:"今日济州行程",ja:"今日の済州プラン"},
+    home_disembark:{ko:"크루즈 하선",en:"Disembark",zh:"下船",ja:"クルーズ下船"},
+    home_immigration:{ko:"입국 심사 후 출발",en:"After immigration",zh:"入境后出发",ja:"入国審査後出発"},
+    home_deadline:{ko:"탑승 마감 · 복귀",en:"Back on board by",zh:"返船截止",ja:"帰船締切"},
+    home_empty_t:{ko:"아직 일정이 비어 있어요",en:"Your day is empty",zh:"行程还是空的",ja:"予定はまだ空です"},
+    home_empty_s:{ko:"관광지를 더해 나만의 하루 일정을 만들어 보세요.",en:"Add spots to plan your day ashore.",zh:"添加景点，安排属于你的一天。",ja:"観光地を追加して一日を計画しましょう。"},
+    home_add:{ko:"장소 추가",en:"Add place",zh:"添加地点",ja:"場所を追加"},
+    home_ai_fill:{ko:"AI 추천 코스 만들기",en:"Build AI course",zh:"生成AI行程",ja:"AIコースを作成"},
+    home_view_route:{ko:"경로 자세히 보기",en:"View full route",zh:"查看完整路线",ja:"ルート詳細を見る"},
+    concept_title:{ko:"어떤 여행을 원하세요?",en:"What kind of day do you want?",zh:"想要怎样的行程？",ja:"どんな旅にしますか？"},
+    concept_sub:{ko:"컨셉만 고르면 AI가 장소 선택부터 동선까지 알아서 짜드려요.",en:"Just pick a vibe — AI picks the spots and plans the route for you.",zh:"只需选主题，AI帮你挑地点并规划路线。",ja:"コンセプトを選ぶだけで、AIが場所選びから動線まで作成します。"},
+    concept_highlights:{ko:"인기 명소 한바퀴",en:"Top highlights",zh:"热门必去",ja:"人気名所めぐり"},
+    concept_highlights_sub:{ko:"제주 대표 스팟 위주",en:"Jeju's must-see spots",zh:"济州代表景点",ja:"済州の定番スポット"},
+    concept_nature:{ko:"자연 & 힐링",en:"Nature & calm",zh:"自然与治愈",ja:"自然＆癒し"},
+    concept_nature_sub:{ko:"오름·바다·폭포 중심",en:"Coast, falls and peaks",zh:"海岸·瀑布·山丘",ja:"海·滝·オルム中心"},
+    concept_food:{ko:"맛집 & 시장",en:"Food & markets",zh:"美食与市场",ja:"グルメ＆市場"},
+    concept_food_sub:{ko:"현지 먹거리 위주",en:"Local eats and stalls",zh:"当地美食为主",ja:"地元グルメ中心"},
+    concept_photo:{ko:"인생샷 포토",en:"Photo spots",zh:"拍照打卡",ja:"映えフォト"},
+    concept_photo_sub:{ko:"사진 명소 위주",en:"Most photogenic stops",zh:"最上镜景点",ja:"写真映えスポット"},
+    concept_go:{ko:"장소를 고르지 않아도 AI가 최적 코스를 만들어드려요.",en:"No need to pick spots — AI builds the best course.",zh:"无需自己选地点，AI生成最佳行程。",ja:"場所を選ばなくても、AIが最適コースを作成します。"},
+    qa_explore:{ko:"항구 주변 스팟 탐방",en:"Explore spots near the port",zh:"探索港口周边景点",ja:"港周辺スポット探索"},
+    qa_ai:{ko:"AI 추천 경로",en:"AI recommended route",zh:"AI推荐路线",ja:"AI推奨ルート"},
+    qa_shop:{ko:"특산품 쇼핑 · 배송",en:"Local goods & delivery",zh:"特产购物·配送",ja:"特産品·配送"},
+    qa_taxi:{ko:"택시 · 실시간 교통",en:"Taxi & live traffic",zh:"出租车·实时交通",ja:"タクシー·交通"},
+    near_port:{ko:"지금 항구에서 갈 만한 곳",en:"Great picks right by the port",zh:"港口附近推荐",ja:"港からすぐの人気スポット"},
+    see_all:{ko:"전체보기",en:"See all",zh:"查看全部",ja:"すべて"},
+    spot_map:{ko:"제주 스팟 지도",en:"Jeju spot map",zh:"济州景点地图",ja:"済州スポットマップ"},
+    main_spots:{ko:"메인 스팟",en:"Main spots",zh:"主要景点",ja:"メインスポット"},
+    pick_main_hint:{ko:"메인 스팟을 고르면 주변 스팟을 추천하고 패키지를 만들어 드려요.",en:"Pick a main spot — we'll suggest nearby stops and build a package.",zh:"选择主要景点，我们会推荐周边并生成套餐。",ja:"メインスポットを選ぶと周辺を提案し、パッケージを作成します。"},
+    add_package:{ko:"패키지 담기",en:"Add to package",zh:"加入套餐",ja:"パッケージに追加"},
+    added:{ko:"패키지에 담김",en:"Added to package",zh:"已加入套餐",ja:"パッケージに追加済み"},
+    from_port:{ko:"항구에서",en:"from port",zh:"距港口",ja:"港から"},
+    approx:{ko:"약",en:"~",zh:"约",ja:"約"},
+    min:{ko:"분",en:"min",zh:"分钟",ja:"分"},
+    nearby_subs:{ko:"주변 추천 스팟",en:"Recommended nearby",zh:"周边推荐",ja:"周辺のおすすめ"},
+    make_ai_from_spot:{ko:"이 스팟으로 경로 만들기",en:"Build a route from here",zh:"以此生成路线",ja:"ここからルート作成"},
+    spot_cta_q:{ko:"여기서 마칠까요, 다른 곳도 담을까요?",en:"Finish here, or add more places?",zh:"到此为止，还是继续添加？",ja:"ここで終える？他も追加する？"},
+    spot_go_only:{ko:"이 장소만 담고 경로 만들기",en:"Just here · build route",zh:"仅此处·生成路线",ja:"ここだけ・ルート作成"},
+    spot_add_more:{ko:"담고 다른 장소 더 추가",en:"Add & keep browsing",zh:"添加并继续挑选",ja:"追加して他も見る"},
+    pick_title:{ko:"어디에 가볼까요?",en:"Where would you like to go?",zh:"想去哪里？",ja:"どこへ行きましょうか？"},
+    pick_sub:{ko:"테마를 골라 관광지를 추려보세요. 여러 개 함께 골라 자연도 보고 맛집도 갈 수 있어요.",en:"Filter spots by theme — combine a few to see nature and grab a meal too.",zh:"按主题筛选景点，可多选，既看自然也能去美食。",ja:"テーマで観光地を絞り込み。複数選んで自然も食事も楽しめます。"},
+    show_all:{ko:"전체 보기",en:"Show all",zh:"查看全部",ja:"すべて表示"},
+    home_map:{ko:"내 제주 지도",en:"My Jeju map",zh:"我的济州地图",ja:"私の済州マップ"},
+    home_route_ready:{ko:"오늘의 경로가 준비됐어요",en:"Your route is ready",zh:"今日路线已就绪",ja:"本日のルートが完成"},
+    home_route_view:{ko:"경로 자세히 보기",en:"View full route",zh:"查看详细路线",ja:"ルート詳細を見る"},
+    home_route_none_t:{ko:"아직 만든 경로가 없어요",en:"No route planned yet",zh:"还没有规划路线",ja:"ルートはまだありません"},
+    home_route_none_s:{ko:"관광지를 골라 최적 경로를 만들어 보세요",en:"Pick spots and build your best route",zh:"选择景点，生成最佳路线",ja:"観光地を選んで最適ルートを作成"},
+    cur_loc:{ko:"현위치",en:"Current location",zh:"当前位置",ja:"現在地"},
+    next_loc:{ko:"다음 목적지",en:"Next stop",zh:"下一站",ja:"次の目的地"},
+    ai_making:{ko:"AI가 최적 경로를 만들고 있어요",en:"AI is building your route",zh:"AI正在生成路线",ja:"AIが最適ルートを作成中"},
+    ai_step1:{ko:"선택한 스팟 분석",en:"Analyzing your spots",zh:"分析所选景点",ja:"スポットを分析"},
+    ai_step2:{ko:"최적 동선 계산",en:"Optimizing the route",zh:"优化行程路线",ja:"最適ルートを計算"},
+    ai_step3:{ko:"체류 시간 · 반입 규정 검토",en:"Checking time & customs rules",zh:"核对时间与携带规定",ja:"滞在時間·持込規定を確認"},
+    ai_step4:{ko:"패키지 구성 완료",en:"Package ready",zh:"套餐完成",ja:"パッケージ完成"},
+    package_ready:{ko:"최적 경로가 완성됐어요",en:"Your optimal route is ready",zh:"最佳路线已生成",ja:"最適ルートが完成しました"},
+    package_sub:{ko:"체류 시간에 맞춰 최적 동선으로 구성했어요.",en:"Optimized to fit the time you have ashore.",zh:"已按您的岸上时间优化行程。",ja:"滞在時間に合わせて最適化しました。"},
+    total_course:{ko:"총 코스",en:"Total course",zh:"总行程",ja:"総所要"},
+    fits_stay:{ko:"체류 시간 내 완료 가능",en:"Fits within your time ashore",zh:"可在停留时间内完成",ja:"滞在時間内に完了可能"},
+    fits_over:{ko:"체류 시간을 초과해요 — 스팟을 줄여보세요",en:"Over your time ashore — remove a stop",zh:"超出停留时间——请减少景点",ja:"滞在時間を超過 — スポットを減らしてください"},
+    budget_est:{ko:"예상 소요",en:"Est.",zh:"预计",ja:"予想"},
+    budget_stay:{ko:"체류",en:"Ashore",zh:"停留",ja:"滞在"},
+    budget_over:{ko:"체류 시간 초과",en:"Over your time ashore",zh:"超出停留时间",ja:"滞在時間を超過"},
+    in_progress:{ko:"현재 경로",en:"Current route",zh:"当前路线",ja:"現在のルート"},
+    view_detail:{ko:"자세히 보기",en:"View details",zh:"查看详情",ja:"詳細を見る"},
+    add_full:{ko:"체류 시간이 가득 찼어요",en:"Your day is full",zh:"时间已排满",ja:"滞在時間がいっぱいです"},
+    add_full_sub:{ko:"더 담으려면 스팟을 삭제하거나 순서를 조정하세요.",en:"Remove a stop or reorder to make room.",zh:"删除景点或调整顺序以腾出时间。",ja:"追加するにはスポットを削除するか順序を調整してください。"},
+    recommended_return:{ko:"복귀 권장 시간",en:"Recommended return time",zh:"建议返回时间",ja:"推奨帰船時間"},
+    route_stops:{ko:"여행 코스",en:"Your course",zh:"行程安排",ja:"コース"},
+    edit:{ko:"편집",en:"Edit",zh:"编辑",ja:"編集"},
+    done_edit:{ko:"완료",en:"Done",zh:"完成",ja:"完了"},
+    swap_action:{ko:"장소 변경",en:"Change",zh:"更换",ja:"変更"},
+    swap_title:{ko:"장소 변경",en:"Change place",zh:"更换地点",ja:"場所を変更"},
+    swap_sub:{ko:"다른 장소로 바꿀 수 있어요.",en:"Swap this stop for another place.",zh:"可更换为其他地点。",ja:"別の場所に変更できます。"},
+    swap_empty:{ko:"바꿀 수 있는 다른 장소가 없어요.",en:"No other places to swap to.",zh:"没有可更换的其他地点。",ja:"変更できる場所がありません。"},
+    pkg_empty:{ko:"코스에 담긴 장소가 없어요. 장소를 추가해 주세요.",en:"No stops in your course. Add a place.",zh:"行程中没有地点，请添加。",ja:"コースに場所がありません。追加してください。"},
+    theme_title:{ko:"관심있는 테마를 골라주세요",en:"What are you interested in?",zh:"请选择您感兴趣的主题",ja:"興味のあるテーマを選んでください"},
+    theme_sub:{ko:"선택한 테마에 맞춰 딱 맞는 관광지를 추천해 드려요.",en:"We'll recommend spots that match the themes you pick.",zh:"根据您选择的主题为您推荐合适的景点。",ja:"選んだテーマに合わせて観光地をご案内します。"},
+    th_nature:{ko:"자연",en:"Nature",zh:"自然",ja:"自然"},
+    th_food:{ko:"맛집",en:"Food",zh:"美食",ja:"グルメ"},
+    th_shopping:{ko:"쇼핑",en:"Shopping",zh:"购物",ja:"ショッピング"},
+    th_photo:{ko:"포토스팟",en:"Photo spots",zh:"拍照打卡地",ja:"フォトスポット"},
+    spotpick_title:{ko:"추천 관광지",en:"Recommended spots",zh:"推荐景点",ja:"おすすめ観光地"},
+    spotpick_sub:{ko:"가고 싶은 곳을 골라주세요. 선택한 곳으로 최적 경로를 만들어 드려요.",en:"Pick the places you'd like to visit — we'll build the best route for them.",zh:"请选择想去的地方，我们将为您规划最佳路线。",ja:"行きたい場所を選んでください。最適なルートを作成します。"},
+    transport_title:{ko:"택시로 편하게 이동해요",en:"Get around by taxi",zh:"乘出租车轻松出行",ja:"タクシーで快適に移動"},
+    transport_sub:{ko:"선택한 경로에 맞춰 예상 시간과 비용을 알려드려요.",en:"We'll estimate time and cost for your route.",zh:"根据所选路线为您预估时间与费用。",ja:"選択したルートの所要時間と費用をご案内します。"},
+    t_taxi:{ko:"택시",en:"Taxi",zh:"出租车",ja:"タクシー"},
+    t_taxi_sub:{ko:"빠르고 편안하게",en:"Fast and comfortable",zh:"快捷舒适",ja:"速くて快適"},
+    t_transit:{ko:"대중교통",en:"Public transit",zh:"公共交通",ja:"公共交通"},
+    t_transit_sub:{ko:"가장 저렴해요",en:"The most affordable",zh:"最经济实惠",ja:"最も経済的"},
+    t_walk:{ko:"도보",en:"Walk",zh:"步行",ja:"徒歩"},
+    t_walk_sub:{ko:"건강하게, 무료로",en:"Free and healthy",zh:"免费又健康",ja:"無料で健康的"},
+    taxi_only_note:{ko:"짐이 많은 크루즈 승선객을 위해 택시 이동만 제공해요. 기사님이 관광지마다 대기하며 안전하게 모셔다드립니다.",en:"For cruise guests with luggage, we offer taxi only — your driver waits at each stop and gets you back safely.",zh:"为携带行李的邮轮旅客仅提供出租车出行，司机在每个景点等候并安全送返。",ja:"荷物の多いクルーズ乗船客のためタクシー移動のみ。各観光地でドライバーが待機し安全にお送りします。"},
+    transport_cta:{ko:"택시로 경로 안내받기",en:"Get taxi directions",zh:"获取出租车路线导航",ja:"タクシーで案内を受ける"},
+    final_title:{ko:"최종 경로 안내",en:"Your final route",zh:"最终路线导航",ja:"最終ルート案内"},
+    final_time:{ko:"예상 이동 시간",en:"Est. travel time",zh:"预计移动时间",ja:"予想移動時間"},
+    final_cost:{ko:"예상 비용",en:"Est. cost",zh:"预计费用",ja:"予想費用"},
+    final_return:{ko:"복귀 권장 시간",en:"Recommended return",zh:"建议返回时间",ja:"推奨帰船時間"},
+    final_cta:{ko:"홈으로",en:"Go to home",zh:"返回首页",ja:"ホームへ"},
+    confirm_now:{ko:"지금 택시 부르기",en:"Call a taxi now",zh:"立即叫车",ja:"今すぐタクシーを呼ぶ"},
+    confirm_later:{ko:"경로 확정 · 택시는 나중에",en:"Confirm route · taxi later",zh:"确定路线·稍后叫车",ja:"ルート確定・タクシーは後で"},
+    call_taxi_home:{ko:"택시 부르기",en:"Call a taxi",zh:"叫车",ja:"タクシーを呼ぶ"},
+    status_confirmed:{ko:"경로 확정됨",en:"Route confirmed",zh:"路线已确定",ja:"ルート確定"},
+    status_called:{ko:"택시 호출됨",en:"Taxi called",zh:"已叫车",ja:"タクシー手配済み"},
+    taxi_coming:{ko:"탑승 위치로 오는 중",en:"On the way to your pickup",zh:"正前往上车地点",ja:"乗車地点へ向かっています"},
+    msg_driver:{ko:"기사님에게 메시지 보내기",en:"Message your driver",zh:"给司机发消息",ja:"運転手にメッセージ"},
+    route_locked:{ko:"택시 호출 후에는 경로를 수정할 수 없어요.",en:"Route can't be changed after calling a taxi.",zh:"叫车后无法修改路线。",ja:"タクシー手配後はルートを変更できません。"},
+    route_confirmed_toast:{ko:"경로를 확정했어요",en:"Route confirmed",zh:"已确定路线",ja:"ルートを確定しました"},
+    taxi_called_toast:{ko:"택시를 호출했어요",en:"Taxi requested",zh:"已呼叫出租车",ja:"タクシーを手配しました"},
+    call:{ko:"전화",en:"Call",zh:"致电",ja:"電話"},
+    shop_title:{ko:"제주 특산품 · 기념품",en:"Jeju goods & souvenirs",zh:"济州特产·纪念品",ja:"済州特産·お土産"},
+    shop_trust:{ko:"탐나오가 검증한 제주 공식 상품이에요.",en:"Official Jeju products verified by Tamnao.",zh:"经Tamnao核验的济州官方商品。",ja:"Tamnaoが検証した済州公式商品です。"},
+    cat_all:{ko:"전체",en:"All",zh:"全部",ja:"すべて"},
+    cat_food:{ko:"먹거리",en:"Food",zh:"食品",ja:"食品"},
+    cat_cosmetics:{ko:"화장품",en:"Cosmetics",zh:"化妆品",ja:"化粧品"},
+    cat_alcohol:{ko:"주류",en:"Alcohol",zh:"酒类",ja:"酒類"},
+    cat_souvenir:{ko:"기념품",en:"Souvenirs",zh:"纪念品",ja:"お土産"},
+    imp_allowed:{ko:"반입 가능",en:"OK to bring",zh:"可携带",ja:"持込可"},
+    imp_conditional:{ko:"조건부 반입",en:"Conditions apply",zh:"有条件",ja:"条件付き"},
+    imp_restricted:{ko:"반입 제한",en:"Restricted",zh:"受限",ja:"制限"},
+    imp_prohibited:{ko:"반입 불가",en:"Not allowed",zh:"禁止携带",ja:"持込不可"},
+    add_cart:{ko:"장바구니",en:"Add to cart",zh:"加入购物车",ja:"カートに追加"},
+    added_cart:{ko:"장바구니에 담았어요",en:"Added to cart",zh:"已加入购物车",ja:"カートに追加しました"},
+    customs_line_info:{ko:"세관 · 선사 반입 안내",en:"Customs & cruise line rules",zh:"海关·邮轮携带规定",ja:"税関·船社の持込案内"},
+    customs_note:{ko:"세관 안내",en:"Customs",zh:"海关",ja:"税関"},
+    line_note:{ko:"선사 규정",en:"Cruise line",zh:"邮轮公司",ja:"船社規定"},
+    receive_how:{ko:"받는 방법",en:"How to receive",zh:"收货方式",ja:"受取方法"},
+    d_ship:{ko:"크루즈 선박으로 배송",en:"Deliver to the ship",zh:"配送至邮轮",ja:"クルーズ船へ配送"},
+    d_pickup:{ko:"항구 픽업 지점 수령",en:"Pick up at the port",zh:"港口取货点自取",ja:"港のピックアップで受取"},
+    d_stay:{ko:"현위치 배송",en:"Deliver to me now",zh:"当前位置配送",ja:"現在地へ配送"},
+    buy_now:{ko:"구매하기",en:"Buy now",zh:"立即购买",ja:"購入する"},
+    go_cart:{ko:"장바구니",en:"Cart",zh:"购物车",ja:"カート"},
+    order_summary:{ko:"주문 상품",en:"Order summary",zh:"订单商品",ja:"注文内容"},
+    confirm_before_pay:{ko:"결제 전 다시 한번 확인해 주세요",en:"Please confirm before you pay",zh:"付款前请再次确认",ja:"お支払い前にもう一度ご確認ください"},
+    confirm_import_desc:{ko:"선택하신 상품의 크루즈 반입 규정이에요. 규정을 확인하고 동의해 주세요.",en:"Boarding rules for your items. Review and confirm to continue.",zh:"所选商品的携带规定，请确认并同意。",ja:"商品の持込規定です。ご確認のうえ同意してください。"},
+    agree_import:{ko:"반입 규정을 확인했으며 이에 동의합니다",en:"I have reviewed and agree to the boarding rules",zh:"我已阅读并同意携带规定",ja:"持込規定を確認し同意します"},
+    total:{ko:"합계",en:"Total",zh:"合计",ja:"合計"},
+    pay:{ko:"결제하기",en:"Pay",zh:"支付",ja:"支払う"},
+    order_done:{ko:"주문이 완료되었어요",en:"Order complete",zh:"下单完成",ja:"注文が完了しました"},
+    order_done_sub:{ko:"출항 전까지 크루즈 선박으로 배송해 드릴게요.",en:"We'll deliver to your ship before departure.",zh:"将在出航前配送至您的邮轮。",ja:"出航前にクルーズ船へお届けします。"},
+    cart_empty:{ko:"장바구니가 비어 있어요.",en:"Your cart is empty.",zh:"购物车是空的。",ja:"カートは空です。"},
+    taxi_title:{ko:"택시 · 교통",en:"Taxi & transport",zh:"出租车·交通",ja:"タクシー·交通"},
+    live_traffic:{ko:"실시간 교통 원활",en:"Live traffic: smooth",zh:"实时交通：畅通",ja:"交通状況：良好"},
+    traffic_sub:{ko:"항구 주변 도로가 원활해요.",en:"Roads near the port are clear.",zh:"港口周边道路畅通。",ja:"港周辺の道路は順調です。"},
+    pickup:{ko:"출발지",en:"Pick-up",zh:"出发地",ja:"出発地"},
+    dest:{ko:"목적지",en:"Destination",zh:"目的地",ja:"目的地"},
+    choose_dest:{ko:"목적지를 선택하세요",en:"Choose a destination",zh:"请选择目的地",ja:"目的地を選択"},
+    taxi_where:{ko:"어디로 갈까요?",en:"Where to?",zh:"去哪里？",ja:"どこへ行きますか？"},
+    taxi_dest_hint:{ko:"목적지를 선택하면 예상 요금과 차량을 보여드려요.",en:"Pick a destination to see fares and cars.",zh:"选择目的地后显示预估费用和车型。",ja:"目的地を選ぶと料金と車両を表示します。"},
+    change:{ko:"변경",en:"Change",zh:"更改",ja:"変更"},
+    pay_method:{ko:"간편결제",en:"Easy pay",zh:"快捷支付",ja:"かんたん決済"},
+    driver_coming:{ko:"기사님이 곧 도착해요",en:"Your driver is on the way",zh:"司机即将到达",ja:"ドライバーが向かっています"},
+    cancel:{ko:"취소",en:"Cancel",zh:"取消",ja:"キャンセル"},
+    trip_to:{ko:"도착",en:"To",zh:"到达",ja:"到着"},
+    trip_from:{ko:"출발",en:"From",zh:"出发",ja:"出発"},
+    pickup_title:{ko:"어디서 출발하나요?",en:"Where from?",zh:"从哪里出发？",ja:"どこから出発？"},
+    pickup_search:{ko:"출발지 검색",en:"Search pickup",zh:"搜索出发地",ja:"出発地を検索"},
+    cur_loc_auto:{ko:"현재 위치 (GPS)",en:"Current location (GPS)",zh:"当前位置 (GPS)",ja:"現在地 (GPS)"},
+    recent_places:{ko:"최근 장소",en:"Recent places",zh:"最近地点",ja:"最近の場所"},
+    place_hotel:{ko:"숙소 · 호텔",en:"Hotel",zh:"住宿·酒店",ja:"宿·ホテル"},
+    place_terminal:{ko:"크루즈 여객터미널",en:"Cruise terminal",zh:"邮轮客运站",ja:"クルーズターミナル"},
+    next_step:{ko:"다음",en:"Next",zh:"下一步",ja:"次へ"},
+    where_to:{ko:"어디로 갈까요?",en:"Where to?",zh:"去哪里？",ja:"どこへ？"},
+    favorites:{ko:"추천 명소\n",en:"Favorites",zh:"收藏",ja:"お気に入り"},
+    search_results:{ko:"추천 명소",en:"Results",zh:"搜索结果",ja:"検索結果"},
+    select_vehicle:{ko:"차량을 선택하세요",en:"Choose a ride",zh:"选择车型",ja:"車両を選択"},
+    confirm_title:{ko:"호출 정보를 확인하세요",en:"Confirm your ride",zh:"确认叫车信息",ja:"呼び出し内容を確認"},
+    est_fare:{ko:"예상 요금",en:"Est. fare",zh:"预计费用",ja:"予想料金"},
+    est_time:{ko:"예상 소요",en:"Est. time",zh:"预计时间",ja:"所要時間"},
+    call_taxi:{ko:"택시 호출하기",en:"Request taxi",zh:"呼叫出租车",ja:"タクシーを呼ぶ"},
+    finding_driver:{ko:"주변 택시를 찾고 있어요",en:"Finding a nearby taxi",zh:"正在寻找附近出租车",ja:"近くのタクシーを検索中"},
+    driver_assigned:{ko:"기사님이 배정되었어요",en:"Driver assigned",zh:"已分配司机",ja:"ドライバー決定"},
+    plate:{ko:"차량번호",en:"Plate",zh:"车牌",ja:"ナンバー"},
+    car_type_title:{ko:"차량 선택",en:"Choose a vehicle",zh:"选择车型",ja:"車両を選択"},
+    car_normal:{ko:"일반 택시",en:"Standard taxi",zh:"普通出租车",ja:"一般タクシー"},
+    car_normal_sub:{ko:"4인승 · 기본요금",en:"Up to 4 · base fare",zh:"4座·基础价",ja:"4人乗·基本料金"},
+    car_van:{ko:"대형 밴",en:"Large van",zh:"大型面包车",ja:"大型バン"},
+    car_van_sub:{ko:"최대 7인승 · 짐 많을 때",en:"Up to 7 · lots of luggage",zh:"最多7座·行李多",ja:"最大7人乗·荷物が多い時"},
+    car_mid:{ko:"중형",en:"Standard",zh:"中型",ja:"中型"},
+    gtaxi_basic:{ko:"일반택시",en:"Standard taxi",zh:"普通出租车",ja:"一般タクシー"},
+    gtaxi_jumbo:{ko:"점보택시",en:"Jumbo taxi",zh:"大型出租车",ja:"ジャンボタクシー"},
+    gtaxi_premium:{ko:"고급점보",en:"Premium jumbo",zh:"高级大型",ja:"高級ジャンボ"},
+    gtaxi_van:{ko:"승합",en:"Van",zh:"商务车",ja:"ワゴン"},
+    gt_day:{ko:"1일관광(8시간)",en:"Full day (8h)",zh:"一日游(8小时)",ja:"1日観光(8時間)"},
+    gt_over:{ko:"초과시(1시간)",en:"Overtime (1h)",zh:"超时(1小时)",ja:"超過時(1時間)"},
+    gt_dayfull:{ko:"1일 관광 · 8시간",en:"Full-day · 8h",zh:"一日游 · 8小时",ja:"1日観光 · 8時間"},
+    gt_policy_title:{ko:"요금 정책 안내",en:"Fare policy",zh:"费用说明",ja:"料金ポリシー"},
+    gt_policy1:{ko:"아래 요금은 숙소가 제주 시내(조천·애월읍 포함)에 있는 경우 기준이며, 그 외 지역은 추가 요금이 발생해요.",en:"Rates below apply when your accommodation is in Jeju City (incl. Jocheon & Aewol); other areas incur a surcharge.",zh:"以下费用适用于住宿位于济州市区（含朝天·涯月邑），其他地区将收取附加费用。",ja:"下記の料金は宿泊先が済州市内（朝天·涯月邑を含む）の場合の基準で、それ以外の地域は追加料金が発生します。"},
+    gt_policy2:{ko:"요금에는 연료비·보험료·주차비·기사 식대가 모두 포함되어 있어요.",en:"Fares include fuel, insurance, parking, and the driver's lunch.",zh:"费用已含燃油费·保险费·停车费及司机午餐费。",ja:"料金には燃料費·保険料·駐車代·運転手の昼食代がすべて含まれます。"},
+    svc_normal:{ko:"일반 택시",en:"Standard",zh:"普通出租车",ja:"一般タクシー"},
+    svc_global:{ko:"글로벌 택시",en:"Global taxi",zh:"国际出租车",ja:"グローバルタクシー"},
+    global_tip:{ko:"높은 수준의 외국어 회화 실력을 겸비한 기사가 함께해요!",en:"Drivers with strong foreign-language conversation skills!",zh:"由具备高水平外语会话能力的司机为您服务！",ja:"高い外国語会話力を備えた運転手が同行します！"},
+    global_title:{ko:"제주 글로벌 택시",en:"Jeju Global Taxi",zh:"济州国际出租车",ja:"済州グローバルタクシー"},
+    global_desc:{ko:"외국어가 가능한 기사님이 배차되는 제주도 공식 글로벌 택시 서비스예요.",en:"An official Jeju service that dispatches drivers who speak your language.",zh:"由会外语的司机接单的济州官方国际出租车服务。",ja:"外国語対応の運転手が配車される済州の公式グローバルタクシーです。"},
+    global_langs:{ko:"영어 · 중국어 · 일본어 응대",en:"English · Chinese · Japanese",zh:"英语·中文·日语",ja:"英語·中国語·日本語対応"},
+    global_partner:{ko:"제주 글로벌 택시 연동",en:"Powered by Jeju Global Taxi",zh:"接入济州国际出租车",ja:"済州グローバルタクシー連携"},
+    global_driver_tag:{ko:"다국어 기사",en:"Multilingual driver",zh:"多语言司机",ja:"多言語ドライバー"},
+    car_large:{ko:"대형",en:"Large",zh:"大型",ja:"大型"},
+    hail_type:{ko:"일반 호출",en:"Standard call",zh:"普通呼叫",ja:"一般呼出"},
+    hail:{ko:"호출하기",en:"Request taxi",zh:"呼叫",ja:"呼び出す"},
+    self_board:{ko:"본인 탑승",en:"Riding myself",zh:"本人乘车",ja:"本人搭乗"},
+    my_cruise:{ko:"내 크루즈",en:"My cruise",zh:"我的邮轮",ja:"マイクルーズ"},
+    language:{ko:"언어",en:"Language",zh:"语言",ja:"言語"},
+    about_trust:{ko:"믿을 수 있는 이유",en:"Why you can trust us",zh:"值得信赖的理由",ja:"信頼できる理由"},
+    trust_body:{ko:"탐라패스는 제주특별자치도와 제주관광협회가 운영하는 공공 여행 플랫폼 '탐나오'와 제휴합니다. 특정 영리 업체가 아닌, 제주도가 검증한 정보와 상품·기사만 연결해 드려요.",en:"Tamra Pass partners with Tamnao, the public travel platform run by Jeju Province and the Jeju Tourism Association. We connect you only to Jeju-verified info, products and drivers — never a single for-profit vendor.",zh:"Tamra Pass与由济州道及济州观光协会运营的公共旅游平台Tamnao合作，仅为您连接经济州官方核验的信息、商品与司机。",ja:"Tamra Passは済州道と済州観光協会が運営する公共旅行プラットフォーム「Tamnao」と提携。営利企業ではなく済州が検証した情報·商品·ドライバーのみをご案内します。"}
+  };
+  CRUISES=[
+    {id:"msc",line:"MSC Cruises",ship:"MSC Bellissima",portKey:"jeju",arr:"08:00",dep:"18:00",arrM:480,depM:1080,next:{ko:"후쿠오카, 일본",en:"Fukuoka, Japan",zh:"福冈, 日本",ja:"福岡、日本"}},
+    {id:"adora",line:"Adora Cruises",ship:"Adora Magic City",portKey:"jeju",arr:"07:00",dep:"17:00",arrM:420,depM:1020,next:{ko:"상하이, 중국",en:"Shanghai, China",zh:"上海, 中国",ja:"上海、中国"}},
+    {id:"spectrum",line:"Royal Caribbean",ship:"Spectrum of the Seas",portKey:"gangjeong",arr:"09:00",dep:"14:00",arrM:540,depM:840,next:{ko:"나가사키, 일본",en:"Nagasaki, Japan",zh:"长崎, 日本",ja:"長崎、日本"}},
+    {id:"diamond",line:"Princess Cruises",ship:"Diamond Princess",portKey:"jeju",arr:"08:00",dep:"20:00",arrM:480,depM:1200,next:{ko:"부산, 대한민국",en:"Busan, Korea",zh:"釜山, 韩国",ja:"釜山、韓国"}},
+    {id:"costa",line:"Costa Cruises",ship:"Costa Serena",portKey:"gangjeong",arr:"10:00",dep:"22:00",arrM:600,depM:1320,next:{ko:"가고시마, 일본",en:"Kagoshima, Japan",zh:"鹿儿岛, 日本",ja:"鹿児島、日本"}}
+  ];
+  PORTS={jeju:{ko:"제주항",en:"Jeju Port",zh:"济州港",ja:"済州港"},gangjeong:{ko:"강정항 (서귀포)",en:"Gangjeong Port",zh:"江汀港",ja:"カンジョン港"}};
+  PORT_COORDS={jeju:[33.5236,126.5432],gangjeong:[33.2216,126.4790]};
+  SPOT_COORDS={dongmun:[33.5127,126.5270],yongduam:[33.5158,126.5124],sarabong:[33.5183,126.5490],samyang:[33.5265,126.5940],cheonjiyeon:[33.2470,126.5540],jeongbang:[33.2447,126.5726],olle:[33.2496,126.5636],jusangjeolli:[33.2380,126.4270]};
+  CONCEPTS={highlights:null,nature:["nature","photo"],food:["food","shopping"],photo:["photo"]};
+  SPOTS=[
+    {id:"dongmun",portKey:"jeju",km:2.0,min:60,x:38,y:44,color:"#FFF1E6",iconColor:"#E8820E",icon:"coffee",themes:["food","shopping"],name:{ko:"제주 동문시장",en:"Dongmun Market",zh:"东门市场",ja:"東門市場"},cat:{ko:"전통시장",en:"Market",zh:"传统市场",ja:"伝統市場"},blurb:{ko:"항구에서 가장 가까운 제주 대표 재래시장. 흑돼지·회·간식거리가 가득해요.",en:"Jeju's liveliest market, closest to the port — black pork, sashimi and street snacks.",zh:"距港口最近的济州代表市场，黑猪、生鱼片、小吃应有尽有。",ja:"港から最も近い済州の代表市場。黒豚·刺身·屋台グルメが満載。"},subs:[{name:{ko:"동문 흑돼지 골목",en:"Black Pork Alley",zh:"黑猪街",ja:"黒豚横丁"},type:{ko:"맛집",en:"Food",zh:"美食",ja:"グルメ"},blurb:{ko:"제주 흑돼지 구이",en:"Grilled Jeju black pork",zh:"济州黑猪烤肉",ja:"済州黒豚焼き"}},{name:{ko:"시장 감귤주스",en:"Tangerine Juice",zh:"柑橘鲜榨",ja:"みかんジュース"},type:{ko:"간식",en:"Snack",zh:"小吃",ja:"軽食"},blurb:{ko:"갓 짠 감귤주스",en:"Fresh-pressed juice",zh:"现榨柑橘汁",ja:"搾りたてジュース"}}]},
+    {id:"yongduam",portKey:"jeju",km:3.5,min:40,x:26,y:32,color:"#E7F1FF",iconColor:"#0066FF",icon:"location",themes:["nature","photo"],name:{ko:"용두암",en:"Yongduam Rock",zh:"龙头岩",ja:"龍頭岩"},cat:{ko:"자연경관",en:"Nature",zh:"自然景观",ja:"自然景観"},blurb:{ko:"용의 머리를 닮은 해안 바위. 해안 산책과 사진 명소예요.",en:"A dragon-head lava rock on the coast — a classic photo and stroll spot.",zh:"形似龙头的海岸岩石，拍照散步胜地。",ja:"龍の頭に似た海岸の岩。散策·撮影の名所。"},subs:[{name:{ko:"용연 구름다리",en:"Yongyeon Bridge",zh:"龙渊吊桥",ja:"龍淵つり橋"},type:{ko:"체험",en:"Walk",zh:"体验",ja:"体験"},blurb:{ko:"협곡 위 구름다리",en:"Bridge over the gorge",zh:"峡谷吊桥",ja:"渓谷のつり橋"}},{name:{ko:"해안 카페",en:"Seaside Cafe",zh:"海岸咖啡",ja:"海岸カフェ"},type:{ko:"카페",en:"Cafe",zh:"咖啡",ja:"カフェ"},blurb:{ko:"오션뷰 커피",en:"Ocean-view coffee",zh:"海景咖啡",ja:"オーシャンビューコーヒー"}}]},
+    {id:"sarabong",portKey:"jeju",km:2.8,min:50,x:62,y:36,color:"#F3ECFF",iconColor:"#8B3FF0",icon:"sun",themes:["nature","photo"],name:{ko:"사라봉 전망",en:"Sarabong Peak",zh:"纱罗峰",ja:"サラボン"},cat:{ko:"전망대",en:"Viewpoint",zh:"观景台",ja:"展望"},blurb:{ko:"제주 시내와 바다를 한눈에 담는 낮은 오름이에요.",en:"A gentle hill with sweeping views of the city and the sea.",zh:"俯瞰市区与大海的小火山丘。",ja:"市街と海を一望できる小さなオルム。"},subs:[{name:{ko:"사라봉 정자",en:"Summit Pavilion",zh:"峰顶亭",ja:"頂上の東屋"},type:{ko:"전망",en:"View",zh:"观景",ja:"眺望"},blurb:{ko:"일몰 명소",en:"Sunset viewpoint",zh:"日落景点",ja:"夕日スポット"}},{name:{ko:"별도봉 산책로",en:"Byeoldobong Trail",zh:"别刀峰步道",ja:"ビョルド遊歩道"},type:{ko:"체험",en:"Walk",zh:"体验",ja:"体験"},blurb:{ko:"해안 절벽길",en:"Coastal cliff walk",zh:"海岸悬崖路",ja:"海岸の崖道"}}]},
+    {id:"samyang",portKey:"jeju",km:6.0,min:45,x:74,y:50,color:"#E7F6EC",iconColor:"#12A150",icon:"umbrella",themes:["nature","photo"],name:{ko:"삼양 검은모래해변",en:"Samyang Beach",zh:"三阳黑沙滩",ja:"三陽ビーチ"},cat:{ko:"해변",en:"Beach",zh:"海滩",ja:"ビーチ"},blurb:{ko:"검은 화산모래로 유명한 해변. 발 담그기 좋은 곳이에요.",en:"Famous black volcanic sand — great for a quick paddle.",zh:"以黑色火山沙闻名的海滩。",ja:"黒い火山砂で有名なビーチ。"},subs:[{name:{ko:"해변 포장마차",en:"Beach Food Cart",zh:"海滩摊",ja:"ビーチ屋台"},type:{ko:"간식",en:"Snack",zh:"小吃",ja:"軽食"},blurb:{ko:"해물라면",en:"Seafood ramen",zh:"海鲜拉面",ja:"海鮮ラーメン"}},{name:{ko:"검은모래 찜질",en:"Sand Therapy",zh:"黑沙浴",ja:"砂療法"},type:{ko:"체험",en:"Experience",zh:"体验",ja:"体験"},blurb:{ko:"여름 모래찜질",en:"Summer sand bathing",zh:"夏季沙浴",ja:"夏の砂風呂"}}]},
+    {id:"cheonjiyeon",portKey:"gangjeong",km:4.5,min:40,x:38,y:60,color:"#E7F6EC",iconColor:"#12A150",icon:"umbrella",themes:["nature","photo"],name:{ko:"천지연폭포",en:"Cheonjiyeon Falls",zh:"天地渊瀑布",ja:"天地淵の滝"},cat:{ko:"자연",en:"Nature",zh:"自然",ja:"自然"},blurb:{ko:"울창한 숲길 끝의 웅장한 폭포. 야간 조명도 아름다워요.",en:"A grand waterfall at the end of a lush forest trail.",zh:"茂密林道尽头的壮丽瀑布。",ja:"緑豊かな遊歩道の先にある壮大な滝。"},subs:[{name:{ko:"서귀포 칠십리",en:"Chilsimni Park",zh:"七十里公园",ja:"七十里公園"},type:{ko:"체험",en:"Walk",zh:"体验",ja:"体験"},blurb:{ko:"해안 공원 산책",en:"Coastal park walk",zh:"海岸公园",ja:"海岸公園散策"}},{name:{ko:"감귤 카페",en:"Citrus Cafe",zh:"柑橘咖啡",ja:"みかんカフェ"},type:{ko:"카페",en:"Cafe",zh:"咖啡",ja:"カフェ"},blurb:{ko:"한라봉 에이드",en:"Hallabong ade",zh:"汉拿峰饮",ja:"ハルラボンエード"}}]},
+    {id:"jeongbang",portKey:"gangjeong",km:5.0,min:40,x:58,y:64,color:"#E7F1FF",iconColor:"#0066FF",icon:"location",themes:["nature","photo"],name:{ko:"정방폭포",en:"Jeongbang Falls",zh:"正房瀑布",ja:"正房の滝"},cat:{ko:"자연",en:"Nature",zh:"自然",ja:"自然"},blurb:{ko:"바다로 직접 떨어지는 아시아 유일의 해안 폭포예요.",en:"One of Asia's few waterfalls plunging straight into the sea.",zh:"亚洲罕见直落入海的瀑布。",ja:"海へ直接落ちるアジア唯一級の滝。"},subs:[{name:{ko:"소정방 포토존",en:"Sojeongbang Photo",zh:"小正房拍照点",ja:"小正房撮影"},type:{ko:"전망",en:"View",zh:"观景",ja:"眺望"},blurb:{ko:"절벽 포토존",en:"Cliffside photos",zh:"悬崖拍照",ja:"崖の撮影"}},{name:{ko:"서복전시관",en:"Seobok Museum",zh:"徐福展馆",ja:"徐福展示館"},type:{ko:"체험",en:"Culture",zh:"文化",ja:"文化"},blurb:{ko:"역사 전시",en:"History exhibit",zh:"历史展",ja:"歴史展示"}}]},
+    {id:"olle",portKey:"gangjeong",km:4.8,min:60,x:46,y:72,color:"#FFF1E6",iconColor:"#E8820E",icon:"coffee",themes:["food","shopping"],name:{ko:"서귀포 매일올레시장",en:"Seogwipo Olle Market",zh:"西归浦偶来市场",ja:"西帰浦オルレ市場"},cat:{ko:"전통시장",en:"Market",zh:"传统市场",ja:"伝統市場"},blurb:{ko:"남부 최대 재래시장. 감귤·오메기떡·회국수가 유명해요.",en:"The south's biggest market — tangerines, omegi cake and noodle stalls.",zh:"南部最大市场，柑橘、艾饼、面食有名。",ja:"南部最大の市場。みかん·オメギ餅·麺が有名。"},subs:[{name:{ko:"회국수 노포",en:"Sashimi Noodles",zh:"生鱼片面",ja:"刺身うどん"},type:{ko:"맛집",en:"Food",zh:"美食",ja:"グルメ"},blurb:{ko:"제주식 회국수",en:"Jeju sashimi noodles",zh:"济州生鱼片面",ja:"済州式刺身麺"}},{name:{ko:"오메기떡 명가",en:"Omegi Cake House",zh:"艾饼名家",ja:"オメギ餅の店"},type:{ko:"간식",en:"Snack",zh:"小吃",ja:"軽食"},blurb:{ko:"수제 오메기떡",en:"Handmade omegi cake",zh:"手工艾饼",ja:"手作りオメギ餅"}}]},
+    {id:"jusangjeolli",portKey:"gangjeong",km:8.0,min:50,x:66,y:68,color:"#F3ECFF",iconColor:"#8B3FF0",icon:"sun",themes:["nature","photo"],name:{ko:"대포 주상절리대",en:"Jusangjeolli Cliff",zh:"柱状节理带",ja:"柱状節理帯"},cat:{ko:"경관",en:"Nature",zh:"景观",ja:"景観"},blurb:{ko:"육각형 현무암 기둥이 늘어선 해안 절벽 명소예요.",en:"Dramatic hexagonal basalt columns along the coast.",zh:"六角玄武岩柱排列的海岸奇观。",ja:"六角形の玄武岩柱が並ぶ海岸の名所。"},subs:[{name:{ko:"중문 색달해변",en:"Jungmun Beach",zh:"中文海滩",ja:"中文ビーチ"},type:{ko:"해변",en:"Beach",zh:"海滩",ja:"ビーチ"},blurb:{ko:"서핑 해변",en:"Surf beach",zh:"冲浪海滩",ja:"サーフビーチ"}},{name:{ko:"대포 해안 카페",en:"Daepo Coast Cafe",zh:"大浦海岸咖啡",ja:"大浦海岸カフェ"},type:{ko:"카페",en:"Cafe",zh:"咖啡",ja:"カフェ"},blurb:{ko:"절벽뷰 카페",en:"Cliff-view cafe",zh:"悬崖景咖啡",ja:"崖ビューカフェ"}}]}
+  ];
+  PROD_DESC={
+    choco:{ko:"감귤 과즙을 넣은 달콤한 밀크초콜릿",en:"Sweet milk chocolate with tangerine",zh:"加入柑橘果汁的香甜巧克力",ja:"みかん果汁入りの甘いチョコ"},
+    hallabong:{ko:"제주 대표 감귤, 상큼한 생과일",en:"Jeju's signature juicy citrus",zh:"济州代表柑橘，清新鲜果",ja:"済州代表のみかん、爽やかな生果実"},
+    omegi:{ko:"차조로 빚은 쫀득한 전통 떡",en:"Chewy traditional millet rice cake",zh:"糯米制成的传统年糕",ja:"もちもちの伝統餅"},
+    cosme:{ko:"백년초 성분의 수분 스킨케어 세트",en:"Hydrating prickly-pear skincare set",zh:"仙人掌成分保湿护肤套装",ja:"うるおいスキンケアセット"},
+    beer:{ko:"감귤 향이 상큼한 제주 수제맥주",en:"Craft beer with a citrus finish",zh:"柑橘香气的济州精酿",ja:"みかん香る済州クラフトビール"},
+    jerky:{ko:"흑돼지로 만든 짭짤한 수제 육포",en:"Savory Jeju black-pork jerky",zh:"黑猪制成的咸香肉干",ja:"黒豚の旨塩ジャーキー"},
+    tea:{ko:"제주 유기농 녹차 선물세트",en:"Organic Jeju green tea gift set",zh:"济州有机绿茶礼盒",ja:"済州オーガニック緑茶ギフト"},
+    diffuser:{ko:"제주 오름의 숲향을 담은 디퓨저",en:"Diffuser scented like Jeju's forests",zh:"济州森林香氛香薰",ja:"済州の森の香りのディフューザー"}
+  };
+  PRODUCTS=[
+    {id:"choco",cat:"food",price:12000,status:"allowed",color:"#FFF1E6",iconColor:"#E8820E",icon:"heart",name:{ko:"제주 감귤 초콜릿",en:"Jeju Tangerine Chocolate",zh:"济州柑橘巧克力",ja:"済州みかんチョコ"},customs:{ko:"포장 과자류 — 반입 제한 없음.",en:"Packaged confectionery — no restriction.",zh:"包装糖果——无限制。",ja:"包装菓子——制限なし。"},line:{ko:"선사 반입 제한 없음.",en:"No cruise line limit.",zh:"邮轮无限制。",ja:"船社制限なし。"}},
+    {id:"hallabong",cat:"food",price:25000,status:"restricted",color:"#FFEFD6",iconColor:"#E8820E",icon:"sun",name:{ko:"한라봉 (생과일)",en:"Hallabong Citrus (fresh)",zh:"汉拿峰（鲜果）",ja:"ハルラボン(生果実)"},customs:{ko:"생과일 — 다수 국가 검역·반입 제한.",en:"Fresh fruit — quarantine/import limits in many countries.",zh:"鲜果——多国检疫限制。",ja:"生果実——多くの国で検疫制限。"},line:{ko:"당일 선내 취식용만 허용.",en:"Onboard same-day consumption only.",zh:"仅限当日船上食用。",ja:"当日船内消費のみ可。"}},
+    {id:"omegi",cat:"food",price:18000,status:"restricted",color:"#EAF7EE",iconColor:"#12A150",icon:"coffee",name:{ko:"제주 오메기떡",en:"Jeju Omegi Rice Cake",zh:"济州艾饼",ja:"済州オメギ餅"},customs:{ko:"신선 식품 — 당일 소비, 반입 부적합.",en:"Perishable — same-day, not for import.",zh:"易腐——当日食用，不宜携带。",ja:"生鮮——当日消費、持込不可。"},line:{ko:"선내 냉장 보관 제한.",en:"Limited refrigeration onboard.",zh:"船上冷藏有限。",ja:"船内冷蔵は限定的。"}},
+    {id:"cosme",cat:"cosmetics",price:39000,status:"allowed",color:"#F3ECFF",iconColor:"#8B3FF0",icon:"sparkleFill",name:{ko:"백년초 화장품 세트",en:"Baengnyeoncho Cosmetics",zh:"仙人掌护肤套装",ja:"化粧品セット"},customs:{ko:"화장품 — 자가 사용 한도 내.",en:"Cosmetics within personal-use limits.",zh:"化妆品——个人自用限额内。",ja:"化粧品——自己使用範囲内。"},line:{ko:"액체류 객실 반입 한도 내.",en:"Liquids within cabin allowance.",zh:"液体在客舱限额内。",ja:"液体は客室許容内。"}},
+    {id:"beer",cat:"alcohol",price:21000,status:"conditional",color:"#FFF6D6",iconColor:"#C08A00",icon:"coins",name:{ko:"제주 감귤 수제맥주",en:"Jeju Tangerine Beer",zh:"济州柑橘精酿",ja:"済州みかんビール"},customs:{ko:"주류 — 면세 한도 내 반입.",en:"Alcohol within duty-free allowance.",zh:"酒类——免税限额内。",ja:"酒類——免税範囲内。"},line:{ko:"미개봉 상태로 승선 시 승무원 보관.",en:"Sealed; handed to crew at boarding.",zh:"未开封，登船时交船员保管。",ja:"未開封で乗船時に乗務員預け。"}},
+    {id:"jerky",cat:"food",price:22000,status:"prohibited",color:"#FDE7E7",iconColor:"#E23B3B",icon:"circleClose",name:{ko:"제주 흑돼지 육포",en:"Jeju Black Pork Jerky",zh:"济州黑猪肉干",ja:"済州黒豚ジャーキー"},customs:{ko:"육류 가공품 — 대부분 국가 반입 금지.",en:"Processed meat — import banned in most destinations.",zh:"肉类加工品——多数国家禁止。",ja:"食肉加工品——多くの国で持込禁止。"},line:{ko:"선내 육류 반입 불가.",en:"Meat products not permitted onboard.",zh:"船内禁止携带肉类。",ja:"船内への肉類持込不可。"}},
+    {id:"tea",cat:"souvenir",price:28000,status:"allowed",color:"#E7F6EC",iconColor:"#12A150",icon:"coffee",name:{ko:"제주 녹차 선물세트",en:"Jeju Green Tea Gift Set",zh:"济州绿茶礼盒",ja:"済州緑茶ギフト"},customs:{ko:"건조 차류 — 반입 제한 없음.",en:"Dried tea — no restriction.",zh:"干茶——无限制。",ja:"乾燥茶——制限なし。"},line:{ko:"선사 반입 제한 없음.",en:"No cruise line limit.",zh:"邮轮无限制。",ja:"船社制限なし。"}},
+    {id:"diffuser",cat:"souvenir",price:32000,status:"allowed",color:"#E7F1FF",iconColor:"#0066FF",icon:"template",name:{ko:"제주 오름 디퓨저",en:"Jeju Oreum Diffuser",zh:"济州岳香薰",ja:"済州オルム·ディフューザー"},customs:{ko:"비식품 잡화 — 반입 제한 없음.",en:"Non-food goods — no restriction.",zh:"非食品——无限制。",ja:"非食品——制限なし。"},line:{ko:"인화성 액체 용량 한도 내.",en:"Flammable-liquid volume within limit.",zh:"易燃液体在限量内。",ja:"引火性液体は制限内。"}}
+  ];
+  TAXI_DRIVER={name:{ko:"박준영",en:"Junyoung Park",zh:"朴俊英",ja:"パク·ジュンヨン"},car:{ko:"쏘나타 (개인택시)",en:"Sonata (private taxi)",zh:"索纳塔（个人出租）",ja:"ソナタ(個人タクシー)"},plate:"제주 80바 3517",rating:4.9,eta:6};
+  VEHICLES={
+    normal:{fareMul:1,car:{ko:"쏘나타 (개인택시)",en:"Sonata (sedan)",zh:"索纳塔（轿车）",ja:"ソナタ(セダン)"},plate:"제주 80바 3517"},
+    van:{fareMul:1.55,car:{ko:"카니발 (대형택시)",en:"Carnival (van)",zh:"嘉华（大型）",ja:"カーニバル(大型)"},plate:"제주 82아 1094"}
+  };
+
+  renderVals(){
+    const st=this.state, lang=st.lang;
+    const P=v=>(v&&typeof v==="object"&&("en" in v))?(v[lang]||v.en):v;
+    const T={}; for(const k in this.STR) T[k]=this.STR[k][lang]||this.STR[k].en;
+    const money=n=>lang==="ko"?n.toLocaleString()+"원":"₩"+n.toLocaleString();
+    const LNG={ko:"KO",en:"EN",zh:"中文",ja:"日本語"};
+    const CODE={ko:"KO",en:"EN",zh:"ZH",ja:"JA"};
+    const showTrust=this.props.showTrustBar!==false;
+    const PRI="var(--primary-normal-4)", ASST="var(--label-assistive)";
+    const ring1="inset 0 0 0 1px var(--line-normal-neutral)", ring2="inset 0 0 0 2px var(--primary-normal-4)";
+
+    const langMeta={ko:{flag:"🇰🇷",label:"한국어",sub:"Korean"},en:{flag:"🇬🇧",label:"English",sub:"English"},zh:{flag:"🇨🇳",label:"简体中文",sub:"Chinese"},ja:{flag:"🇯🇵",label:"日本語",sub:"Japanese"}};
+    const langOptions=["ko","en","zh","ja"].map(c=>({flag:langMeta[c].flag,code:CODE[c],label:langMeta[c].label,sub:langMeta[c].sub,active:st.lang===c,
+      bg:st.lang===c?"var(--primary-normal-8)":"var(--background-normal-alternative)",ring:st.lang===c?ring2:ring1,
+      pick:()=>this.setLangSel(c),pickOnly:()=>this.setLangSel(c)}));
+
+    const cruiseObj=this.CRUISES.find(c=>c.id===st.cruiseId);
+    const cruiseOptions=this.CRUISES.map(c=>({value:c.id,label:c.ship+" · "+c.line}));
+    const fmt=m=>{const h=Math.floor(m/60),mm=m%60;return String(h).padStart(2,"0")+":"+String(mm).padStart(2,"0");};
+    const hm=m=>{const h=Math.floor(m/60),mm=m%60; if(lang==="ko")return h+"시간 "+mm+"분"; if(lang==="zh")return h+"小时"+mm+"分"; if(lang==="ja")return h+"時間"+mm+"分"; return h+"h "+mm+"m";};
+    const hlabel=h=>{if(lang==="ko")return h+"시간"; if(lang==="zh")return h+"小时"; if(lang==="ja")return h+"時間"; return h+" hours";};
+    const uH=lang==="ko"?"시간":lang==="zh"?"小时":lang==="ja"?"時間":"h";
+    const uM=lang==="ko"?"분":lang==="zh"?"分":lang==="ja"?"分":"m";
+    let cruise={ship:"",line:"",portName:"",portKey:"jeju",arr:"",dep:"",stayLabel:"",nextDest:"",boardBy:"",timeLeft:"",remH:0,remMin:0,stayPct:0,unitH:"",unitM:""};
+    if(cruiseObj){
+      const stayH=(cruiseObj.depM-cruiseObj.arrM)/60;
+      const nowM=cruiseObj.arrM+90, remM=Math.max(0,cruiseObj.depM-nowM);
+      cruise={ship:cruiseObj.ship,line:cruiseObj.line,portName:P(this.PORTS[cruiseObj.portKey]),portKey:cruiseObj.portKey,
+        arr:cruiseObj.arr,dep:cruiseObj.dep,stayLabel:hlabel(stayH),nextDest:P(cruiseObj.next),boardBy:fmt(cruiseObj.depM-30),timeLeft:hm(remM),
+        remH:Math.floor(remM/60),remMin:remM%60,unitH:uH,unitM:uM,stayPct:Math.round((nowM-cruiseObj.arrM)/(cruiseObj.depM-cruiseObj.arrM)*100)};
+    }
+
+    const mkSpot=(s)=>{const inPkg=st.pkgSpotIds.includes(s.id);
+      return {id:s.id,name:P(s.name),cat:P(s.cat),blurb:P(s.blurb),km:s.km,min:s.min,color:s.color,iconColor:s.iconColor,icon:s.icon,
+        x:s.x+"%",y:s.y+"%",pinColor:inPkg?"#8B3FF0":PRI,
+        addIcon:inPkg?"check":"plus",addBg:inPkg?"var(--primary-normal-8)":"var(--fill-normal)",addColor:inPkg?PRI:"var(--label-neutral)",
+        addLabel:inPkg?T.added:T.add_package,
+        open:()=>this.openSpot(s.id),toggle:(e)=>{if(e&&e.stopPropagation)e.stopPropagation();this.togglePkgSpot(s.id);},
+        subs:s.subs.map(sb=>({name:P(sb.name),type:P(sb.type),blurb:P(sb.blurb)}))};};
+    const spotsRaw=this.SPOTS.filter(s=>s.portKey===cruise.portKey);
+    const spots=spotsRaw.map(mkSpot);
+    const THEME_LABEL={nature:T.th_nature,food:T.th_food,shopping:T.th_shopping,photo:T.th_photo};
+    const THEME_TINT={nature:{fg:"#12A150",bg:"#EAF7EE"},food:{fg:"#E8820E",bg:"#FFF1E6"},shopping:{fg:"#0066FF",bg:"#E7F1FF"},photo:{fg:"#8B3FF0",bg:"#F3ECFF"}};
+    spots.forEach((m,i)=>{m.themeTags=(spotsRaw[i].themes||[]).map(t=>({label:THEME_LABEL[t],fg:THEME_TINT[t].fg,bg:THEME_TINT[t].bg}));});
+    const filtered=spotsRaw.filter(s=>st.themeIds.length===0||s.themes.some(t=>st.themeIds.includes(t)));
+    const pickSpots=filtered.map(s=>{const m=mkSpot(s);const picked=st.pkgSpotIds.includes(s.id);
+      return Object.assign(m,{cardRing:picked?ring2:ring1,themeTags:s.themes.map(t=>({label:THEME_LABEL[t],fg:THEME_TINT[t].fg,bg:THEME_TINT[t].bg}))});});
+    const mkTheme=(key)=>{const active=st.themeIds.includes(key);const tint=THEME_TINT[key];
+      return {label:THEME_LABEL[key],active,
+        chipBg:active?tint.bg:"var(--background-normal-normal)",chipFg:active?tint.fg:"var(--label-neutral)",
+        iconFg:active?tint.fg:"var(--label-assistive)",ring:active?("inset 0 0 0 1.5px "+tint.fg):ring1,
+        toggle:()=>this.toggleTheme(key)};};
+    const themeNature=mkTheme("nature"), themeFood=mkTheme("food"), themeShopping=mkTheme("shopping"), themePhoto=mkTheme("photo");
+    const hasThemeFilter=st.themeIds.length>0;
+    const pickHeading=hasThemeFilter?(lang==="ko"?"이 테마와 어울리는 곳 "+filtered.length:lang==="zh"?"符合主题 "+filtered.length:lang==="ja"?"テーマに合う "+filtered.length+"件":filtered.length+" matching spots"):(lang==="ko"?"전체 관광지 "+filtered.length:lang==="zh"?"全部景点 "+filtered.length:lang==="ja"?"すべて "+filtered.length+"件":"All spots "+filtered.length);
+    const spotpickCount=st.pkgSpotIds.length, spotpickDisabled=spotpickCount===0;
+    const spotpickCta=lang==="ko"?spotpickCount+"곳으로 경로 만들기":lang==="zh"?spotpickCount+"个地点·生成路线":lang==="ja"?spotpickCount+"件でルート作成":"Build route · "+spotpickCount+" spots";
+    const spotpickDoneCta=spotpickCount>0?(lang==="ko"?spotpickCount+"곳 담기 완료":lang==="zh"?"完成 · "+spotpickCount+"个":lang==="ja"?spotpickCount+"件を追加":"Done · "+spotpickCount+" added"):T.done_edit;
+    const curSpotRaw=this.SPOTS.find(s=>s.id===st.currentSpotId);
+    const curSpot=curSpotRaw?mkSpot(curSpotRaw):{name:"",cat:"",blurb:"",km:0,min:0,color:"#eee",iconColor:PRI,icon:"pin",subs:[],addIcon:"plus",addBg:"var(--fill-normal)",addColor:"var(--label-neutral)",addLabel:T.add_package,toggle:()=>{}};
+
+    // AI steps
+    const stepLabels=[T.ai_step1,T.ai_step2,T.ai_step3,T.ai_step4];
+    const aiSteps=stepLabels.map((lb,i)=>{const done=st.aiStep>i||st.pkgReady, active=st.aiStep===i&&!st.pkgReady;
+      return {label:lb,done:done,active:active,pending:!done&&!active,opacity:done||active?"1":".45",weight:active||done?"700":"500",textColor:done?"#8B3FF0":(active?"var(--label-normal)":"var(--label-alternative)")};});
+    // itinerary
+    const pkgList=st.pkgSpotIds.map(id=>this.SPOTS.find(s=>s.id===id)).filter(Boolean);
+    let acc=(cruiseObj?cruiseObj.arrM:480)+30, totalMin=0;
+    const itinerary=pkgList.map((s,i)=>{const start=acc; acc+=s.min+ (i<pkgList.length-1?20:0); totalMin+=s.min+(i<pkgList.length-1?20:0);
+      return {no:i+1,name:P(s.name),cat:P(s.cat),time:fmt(start)+" · "+s.min+T.min,line:i<pkgList.length-1,
+        id:s.id,canUp:i>0,canDown:i<pkgList.length-1,upOp:i>0?"1":".28",downOp:i<pkgList.length-1?"1":".28",
+        up:()=>this.movePkg(s.id,-1),down:()=>this.movePkg(s.id,1),swap:()=>this.openSwap(s.id),remove:()=>this.togglePkgSpot(s.id)};});
+    const courseTime=hm(totalMin);
+    const swapTarget=st.swapSpotId?this.SPOTS.find(s=>s.id===st.swapSpotId):null;
+    const swapCurName=swapTarget?P(swapTarget.name):"";
+    const swapSub=swapCurName?(lang==="ko"?"'"+swapCurName+"' \ub300\uc2e0 \ubc29\ubb38\ud560 \uc7a5\uc18c\ub97c \uace8\ub77c\uc8fc\uc138\uc694":lang==="zh"?"\u9009\u62e9\u66ff\u6362\u300c"+swapCurName+"\u300d\u7684\u5730\u70b9":lang==="ja"?"\u300c"+swapCurName+"\u300d\u306e\u4ee3\u308f\u308a\u306b\u8a2a\u308c\u308b\u5834\u6240\u3092\u9078\u3093\u3067\u304f\u3060\u3055\u3044":"Pick a place to visit instead of "+swapCurName):T.swap_sub;
+    const swapCandidates=spotsRaw.filter(s=>!st.pkgSpotIds.includes(s.id)).map(s=>Object.assign(mkSpot(s),{pick:()=>this.swapPkgSpot(s.id)}));
+
+    // ---- home day-plan timeline (일정짜기) ----
+    const legMin=(km)=>Math.max(8,Math.round(km*2.2));
+    const arrM0=cruiseObj?cruiseObj.arrM:480;
+    const planItems=[];
+    planItems.push({isNode:true,isLeg:false,isEmpty:false,isArrive:true,isSpot:false,isDeadline:false,
+      dotBg:"var(--label-normal)",dotColor:"#fff",dotRing:"none",hasLine:true,pad:"16px",num:"",cat:"",color:"",iconColor:"",
+      time:fmt(arrM0),timeColor:"var(--label-neutral)",title:T.home_disembark,hasMeta:true,meta:cruise.portName+" · "+T.home_immigration,remove:()=>{}});
+    let clk=arrM0+30;
+    pkgList.forEach((s,i)=>{
+      const km=i===0?s.km:Math.max(1.5,Math.abs(s.km-pkgList[i-1].km)+2.5);
+      const lg=legMin(km); clk+=lg;
+      planItems.push({isLeg:true,isNode:false,isEmpty:false,legLabel:T.t_taxi+" "+T.approx+" "+lg+T.min});
+      const start=clk; clk+=s.min;
+      planItems.push({isNode:true,isLeg:false,isEmpty:false,isArrive:false,isSpot:true,isDeadline:false,
+        dotBg:"var(--primary-normal-4)",dotColor:"#fff",dotRing:"none",hasLine:true,pad:"16px",num:String(i+1),
+        time:fmt(start)+"–"+fmt(clk),timeColor:"var(--label-neutral)",title:P(s.name),cat:P(s.cat),color:s.color,iconColor:s.iconColor,
+        hasMeta:true,meta:s.km+"km · "+T.approx+" "+s.min+T.min,remove:()=>this.togglePkgSpot(s.id)});
+    });
+    if(pkgList.length===0){ planItems.push({isEmpty:true,isNode:false,isLeg:false}); }
+    else{ const backLg=legMin(pkgList[pkgList.length-1].km); clk+=backLg;
+      planItems.push({isLeg:true,isNode:false,isEmpty:false,legLabel:T.t_taxi+" "+T.approx+" "+backLg+T.min}); }
+    const deadlineM=cruiseObj?cruiseObj.depM-30:0;
+    planItems.push({isNode:true,isLeg:false,isEmpty:false,isArrive:false,isSpot:false,isDeadline:true,
+      dotBg:"#FDECEC",dotColor:"#E23B3B",dotRing:"inset 0 0 0 1.5px #F5B5B5",hasLine:false,pad:"0",num:"",cat:"",color:"",iconColor:"",
+      time:fmt(deadlineM),timeColor:"#E23B3B",title:T.home_deadline,hasMeta:true,meta:cruise.portName,remove:()=>{}});
+    const slack=deadlineM-clk, slackMin=Math.abs(slack), planSlackOk=slack>=0;
+    const slackOkTxt=lang==="ko"?slackMin+"분 여유":lang==="zh"?"余"+slackMin+"分":lang==="ja"?slackMin+"分の余裕":slackMin+" min buffer";
+    const slackOverTxt=lang==="ko"?slackMin+"분 초과":lang==="zh"?"超"+slackMin+"分":lang==="ja"?slackMin+"分超過":"over "+slackMin+" min";
+    const planSlackLabel=pkgList.length?(planSlackOk?slackOkTxt:slackOverTxt):"";
+    const planTotalLabel=hm(Math.max(0,clk-arrM0));
+    const homeNextName=itinerary.length?itinerary[0].name:cruise.portName;
+    const homeNextTime=itinerary.length?itinerary[0].time:"";
+    const homeFirstLegLabel=pkgList.length?(T.t_taxi+" "+T.approx+" "+legMin(pkgList[0].km)+T.min):"";
+    const homeMoreN=Math.max(0,pkgList.length-1);
+    const homeMoreLabel=lang==="ko"?("전체 "+pkgList.length+"곳 경로 보기"):lang==="ja"?("全"+pkgList.length+"件のルート"):lang==="zh"?("查看全部"+pkgList.length+"个"):("View all "+pkgList.length+" stops");
+    const homePlanMeta=cruise.portName+" · "+cruise.arr+"–"+cruise.dep+" · "+cruise.stayLabel;
+    // real-map (Leaflet) source
+    const portC=this.PORT_COORDS[cruise.portKey]||this.PORT_COORDS.jeju;
+    const mapData={port:{lat:portC[0],lng:portC[1],name:cruise.portName},
+      spots:spotsRaw.map(s=>{const c=this.SPOT_COORDS[s.id]||[33.4,126.5];return {lat:c[0],lng:c[1],name:P(s.name),inRoute:st.pkgSpotIds.includes(s.id)};}),
+      route:pkgList.map(s=>{const c=this.SPOT_COORDS[s.id]||[33.4,126.5];return {lat:c[0],lng:c[1],name:P(s.name)};})};
+    const mapSrc="jeju-map.html#"+encodeURIComponent(JSON.stringify(mapData));
+    // AI concept picker
+    const CONCEPT_DEF=[{key:"highlights",bg:"#E7F1FF",fg:"#0066FF"},{key:"nature",bg:"#EAF7EE",fg:"#12A150"},{key:"food",bg:"#FFF1E6",fg:"#E8820E"},{key:"photo",bg:"#F3ECFF",fg:"#8B3FF0"}];
+    const conceptOptions=CONCEPT_DEF.map(c=>({key:c.key,isHigh:c.key==="highlights",isNature:c.key==="nature",isFood:c.key==="food",isPhoto:c.key==="photo",
+      label:T["concept_"+c.key],sub:T["concept_"+c.key+"_sub"],iconBg:c.bg,iconFg:c.fg,pick:()=>this.pickConcept(c.key)}));
+
+    // transport + final route
+    const totalKm=pkgList.reduce((a,s)=>a+s.km,0), legsN=Math.max(1,pkgList.length);
+    const isGlobalSvc=st.taxiService==="global";
+    const svcMul=isGlobalSvc?1.25:1;
+    const freeLabel=lang==="ko"?"무료":lang==="zh"?"免费":lang==="ja"?"無料":"Free";
+    const taxiCostN=Math.round((4300+Math.round(totalKm)*1700)*svcMul/100)*100, taxiTimeN=Math.max(8,Math.round(totalKm*2.4));
+    const transitCostN=Math.max(1500,1500*legsN), transitTimeN=Math.round(totalKm*3.8)+5*legsN;
+    const walkCostN=0, walkTimeN=Math.round(totalKm*13);
+    const mkT=(key,costN,timeN)=>{const active=st.transportMode===key;
+      return {cost:costN===0?freeLabel:money(costN),time:timeN+T.min,active,bg:active?"var(--primary-normal-8)":"var(--background-normal-normal)",ring:active?ring2:ring1,select:()=>this.selectTransport(key)};};
+    const vanCostN=Math.round(taxiCostN*1.55/100)*100;
+    const transport={taxi:mkT("taxi",taxiCostN,taxiTimeN),van:mkT("van",vanCostN,taxiTimeN),transit:mkT("transit",transitCostN,transitTimeN),walk:mkT("walk",walkCostN,walkTimeN)};
+    const capU=lang==="ko"?"명":lang==="ja"?"名":lang==="zh"?"人":" people";
+    const GLOBAL_CARS=[{key:"basic",name:T.gtaxi_basic,cap:"4",day:220000,over:30000,van:false,ibg:"#EAF7EE",ifg:"var(--status-positive)"},{key:"jumbo",name:T.gtaxi_jumbo,cap:"5~7",day:330000,over:40000,van:true,ibg:"#E7F1FF",ifg:"var(--primary-normal-4)"},{key:"premium",name:T.gtaxi_premium,cap:"5~6",day:400000,over:50000,van:true,ibg:"#F3ECFF",ifg:"#8B3FF0"},{key:"van",name:T.gtaxi_van,cap:"7~12",day:450000,over:60000,van:true,ibg:"#FFF1E6",ifg:"#E8820E"}];
+    const gSel=GLOBAL_CARS.find(c=>c.key===st.globalCarType)||GLOBAL_CARS[0];
+    const globalCars=GLOBAL_CARS.map(c=>{const active=st.globalCarType===c.key;return {key:c.key,name:c.name,capLabel:c.cap+capU,day:money(c.day),over:money(c.over),isVan:c.van,isSedan:!c.van,iconBg:c.ibg,iconFg:c.ifg,active,bg:active?"var(--primary-normal-8)":"var(--background-normal-normal)",ring:active?ring2:ring1,select:()=>this.setState({globalCarType:c.key,transportMode:"gtaxi"})};});
+    const noTransport=isGlobalSvc?false:!st.transportMode;
+    const chosenCostN=st.transportMode==="taxi"?taxiCostN:st.transportMode==="van"?vanCostN:st.transportMode==="transit"?transitCostN:st.transportMode==="walk"?walkCostN:0;
+    const chosenTimeN=st.transportMode==="taxi"?taxiTimeN:st.transportMode==="van"?taxiTimeN:st.transportMode==="transit"?transitTimeN:st.transportMode==="walk"?walkTimeN:0;
+    const finalTime=isGlobalSvc?T.gt_dayfull:(chosenTimeN+T.min), finalCost=isGlobalSvc?money(gSel.day):(chosenCostN===0?freeLabel:money(chosenCostN));
+    const portYNum=cruise.portKey==="jeju"?18:84;
+    const finalPins=pkgList.map((s,i)=>({x:s.x+"%",y:s.y+"%",no:i+1}));
+    const finalPolyline=["50,"+portYNum].concat(pkgList.map(s=>s.x+","+s.y)).join(" ");
+
+    // shop
+    const catKeys=["all","food","cosmetics","alcohol","souvenir"];
+    const catT={all:T.cat_all,food:T.cat_food,cosmetics:T.cat_cosmetics,alcohol:T.cat_alcohol,souvenir:T.cat_souvenir};
+    const shopCats=catKeys.map(c=>{const on=st.shopCat===c;return {key:c,label:catT[c],active:on,select:()=>this.setShopCat(c),
+      color:on?"var(--primary-normal-4)":"var(--label-neutral)",weight:on?"700":"500",
+      bg:on?"transparent":"var(--fill-normal)",ring:on?"inset 0 0 0 1.5px var(--primary-normal-4)":"none"};});
+    const shopCatOptions=catKeys.map(c=>({value:c,label:catT[c]}));
+    const SM={allowed:{bg:"#EAF7EE",color:"#12A150",icon:"circleCheckFill",label:T.imp_allowed},
+      conditional:{bg:"#FFF6E0",color:"#C08A00",icon:"circleInfoFill",label:T.imp_conditional},
+      restricted:{bg:"#FFF0E0",color:"#C7690A",icon:"triangleExclamationFill",label:T.imp_restricted},
+      prohibited:{bg:"#FDECEC",color:"#E23B3B",icon:"circleCloseFill",label:T.imp_prohibited}};
+    const mkProd=(p)=>({id:p.id,name:P(p.name),desc:P(this.PROD_DESC[p.id]||""),catLabel:catT[p.cat],price:p.price,priceLabel:money(p.price),color:p.color,iconColor:p.iconColor,icon:p.icon,
+      customs:P(p.customs),line:P(p.line),status:p.status,sm:SM[p.status],
+      open:()=>this.openProduct(p.id),add:()=>this.addToCart(p.id),remove:()=>this.removeCart(p.id)});
+    const products=this.PRODUCTS.filter(p=>st.shopCat==="all"||p.cat===st.shopCat).map(mkProd);
+    const curProdRaw=this.PRODUCTS.find(p=>p.id===st.currentProductId);
+    const curProduct=curProdRaw?mkProd(curProdRaw):{name:"",catLabel:"",priceLabel:"",color:"#eee",iconColor:PRI,icon:"tag",customs:"",line:"",sm:SM.allowed,add:()=>{}};
+    const delLabels=[T.d_ship,T.d_pickup,T.d_stay];
+    const deliveryOptions=delLabels.map((lb,i)=>({label:lb,active:st.deliveryIdx===i,select:()=>this.setDeliveryIdx(i),
+      bg:st.deliveryIdx===i?"var(--primary-normal-8)":"var(--background-normal-alternative)",ring:st.deliveryIdx===i?ring2:"none",
+      dot:st.deliveryIdx===i?"var(--primary-normal-4)":"var(--line-normal-neutral)",weight:st.deliveryIdx===i?"600":"500"}));
+    const cartRaw=st.cart.map(id=>this.PRODUCTS.find(p=>p.id===id)).filter(Boolean);
+    const cartItems=cartRaw.map(mkProd);
+    const cartTotalN=cartRaw.reduce((a,p)=>a+p.price,0);
+
+    // taxi
+    const taxiOptions=spots.map(s=>({value:s.id,label:s.name}));
+    const taxiSpot=this.SPOTS.find(s=>s.id===st.taxiDest);
+    const baseFareN=taxiSpot?4300+Math.round(taxiSpot.km)*1700:0;
+    const etaMin=taxiSpot?Math.max(6,Math.round(taxiSpot.km*2.4)):0;
+    const seatsU=lang==="ko"?"인":lang==="ja"?"人":lang==="zh"?"人":" seats";
+    const carOptions=["normal","van"].map(k=>{const v=this.VEHICLES[k];const active=st.carType===k;
+      const price=Math.round(baseFareN*v.fareMul*svcMul/100)*100;const seats=k==="normal"?4:7;
+      return {key:k,isNormal:k==="normal",isVan:k==="van",active,label:T["car_"+k],sub:T["car_"+k+"_sub"],globalTag:isGlobalSvc,globalTagLabel:T.global_driver_tag,
+        shortLabel:k==="normal"?T.car_mid:T.car_large,tabColor:active?"var(--primary-normal-4)":"var(--label-alternative)",tabWeight:active?"700":"500",
+        seats,seatsLabel:seats+seatsU,eta:taxiSpot?(etaMin+T.min):"—",
+        price:taxiSpot?money(price):"—",bg:active?"var(--primary-normal-8)":"var(--background-normal-normal)",ring:active?ring2:ring1,
+        select:()=>this.setCarType(k)};});
+    const carNormalOpt=carOptions[0], carVanOpt=carOptions[1];
+    const _svcTab=(on)=>({active:on,bg:on?"var(--background-normal-normal)":"transparent",color:on?"var(--label-normal)":"var(--label-alternative)",shadow:on?"0 1px 4px rgba(0,0,0,.10)":"none",weight:on?"700":"600"});
+    const svcTabNormal=Object.assign(_svcTab(!isGlobalSvc),{select:()=>this.setTaxiService("normal")});
+    const svcTabGlobal=Object.assign(_svcTab(isGlobalSvc),{select:()=>this.setTaxiService("global")});
+    const svcItems=[T.svc_normal, T.svc_global];
+    const svcActiveIndex=isGlobalSvc?1:0;
+    const onSvcChange=(i)=>this.setTaxiService(i===1?"global":"normal");
+    const veh=this.VEHICLES[st.carType]||this.VEHICLES.normal;
+    const fareN=Math.round(baseFareN*veh.fareMul*svcMul/100)*100;
+    const farePretty=taxiSpot?money(fareN):"—";
+    const _tpc=this.PORT_COORDS[cruise.portKey]||this.PORT_COORDS.jeju, _sc=(id)=>this.SPOT_COORDS[id]||[33.4,126.5];
+    const taxiMapData={me:{lat:_tpc[0],lng:_tpc[1],name:T.cur_loc},
+      spots:spotsRaw.map(s=>{const c=_sc(s.id);return {lat:c[0],lng:c[1],name:P(s.name),inRoute:s.id===st.taxiDest};}),
+      route:taxiSpot?[{lat:_sc(taxiSpot.id)[0],lng:_sc(taxiSpot.id)[1],name:P(taxiSpot.name)}]:[]};
+    const taxiMapSrc="jeju-map.html#"+encodeURIComponent(JSON.stringify(taxiMapData));
+    const _q=(st.taxiQuery||"").trim().toLowerCase();
+    const destResults=spots.filter(s=>!_q||s.name.toLowerCase().includes(_q)).map(s=>({id:s.id,name:s.name,cat:s.cat,km:s.km,pick:()=>this.pickDest(s.id)}));
+    const taxiFavs=spots.slice(0,3).map(s=>({id:s.id,name:s.name,cat:s.cat,km:s.km,pick:()=>this.pickDest(s.id)}));
+    const timeN=taxiSpot?Math.max(6,Math.round(taxiSpot.km*2.4)):0;
+    const di=this.TAXI_DRIVER;
+    const etaLabel=lang==="ko"?di.eta+"분 후 도착":lang==="zh"?di.eta+"分钟后到达":lang==="ja"?di.eta+"分で到着":di.eta+" min away";
+    const homePickupEta=lang==="ko"?"약 "+di.eta+"분":lang==="zh"?"约"+di.eta+"分钟":lang==="ja"?"約"+di.eta+"分":"~"+di.eta+" min";
+    const homeMapLiveSrc=st.taxiCalled?taxiMapSrc:mapSrc;
+
+    return {
+      // view flags
+      isLang:st.view==="lang", isCruise:st.view==="cruise",
+      rHome:st.view==="app"&&st.route==="home", rExplore:st.view==="app"&&st.route==="explore",
+      rSpot:st.view==="app"&&st.route==="spot", rPackage:st.view==="app"&&st.route==="package", pkgShowHead:st.pkgBack!=="home",
+      rTheme:st.view==="app"&&st.route==="theme",
+      rConcept:st.view==="app"&&st.route==="concept", conceptOptions,
+      rTransport:st.view==="app"&&st.route==="transport", rFinalRoute:st.view==="app"&&st.route==="finalroute",
+      rShop:st.view==="app"&&st.route==="shop",
+      rProduct:st.view==="app"&&st.route==="product", rCheckout:st.view==="app"&&st.route==="checkout",
+      rMove:st.view==="app"&&st.route==="move", rMy:st.view==="app"&&st.route==="my",
+      showNav:st.view==="app"&&["home","explore","shop","move","my"].includes(st.route),
+      showTrust, homeTrustShow:showTrust&&!st.trustDismissed, dismissTrust:this.dismissTrust,
+      T, langShort:LNG[lang], langOptions,
+      cruiseId:st.cruiseId, cruiseOptions, onCruiseChange:this.onCruiseChange, hasCruise:!!cruiseObj, noCruise:!cruiseObj,
+      cruise, confirmLang:this.confirmLang, startApp:this.startApp,
+      // nav
+      navHome:this.navHome, navExplore:this.navExplore, navExploreAi:this.navExploreAi, navShop:this.navShop, navMove:this.navMove, navMy:this.navMy,
+      cHome:st.route==="home"?PRI:ASST, cExplore:st.route==="explore"?PRI:ASST, cShop:st.route==="shop"?PRI:ASST, cMove:st.route==="move"?PRI:ASST, cMy:st.route==="my"?PRI:ASST,
+      // explore
+      spots, landTop:cruise.portKey==="jeju"?"34%":"-30%", portTop:cruise.portKey==="jeju"?"18%":"84%",
+      hasPkg:st.pkgSpotIds.length>0, noPkg:st.pkgSpotIds.length===0, goPackage:this.goPackage,
+      planItems, homePlanMeta, planSlackLabel, planSlackOk, mapSrc,
+      mapFull:st.mapFull, openMapFull:this.openMapFull, closeMapFull:this.closeMapFull,
+      homeNextName, homeNextTime, homeFirstLegLabel, homeHasMore:homeMoreN>0, homeMoreLabel,
+      planSlackBg:planSlackOk?"#EAF7EE":"#FDECEC", planSlackFg:planSlackOk?"#12A150":"#E23B3B",
+      planSlackIcon:planSlackOk?"circleCheckFill":"triangleExclamationFill",
+      addPlace:this.openAddSpots, aiFill:this.navExploreAi, viewRoute:()=>this.setState({route:"package",aiRunning:false,pkgReady:true,pkgBack:"home"}),
+      homeMapAction:()=>{ if(this.state.pkgSpotIds.length>0) this.startAi(); else this.navExploreAi(); },
+      homeMapLiveSrc, homePickupEta, homeTaxiFloat:st.taxiCalled&&st.route==="home",
+      homeMapTitle:st.pkgSpotIds.length>0?T.home_route_ready:T.home_route_none_t,
+      homeMapSub:st.pkgSpotIds.length>0?(courseTime+" · "+(lang==="ko"?pkgList.length+"곳":lang==="ja"?pkgList.length+"件":lang==="zh"?pkgList.length+"个":pkgList.length+" spots")):T.home_route_none_s,
+      homeMapIcon:"sparkleFill",
+      homeMapIconBg:"#F3ECFF", homeMapIconFg:"#8B3FF0",
+      homeCurName:cruise.portName,
+      homeNextName:(pkgList[0]?P(pkgList[0].name):cruise.portName),
+      homeNextMeta:(pkgList[0]?(pkgList[0].km+"km · "+T.approx+" "+pkgList[0].min+T.min):""),
+      finalPins, finalPolyline,
+      pkgCta:(lang==="ko"?st.pkgSpotIds.length+"개 스팟으로 패키지 만들기":lang==="zh"?st.pkgSpotIds.length+"个景点·生成套餐":lang==="ja"?st.pkgSpotIds.length+"件でパッケージ作成":"Build package · "+st.pkgSpotIds.length+" spots"),
+      // theme + spotpick
+      themeNature, themeFood, themeShopping, themePhoto, hasThemeFilter, clearThemes:this.clearThemes, pickHeading,
+      pickSpots, spotpickCta, spotpickDisabled, confirmSpotpick:this.confirmSpotpick,
+      spotpickIsPlan:st.spotpickMode==="plan", spotpickIsAi:st.spotpickMode!=="plan", spotpickDoneCta, doneAddSpots:this.doneAddSpots,
+      pickBudgetShow:pkgList.length>0, pickBg:slack<0?"#FFF4E5":"#EAF7EE", pickFg:slack<0?"#B5620A":"var(--status-positive)",
+      pickIcon:slack<0?"triangleExclamationFill":"circleCheckFill", pickStatusTitle:slack<0?T.budget_over:T.fits_stay,
+      pickStatusLabel:planSlackLabel, pickBudgetMain:planTotalLabel, pickStay:cruise.stayLabel,
+      // spot detail
+      curSpot, back:this.back, makeAiFromSpot:this.makeAiFromSpot, goThisOnly:this.goThisOnly, addThenPick:this.addThenPick,
+      // package
+      aiRunning:st.aiRunning, aiSteps, pkgReady:st.pkgReady, itinerary, courseTime, goTransport:this.goTransport,
+      editPkg:st.editPkg&&!st.taxiCalled, toggleEditPkg:this.toggleEditPkg, editPkgLabel:st.editPkg?T.done_edit:T.edit,
+      swapOpen:st.swapSpotId!=null, swapSub, swapCandidates, swapEmpty:st.swapSpotId!=null&&swapCandidates.length===0, closeSwap:this.closeSwap,
+      addPkgMore:this.addPkgMore, pkgEmpty:pkgList.length===0,
+      routeLocked:st.taxiCalled, pkgEditable:!st.taxiCalled, confirmNow:this.confirmNow, confirmLater:this.confirmLater,
+      homeModeEmpty:pkgList.length===0, homeModePlan:pkgList.length>0&&!st.routeConfirmed,
+      homeModeConfirmed:pkgList.length>0&&st.routeConfirmed&&!st.taxiCalled, homeModeCalled:pkgList.length>0&&st.taxiCalled,
+      callTaxiLater:this.callTaxiLater,
+      pkgCanAdd:slack>=50, noAddRoom:pkgList.length>0&&slack<50,
+      fitsBg:slack>=0?"#EAF7EE":"#FFF4E5", fitsFg:slack>=0?"var(--status-positive)":"#B5620A",
+      fitsIcon:slack>=0?"circleCheckFill":"triangleExclamationFill", fitsLabel:slack>=0?T.fits_stay:T.fits_over,
+      // transport + final route
+      transport, noTransport, confirmTransport:this.confirmTransport, finishFlow:this.finishFlow,
+      finalTime, finalCost, finalPins, finalPolyline, finalStops:itinerary,
+      // shop
+      shopCats, shopCat:st.shopCat, shopCatOptions, onShopCatChange:this.onShopCatChange, products, hasCart:st.cart.length>0, cartCount:st.cart.length, goCheckout:this.goCheckout,
+      // product
+      curProduct, deliveryOptions, buyNow:this.buyNow,
+      // checkout
+      orderDone:st.orderDone, checkoutOpen:!st.orderDone, cartItems, cartEmpty:st.cart.length===0,
+      cartTotal:money(cartTotalN), importAgree:st.importAgree, toggleAgree:this.toggleAgree, pay:this.pay, payDisabled:!st.importAgree,
+      agreeBg:st.importAgree?"var(--primary-normal-4)":"transparent", agreeBorder:st.importAgree?"var(--primary-normal-4)":"var(--line-normal-neutral)",
+      // taxi
+      taxiOptions, taxiDest:st.taxiDest, setTaxiDest:this.setTaxiDest, hasTaxiDest:!!taxiSpot, noTaxiDest:!taxiSpot,
+      fareLabel:money(fareN), timeLabel:timeN+T.min,
+      taxiRunning:st.taxiRunning, taxiDriver:st.taxiDriver, taxiIdle:!st.taxiRunning&&!st.taxiDriver, showCallBtn:!st.taxiDriver, callTaxi:this.callTaxi,
+      taxiMapSrc, cancelTaxi:this.cancelTaxi, resetTaxiDest:this.resetTaxiDest, taxiDestName:taxiSpot?P(taxiSpot.name):"",
+      stageFinding:st.taxiRunning, stageAssigned:st.taxiDriver,
+      confirmPickup:this.confirmPickup, pickDest:this.pickDest, goCarConfirm:this.goCarConfirm, editDestStep:this.editDestStep,
+      taxiStepBack:this.taxiStepBack, setTaxiQuery:this.setTaxiQuery, taxiQuery:st.taxiQuery,
+      stepPickup:(!st.taxiRunning&&!st.taxiDriver&&st.taxiStep==="pickup"),
+      stepDest:(!st.taxiRunning&&!st.taxiDriver&&st.taxiStep==="dest"),
+      stepCar:(!st.taxiRunning&&!st.taxiDriver&&st.taxiStep==="car"),
+      stepConfirm:(!st.taxiRunning&&!st.taxiDriver&&st.taxiStep==="confirm"),
+      taxiMapShow:!(!st.taxiRunning&&!st.taxiDriver&&st.taxiStep==="dest"),
+      taxiMapH:(st.taxiRunning||st.taxiDriver)?"220px":(st.taxiStep==="pickup"?"300px":"180px"),
+      taxiCanBack:(!st.taxiRunning&&!st.taxiDriver&&(st.taxiStep==="pickup"||st.taxiStep==="car"||st.taxiStep==="confirm")),
+      taxiSheetRadius:(!st.taxiRunning&&!st.taxiDriver&&st.taxiStep==="dest")?"0":"20px 20px 0 0",
+      taxiSheetMt:(!st.taxiRunning&&!st.taxiDriver&&st.taxiStep==="dest")?"0":"-18px",
+      pickupName:cruise.portName, destResults, taxiFavs, showFavs:!(st.taxiQuery||"").trim(),
+      confirmCarLabel:(isGlobalSvc?T.svc_global+" \u00b7 ":"")+(st.carType==="van"?T.car_van:T.car_normal), confirmSeats:st.carType==="van"?("7"+seatsU):("4"+seatsU),
+      carOptions, carNormalOpt, carVanOpt, farePretty,
+      globalCars, taxiNotGlobal:!isGlobalSvc, globalPolicyOpen:st.globalPolicyOpen, policyClosed:!st.globalPolicyOpen, toggleGlobalPolicy:this.toggleGlobalPolicy,
+      taxiIsGlobal:isGlobalSvc, svcTabNormal, svcTabGlobal, svcTabNormalLabel:T.svc_normal, svcTabGlobalLabel:T.svc_global,
+      svcItems, svcActiveIndex, onSvcChange,
+      taxiInfo:{name:P(di.name),car:P(veh.car),plate:veh.plate,rating:di.rating}, taxiEta:etaLabel,
+      // toast
+      toast:st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>
