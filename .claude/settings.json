@@ -47,5 +47,5 @@
       }
     ]
   },
-  "enabledMcpjsonServers": ["notion", "chrome-devtools"]
+  "enabledMcpjsonServers": ["notion", "chrome-devtools", "montage-mcp-server"]
 }

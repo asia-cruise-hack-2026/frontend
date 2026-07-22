@@ -21,7 +21,8 @@
 |---|---|---|---|
 | 기획 · 정책 | Notion 지정 페이지 | Notion MCP | ⏳ 미작성 |
 | 참조 · 근거 데이터 | Notion 「데이터 소스 카탈로그」 DB | Notion MCP | ✅ data source id `4ceed401-9a4f-41d3-8351-90cde4a1a24a` |
-| 디자인 · 디자인 시스템 | Figma 지정 파일 | Figma MCP (figma 플러그인, 인증 필요) | ⏳ 경로 대기 · 시스템 미정 |
+| 디자인(화면) | Figma 지정 파일 | Figma MCP (figma 플러그인, 인증 필요) | ⏳ 경로 대기 |
+| 디자인 시스템(컴포넌트·토큰·아이콘) | 원티드 Montage | Montage MCP (`montage-mcp-server`, 호스티드) | ✅ 확정 · `/mcp`로 연결 |
 | 서버 API 계약 | `refs/server/` (서버 레포 클론) | Read | ⏳ URL 대기 (읽기 전용) |
 | 제주 실데이터 샘플 | `data/`, `docs/recon/` | Read | ✅ 정찰 완료 |
 
@@ -38,14 +39,19 @@
 - **언어**: TypeScript strict. **패키지 매니저: pnpm** (npm 금지, `^x.y.z` 고정 — `latest` 금지).
 - **상태/데이터**: TanStack Query · Router(파일 라우터). 필요 시 Form/Store.
 - **지도**: `@vis.gl/react-google-maps` (Maps JavaScript API) + Directions Service(`optimizeWaypoints`). 네비는 **구글맵 딥링크 핸드오프**(`.../maps/dir/?api=1&destination=...`). 내 위치 `watchPosition`, 택시 위치 시뮬레이션. Google 콘솔: Maps JS + Directions API 활성화, 웹 키는 리퍼러 제한, 키는 `.env`.
-- **모바일/앱화**: `react-simplikit`(+`/mobile`) · `overlay-kit`(바텀시트·모달) · `framer-motion`.
+- **UI · 디자인 시스템**: **원티드 Montage** (`@wanteddev/wds` — Emotion+Radix 컴포넌트). 아이콘 `wds-icon` · 데모 스캐폴드 `wds-dummy`(NavBar/Footer/BottomTabBar) · 브랜드 `wds-brand`. 상세 → §UI·스타일링
+- **모바일/앱화**: `react-simplikit`(+`/mobile`) · `framer-motion`. 오버레이/모달은 Montage(Radix) 우선, 필요 시 `overlay-kit`.
 - **검증**: `zod`. **품질**: Biome(린트/포맷) + steiger(FSD, **비차단**).
-- **⚠️ fateflow에서 뺀 것**: `astryx`/StyleX(디자인 시스템 미정), react-compiler(툴체인 경량화), auth/토큰리프레시 http 클라이언트(MVP는 얇은 mock 우선 버전).
+- **⚠️ fateflow에서 뺀 것**: `astryx`/StyleX(→ Montage/Emotion으로 대체), react-compiler(툴체인 경량화), auth/토큰리프레시 http 클라이언트(MVP는 얇은 mock 우선 버전).
 
-## 스타일링 — 디자인 시스템 미정 (⏳ 변경 예정)
+## UI · 스타일링 — 원티드 Montage (WDS) ✅ 확정
 
-- **astryx에 묶지 않는다.** 확정 전 잠정안: **CSS Modules + CSS 변수 토큰(`:root`)** — 락인 0, 시스템 확정 시 토큰만 교체.
-- 디자인 SoT는 **Figma**. 시스템이 정해지면 그때 채택(Tailwind/StyleX/기타)하고 전용 스킬을 추가한다.
+- **`@wanteddev/wds`** = **Emotion 기반 Radix 컴포넌트 라이브러리**(런타임 CSS-in-JS → **Vite 완전 호환**, 번들러 플러그인 불필요). React 18/19 OK.
+- **설치**: 루트 `.npmrc`에 `@wanteddev:registry=https://npm.pkg.github.com/` (GitHub Packages — `NODE_AUTH_TOKEN`에 `read:packages` PAT 필요) → `pnpm i @wanteddev/wds @wanteddev/wds-icon`. **모든 `@wanteddev/wds-*`는 동일 버전**(불일치 시 테마 컨텍스트 중복 → 스타일 깨짐).
+- **셋업**: 루트를 `<ThemeProvider>`로 감싸고 `import '@wanteddev/wds/global.css'`, **Pretendard** 폰트 로드(CDN link 또는 `pretendard` 패키지). 다른 스타일과 섞이면 `createCache({ key:'wds', prepend:true })` + `CacheProvider`.
+- **SSR**: `wds-nextjs`는 **Next 전용** → 우리(TanStack Start)는 **CSR/SPA로 시작**(지도도 client-only). FOUC/critical-CSS가 문제되면 그때 `@emotion/server` 캐시를 배선.
+- **작성 규칙 = `montage-react` 스킬 + Montage MCP**: 컴포넌트/토큰/아이콘은 **추측 금지, MCP로 조회**(`get_component`·`list_tokens` 등). 토큰은 `theme.semantic.*` 콜백(생 `var(--...)` 금지), 레이아웃 `FlexBox`/`Grid`/`containerStyle`, 데모 GNB/Footer/바텀탭은 `@wanteddev/wds-dummy`(**BottomTabBar = 앱처럼**), 브랜드는 `LogoWanted`/`IconSymbol`.
+- 디자인 SoT는 **Figma** → Montage 컴포넌트로 매핑.
 
 ## 아키텍처 — FSD (경량 적용)
 
@@ -58,9 +64,9 @@
 
 ## 스킬 (fateflow 이식 — `.claude/skills/`)
 
-`fsd` · `typescript` · `good-code` · `good-debug` · `tanstack-query`/`router`/`form`/`integration` · `fsd-query-service` · `file-naming` · `mobile-webview`
+`fsd` · `typescript` · `good-code` · `good-debug` · `tanstack-query`/`router`/`form`/`integration` · `fsd-query-service` · `file-naming` · `mobile-webview` · **`montage-react`**(원티드 WDS)
 
-> 원본이 fateflow(사주세요)라 일부 스킬 본문에 **사주세요·astryx·StyleX 언급이 남아있을 수 있다.** 스타일링은 위 §스타일링이 우선(astryx 아님)이고, 프로젝트 고유 언급은 jeju 맥락으로 읽는다. (제외: `astryx-stylex`·`tailwind-v4-shadcn`, 그리고 이슈/PR 미사용으로 `new-issue`·`pr`)
+> `montage-react`는 Montage 공식 플러그인에서 이식 — React UI 작업 시 자동 트리거되며 Montage MCP와 연동된다. 나머지는 fateflow 이식으로 일부 본문에 사주세요·StyleX 언급이 남을 수 있으나 **UI/스타일링은 §UI·스타일링(Montage)이 우선**이고 고유 언급은 jeju 맥락으로 읽는다. (제외: `astryx-stylex`·`tailwind-v4-shadcn`·`new-issue`·`pr`)
 
 ## 집행 (`.claude/`)
 
@@ -85,4 +91,4 @@
 
 ## 현재 페이즈
 
-기획·디자인·디자인시스템·서버 미확정 → **지도/인터랙션 + mock 선행**. 정찰·데이터 카탈로그 완료(`README.md`).
+**디자인 시스템 = Montage 확정.** 기획(Notion)·디자인(Figma 경로)·서버는 미확정 → **지도/인터랙션 + mock 선행**. 정찰·데이터 카탈로그 완료(`README.md`).
