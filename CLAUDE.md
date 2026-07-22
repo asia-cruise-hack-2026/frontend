@@ -22,7 +22,7 @@
 | 기획 · 정책 | Notion 지정 페이지 | Notion MCP | ⏳ 미작성 |
 | 참조 · 근거 데이터 | Notion 「데이터 소스 카탈로그」 DB | Notion MCP | ✅ data source id `4ceed401-9a4f-41d3-8351-90cde4a1a24a` |
 | 디자인(화면) | Figma 지정 파일 | Figma MCP (figma 플러그인, 인증 필요) | ⏳ 경로 대기 |
-| 디자인 시스템(컴포넌트·토큰·아이콘) | 원티드 Montage | Montage MCP (`montage-mcp-server`, 호스티드) | ✅ 확정 · `/mcp`로 연결 |
+| 디자인 시스템(컴포넌트·토큰·아이콘) | 원티드 Montage | Montage MCP (`montage-mcp-server` = `npx @wanteddev/wds-mcp`, **로컬 stdio**) | ✅ 확정 · GitHub Packages 토큰 필요 |
 | 서버 API 계약 | `refs/server/` (서버 레포 클론) | Read | ⏳ URL 대기 (읽기 전용) |
 | 제주 실데이터 샘플 | `data/`, `docs/recon/` | Read | ✅ 정찰 완료 |
 
@@ -47,7 +47,7 @@
 ## UI · 스타일링 — 원티드 Montage (WDS) ✅ 확정
 
 - **`@wanteddev/wds`** = **Emotion 기반 Radix 컴포넌트 라이브러리**(런타임 CSS-in-JS → **Vite 완전 호환**, 번들러 플러그인 불필요). React 18/19 OK.
-- **설치**: 루트 `.npmrc`에 `@wanteddev:registry=https://npm.pkg.github.com/` (GitHub Packages — `NODE_AUTH_TOKEN`에 `read:packages` PAT 필요) → `pnpm i @wanteddev/wds @wanteddev/wds-icon`. **모든 `@wanteddev/wds-*`는 동일 버전**(불일치 시 테마 컨텍스트 중복 → 스타일 깨짐).
+- **설치**: 루트 `.npmrc`에 `@wanteddev:registry=https://npm.pkg.github.com/` (GitHub Packages — **`read:packages` PAT를 전역 `~/.npmrc`에** 넣어 인증. 공개 패키지라 아무 GitHub 계정으로 발급 가능) → `pnpm i @wanteddev/wds @wanteddev/wds-icon`. **모든 `@wanteddev/wds-*`는 동일 버전**(불일치 시 테마 컨텍스트 중복 → 스타일 깨짐).
 - **셋업**: 루트를 `<ThemeProvider>`로 감싸고 `import '@wanteddev/wds/global.css'`, **Pretendard** 폰트 로드(CDN link 또는 `pretendard` 패키지). 다른 스타일과 섞이면 `createCache({ key:'wds', prepend:true })` + `CacheProvider`.
 - **SSR**: `wds-nextjs`는 **Next 전용** → 우리(TanStack Start)는 **CSR/SPA로 시작**(지도도 client-only). FOUC/critical-CSS가 문제되면 그때 `@emotion/server` 캐시를 배선.
 - **작성 규칙 = `montage-react` 스킬 + Montage MCP**: 컴포넌트/토큰/아이콘은 **추측 금지, MCP로 조회**(`get_component`·`list_tokens` 등). 토큰은 `theme.semantic.*` 콜백(생 `var(--...)` 금지), 레이아웃 `FlexBox`/`Grid`/`containerStyle`, 데모 GNB/Footer/바텀탭은 `@wanteddev/wds-dummy`(**BottomTabBar = 앱처럼**), 브랜드는 `LogoWanted`/`IconSymbol`.

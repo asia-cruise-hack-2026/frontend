@@ -10,8 +10,8 @@
       "args": ["chrome-devtools-mcp@latest"]
     },
     "montage-mcp-server": {
-      "type": "http",
-      "url": "https://montage.wanted.co.kr/mcp"
+      "command": "npx",
+      "args": ["-y", "@wanteddev/wds-mcp@latest"]
     }
   }
 }
