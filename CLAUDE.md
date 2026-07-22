@@ -8,10 +8,10 @@
 
 ## 이 해커톤이 어떻게 진행되나 (맥락)
 
-- **팀 경계**: 프론트(이 레포) · 서버(별도 레포, **개발 범위 미합의**) · 기획(Notion) · 디자인(Figma/디자이너).
+- **팀 경계**: 프론트(이 레포) · 서버(`backend` 레포 — TAMRA PASS API **동작 중**) · 기획(Notion) · 디자인(디자이너 zip/HTML).
 - **진행 방식**: 각 소스를 MCP/참조로 끌어와 프론트에서 조립한다. 클라이언트가 데모의 주인공이다.
 - **핵심 제약**: 서버 범위가 안 정해졌으므로 **클라이언트는 모든 기능이 "동작하는 것처럼" 보여야 한다** — 데이터는 mock, 서버 의존 기능은 시뮬레이션.
-- **현재 미확정**: 기획(Notion 아직 비어있음)·디자인(Figma 경로 대기)·**디자인 시스템(디자이너 협의 중, 변경 예정)**. 확정 전까지 지도/인터랙션 + mock을 선행한다.
+- **현재 미확정**: 기획(Notion 아직 비어있음). 디자인은 **디자이너 zip + standalone HTML**(`design/incoming/`) 기준으로 확정, 디자인 시스템은 Montage. 파일 수급 전까지 지도/인터랙션 + mock을 선행한다.
 
 ## 소스 오브 트루스 (추측하지 말고 조회)
 
@@ -21,9 +21,9 @@
 |---|---|---|---|
 | 기획 · 정책 | Notion 지정 페이지 | Notion MCP | ⏳ 미작성 |
 | 참조 · 근거 데이터 | Notion 「데이터 소스 카탈로그」 DB | Notion MCP | ✅ data source id `4ceed401-9a4f-41d3-8351-90cde4a1a24a` |
-| 디자인(화면) | Figma 지정 파일 | Figma MCP (figma 플러그인, 인증 필요) | ⏳ 경로 대기 |
+| 디자인(화면) | **디자이너 zip + standalone HTML** (Claude design "share" 추출) → `design/incoming/` | Read | ✅ 방식 확정 · 파일 수급 시 |
 | 디자인 시스템(컴포넌트·토큰·아이콘) | 원티드 Montage | Montage MCP (`montage-mcp-server` = `npx @wanteddev/wds-mcp`, **로컬 stdio**) | ✅ 확정 · GitHub Packages 토큰 필요 |
-| 서버 API 계약 | `refs/server/` (서버 레포 클론) | Read | ⏳ URL 대기 (읽기 전용) |
+| 서버 API 계약 | `backend` 레포 `docs/API-SPEC.md` (github.com/asia-cruise-hack-2026/backend) | Read | ✅ TAMRA PASS API |
 | 제주 실데이터 샘플 | `data/`, `docs/recon/` | Read | ✅ 정찰 완료 |
 
 ## 절대 원칙
@@ -51,7 +51,7 @@
 - **셋업**: 루트를 `<ThemeProvider>`로 감싸고 `import '@wanteddev/wds/global.css'`, **Pretendard** 폰트 로드(CDN link 또는 `pretendard` 패키지). 다른 스타일과 섞이면 `createCache({ key:'wds', prepend:true })` + `CacheProvider`.
 - **SSR**: `wds-nextjs`는 **Next 전용** → 우리(TanStack Start)는 **CSR/SPA로 시작**(지도도 client-only). FOUC/critical-CSS가 문제되면 그때 `@emotion/server` 캐시를 배선.
 - **작성 규칙 = `montage-react` 스킬 + Montage MCP**: 컴포넌트/토큰/아이콘은 **추측 금지, MCP로 조회**(`get_component`·`list_tokens` 등). 토큰은 `theme.semantic.*` 콜백(생 `var(--...)` 금지), 레이아웃 `FlexBox`/`Grid`/`containerStyle`, 데모 GNB/Footer/바텀탭은 `@wanteddev/wds-dummy`(**BottomTabBar = 앱처럼**), 브랜드는 `LogoWanted`/`IconSymbol`.
-- 디자인 SoT는 **Figma** → Montage 컴포넌트로 매핑.
+- 디자인 SoT는 **디자이너 zip/standalone HTML**(`design/incoming/`) → Montage 컴포넌트로 매핑.
 
 ## 아키텍처 — FSD (경량 적용)
 
@@ -91,4 +91,4 @@
 
 ## 현재 페이즈
 
-**디자인 시스템 = Montage 확정.** 기획(Notion)·디자인(Figma 경로)·서버는 미확정 → **지도/인터랙션 + mock 선행**. 정찰·데이터 카탈로그 완료(`README.md`).
+**디자인 시스템 = Montage 확정.** 디자인은 디자이너 zip/HTML(`design/incoming/`) 기준. 서버는 `backend` 레포에 TAMRA PASS API 동작 중. 기획(Notion) 미작성 → 디자인 파일 수급 전까지 **지도/인터랙션 + mock 선행**.
