@@ -18,17 +18,15 @@ import { type ReactNode, useState } from "react";
 import { getCruise } from "@/entities/cruise";
 import {
   availableMinutes,
+  categoryTint,
   courseSlack,
-  listSpots,
-  type Spot,
-  spotIconKind,
-  THEME_TINT,
+  listReachableSpots,
+  type ReachableSpot,
 } from "@/entities/spot";
 import { useI18n } from "@/shared/i18n";
 import { sessionActions, useCruiseId, usePkgSpotIds } from "@/shared/store";
 
-// src/pages/explore/ui/ExploreScreen.tsx와 동일 산출물 — entities/spot엔 아이콘 export가 없어 로컬 복제,
-// 디자인 :393 원본 음식 SVG(spotIconKind==="food") — WDS 대응 아이콘 없어 코드로 직접(D2).
+// 디자인 :393 원본 음식/관광 SVG — WDS 대응 아이콘 없어 코드로 직접(D2).
 function FoodGlyph({ size = 26 }: { size?: number }) {
   return (
     <svg
@@ -48,7 +46,6 @@ function FoodGlyph({ size = 26 }: { size?: number }) {
   );
 }
 
-// ExploreScreen.tsx와 동일 산출물 — 디자인 :393 원본 관광 SVG(spotIconKind==="attraction") — WDS 대응 아이콘 없어 코드로 직접(D2).
 function MountainGlyph({ size = 26 }: { size?: number }) {
   return (
     <svg
@@ -68,57 +65,57 @@ function MountainGlyph({ size = 26 }: { size?: number }) {
   );
 }
 
-// spotIconKind==="other"일 때 spot.icon 이름 → WDS 아이콘 매핑(mock 데이터 기준 coffee/location/sun/umbrella).
-// ExploreScreen.tsx와 동일.
-const OTHER_SPOT_ICONS: Record<string, ReactNode> = {
-  coffee: <IconCoffee sx={{ fontSize: "26px" }} />,
-  location: <IconLocation sx={{ fontSize: "26px" }} />,
-  sun: <IconSun sx={{ fontSize: "26px" }} />,
-  umbrella: <IconUmbrella sx={{ fontSize: "26px" }} />,
-};
-
-type ThemeKey = keyof typeof THEME_TINT;
-const THEME_KEYS: ThemeKey[] = ["attraction", "food", "cafe", "package"];
-
-// 테마 칩 리딩 아이콘(디자인 :366-373) — attraction/food는 위 글리프를 축소 재사용, cafe/package는 WDS 아이콘으로 대체(D2).
-const THEME_CHIP_ICON: Record<ThemeKey, ReactNode> = {
-  attraction: <MountainGlyph size={17} />,
+const CATEGORY_CHIP_ICON: Record<string, ReactNode> = {
+  culture: <IconTicket sx={{ fontSize: "17px" }} />,
+  nature: <MountainGlyph size={17} />,
+  attraction: <IconLocation sx={{ fontSize: "17px" }} />,
+  activity: <IconSun sx={{ fontSize: "17px" }} />,
+  wellness: <IconCoffee sx={{ fontSize: "17px" }} />,
   food: <FoodGlyph size={17} />,
-  cafe: <IconCoffee sx={{ fontSize: "17px" }} />,
-  package: <IconTicket sx={{ fontSize: "17px" }} />,
+  beach: <IconUmbrella sx={{ fontSize: "17px" }} />,
 };
 
-/** 테마 선택(수동 스팟 고르기) — 디자인 "THEME + SPOTS"(:355-412) 이식. */
+/** 테마(카테고리) 선택 — 디자인 "THEME + SPOTS"(:355-412) 구조에 실 DB 스팟·카테고리·썸네일 적용. */
 export function ThemeSelectPage() {
   const { t, locale } = useI18n();
   const navigate = useNavigate();
   const cruiseId = useCruiseId();
   const pkgSpotIds = usePkgSpotIds();
-  const [themeIds, setThemeIds] = useState<ThemeKey[]>([]);
+  const [catKeys, setCatKeys] = useState<string[]>([]);
 
   const { data: cruise } = useQuery({
     queryKey: ["cruise", cruiseId, locale],
     queryFn: () => getCruise(cruiseId ?? "", locale),
     enabled: !!cruiseId,
   });
-  const portKey = cruise?.portKey ?? "jeju";
+  // 실 DB 스팟 — 컨셉/패키지/홈과 동일 소스·캐시 키
   const { data: spots = [] } = useQuery({
-    queryKey: ["spots", portKey],
-    queryFn: () => listSpots({ portKey }),
+    queryKey: ["reachable-spots", cruiseId, locale, 30],
+    queryFn: () => listReachableSpots(cruiseId ?? "", locale, 30),
+    enabled: !!cruiseId,
   });
 
-  const toggleTheme = (key: ThemeKey) =>
-    setThemeIds((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
+  // 카테고리 칩 — 로드된 스팟에서 도출(빈도순), 별도 엔드포인트 불필요
+  const categories = (() => {
+    const seen = new Map<string, { key: string; label: string; count: number }>();
+    for (const s of spots) {
+      const c = seen.get(s.categoryKey);
+      if (c) c.count += 1;
+      else seen.set(s.categoryKey, { key: s.categoryKey, label: s.categoryLabel, count: 1 });
+    }
+    return [...seen.values()].sort((a, b) => b.count - a.count);
+  })();
 
-  // 디자인 renderVals :1503 — themeIds 비면 전체, 있으면 하나라도 겹치는 스팟(교집합)
-  const filteredSpots: Spot[] =
-    themeIds.length === 0
-      ? spots
-      : spots.filter((s) => themeIds.some((id) => s.themes.includes(id)));
+  const toggleCat = (key: string) =>
+    setCatKeys((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
+
+  // 디자인 renderVals :1503 — 선택 없으면 전체, 있으면 해당 카테고리
+  const filteredSpots: ReachableSpot[] =
+    catKeys.length === 0 ? spots : spots.filter((s) => catKeys.includes(s.categoryKey));
 
   // 디자인 renderVals :1513 pickHeading 이식 — count 보간이라 strings.ts에 카탈로그 키가 없어 confirmCta와 동일하게 로컬 분기
   const pickHeading =
-    themeIds.length > 0
+    catKeys.length > 0
       ? locale === "ko"
         ? `이 테마와 어울리는 곳 ${filteredSpots.length}`
         : locale === "zh"
@@ -135,11 +132,11 @@ export function ThemeSelectPage() {
             : `All spots ${filteredSpots.length}`;
 
   // 예산 배너(디자인 :375-384) — pkgSpotIds→spots 매핑 후 courseSlack으로 fits 판정, pkgSpotIds 비면 배너 숨김
-  const pkgSpots: Spot[] = pkgSpotIds
+  const pkgSpots: ReachableSpot[] = pkgSpotIds
     .map((id) => spots.find((s) => s.id === id))
-    .filter((s): s is Spot => s != null);
+    .filter((s): s is ReachableSpot => s != null);
   const availMin = cruise ? availableMinutes(cruise) : 0;
-  const budget = cruise && pkgSpotIds.length > 0 ? courseSlack(pkgSpots, cruise) : null;
+  const budget = cruise && pkgSpots.length > 0 ? courseSlack(pkgSpots, cruise) : null;
 
   // 디자인 renderVals :1515 spotpickCta 이식 — ExploreScreen의 pkgCta와 동일 패턴
   const confirmCta =
@@ -206,16 +203,17 @@ export function ThemeSelectPage() {
         </Box>
       </Box>
 
-      {/* 테마 칩 — 디자인 :364-368, 다중 토글(로컬 themeIds) */}
+      {/* 카테고리 칩 — 디자인 :364-368 구조, 실 DB 카테고리 다중 토글 */}
       <FlexBox gap="8px" sx={{ overflowX: "auto", padding: "2px 20px 14px" }}>
-        {THEME_KEYS.map((key) => {
-          const active = themeIds.includes(key);
+        {categories.map((cat) => {
+          const active = catKeys.includes(cat.key);
+          const tint = categoryTint(cat.key);
           return (
             <Box
-              key={key}
+              key={cat.key}
               as="button"
               type="button"
-              onClick={() => toggleTheme(key)}
+              onClick={() => toggleCat(cat.key)}
               sx={(theme) => ({
                 flex: "0 0 auto",
                 display: "flex",
@@ -227,10 +225,11 @@ export function ThemeSelectPage() {
                 padding: "9px 15px 9px 12px",
                 fontWeight: 600,
                 fontSize: "13px",
-                background: active ? THEME_TINT[key].bg : theme.semantic.background.normal.normal,
-                color: active ? THEME_TINT[key].fg : theme.semantic.label.neutral,
+                whiteSpace: "nowrap",
+                background: active ? tint.bg : theme.semantic.background.normal.normal,
+                color: active ? tint.fg : theme.semantic.label.neutral,
                 boxShadow: active
-                  ? `inset 0 0 0 1.5px ${THEME_TINT[key].fg}`
+                  ? `inset 0 0 0 1.5px ${tint.fg}`
                   : `inset 0 0 0 1px ${theme.semantic.line.normal.neutral}`,
               })}
             >
@@ -238,12 +237,12 @@ export function ThemeSelectPage() {
                 as="span"
                 sx={(theme) => ({
                   display: "inline-flex",
-                  color: active ? THEME_TINT[key].fg : theme.semantic.label.assistive,
+                  color: active ? tint.fg : theme.semantic.label.assistive,
                 })}
               >
-                {THEME_CHIP_ICON[key]}
+                {CATEGORY_CHIP_ICON[cat.key] ?? <IconLocation sx={{ fontSize: "17px" }} />}
               </Box>
-              {t(`th_${key}`)}
+              {cat.label}
             </Box>
           );
         })}
@@ -325,11 +324,11 @@ export function ThemeSelectPage() {
         >
           {pickHeading}
         </Box>
-        {themeIds.length > 0 && (
+        {catKeys.length > 0 && (
           <Box
             as="button"
             type="button"
-            onClick={() => setThemeIds([])}
+            onClick={() => setCatKeys([])}
             sx={(theme) => ({
               border: "none",
               background: "none",
@@ -344,16 +343,11 @@ export function ThemeSelectPage() {
         )}
       </FlexBox>
 
-      {/* 스팟 리스트 — 디자인 :383-402, 카드는 ExploreScreen과 동일 */}
+      {/* 스팟 리스트 — 디자인 :383-402 카드 구조에 실 썸네일 */}
       <FlexBox flexDirection="column" gap="10px" sx={{ padding: "0 20px" }}>
         {filteredSpots.map((spot) => {
           const inPkg = pkgSpotIds.includes(spot.id);
-          const iconKind = spotIconKind(spot.themes);
-          let iconNode: ReactNode;
-          if (iconKind === "food") iconNode = <FoodGlyph />;
-          else if (iconKind === "attraction") iconNode = <MountainGlyph />;
-          else iconNode = OTHER_SPOT_ICONS[spot.icon] ?? null;
-
+          const tint = categoryTint(spot.categoryKey);
           const goDetail = () => navigate({ to: "/app/spot/$spotId", params: { spotId: spot.id } });
 
           return (
@@ -373,20 +367,32 @@ export function ThemeSelectPage() {
                 as="button"
                 type="button"
                 onClick={goDetail}
-                sx={{
+                sx={(theme) => ({
                   flex: "0 0 60px",
                   height: "60px",
                   border: "none",
                   cursor: "pointer",
                   borderRadius: "12px",
-                  background: spot.color,
-                  color: spot.iconColor,
+                  padding: 0,
+                  overflow: "hidden",
+                  background: theme.semantic.fill.normal,
+                  color: theme.semantic.label.assistive,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                }}
+                })}
               >
-                {iconNode}
+                {spot.thumbnail ? (
+                  <img
+                    src={spot.thumbnail}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                ) : (
+                  <IconLocation sx={{ fontSize: "24px" }} />
+                )}
               </Box>
               <Box
                 as="button"
@@ -409,7 +415,7 @@ export function ThemeSelectPage() {
                     color: theme.semantic.label.normal,
                   })}
                 >
-                  {spot.name[locale]}
+                  {spot.name}
                 </Box>
                 <Box
                   sx={(theme) => ({
@@ -418,27 +424,22 @@ export function ThemeSelectPage() {
                     marginTop: "2px",
                   })}
                 >
-                  {`${spot.cat[locale]} · ${spot.km}km · ${t("approx")} ${spot.min}${t("min")}`}
+                  {`${spot.km}km · ${t("approx")} ${spot.driveMinutes}${t("min")} · ${t("budget_stay")} ${spot.stayMinutes}${t("min")}`}
                 </Box>
                 <FlexBox gap="5px" sx={{ marginTop: "7px", flexWrap: "wrap" }}>
-                  {spot.themes
-                    .filter((themeKey): themeKey is ThemeKey => Object.hasOwn(THEME_TINT, themeKey))
-                    .map((themeKey) => (
-                      <Box
-                        key={themeKey}
-                        as="span"
-                        sx={{
-                          fontSize: "10px",
-                          fontWeight: 600,
-                          color: THEME_TINT[themeKey].fg,
-                          background: THEME_TINT[themeKey].bg,
-                          borderRadius: "999px",
-                          padding: "2px 8px",
-                        }}
-                      >
-                        {t(`th_${themeKey}`)}
-                      </Box>
-                    ))}
+                  <Box
+                    as="span"
+                    sx={{
+                      fontSize: "10px",
+                      fontWeight: 600,
+                      color: tint.fg,
+                      background: tint.bg,
+                      borderRadius: "999px",
+                      padding: "2px 8px",
+                    }}
+                  >
+                    {spot.categoryLabel}
+                  </Box>
                 </FlexBox>
               </Box>
               <Box

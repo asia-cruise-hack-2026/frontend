@@ -6,24 +6,20 @@ import {
   IconChevronRight,
   IconCircleCheckFill,
   IconClose,
-  IconCoffee,
   IconLocation,
   IconPencil,
   IconPlus,
-  IconSun,
   IconTriangleExclamationFill,
-  IconUmbrella,
 } from "@wanteddev/wds-icon";
-import { type ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { getCruise } from "@/entities/cruise";
 import {
   buildCourse,
   courseSlack,
-  listSpots,
-  spotIconKind,
+  listReachableSpots,
   type CourseStop,
-  type Spot,
+  type ReachableSpot,
 } from "@/entities/spot";
 import { type Locale, type StringKey, useI18n } from "@/shared/i18n";
 import { sessionActions, useCruiseId, usePkgSpotIds } from "@/shared/store";
@@ -335,15 +331,13 @@ function AiLoadingView({ aiStep, t }: { aiStep: number; t: (key: StringKey) => s
 function CourseStopRow({
   stop,
   spot,
-  locale,
   t,
   editMode,
   onSwap,
   onRemove,
 }: {
   stop: CourseStop;
-  spot: Spot;
-  locale: Locale;
+  spot: ReachableSpot;
   t: (key: StringKey) => string;
   editMode: boolean;
   onSwap: (id: string) => void;
@@ -392,7 +386,7 @@ function CourseStopRow({
             color: theme.semantic.label.normal,
           })}
         >
-          {spot.name[locale]}
+          {spot.name}
         </Box>
         <Box
           as="span"
@@ -403,7 +397,7 @@ function CourseStopRow({
             marginTop: "2px",
           })}
         >
-          {`${spot.cat[locale]} · ${fmt(stop.startMin)} · ${stop.stayMin}${t("min")}`}
+          {`${spot.categoryLabel} · ${fmt(stop.startMin)} · ${stop.stayMin}${t("min")}`}
         </Box>
       </Box>
       {editMode && (
@@ -479,72 +473,16 @@ function SwapGlyph() {
   );
 }
 
-// 스왑 후보 카드 아이콘 — ExploreScreen.tsx/ThemeSelectPage.tsx와 동일 산출물(로컬 복제, entities/spot엔 아이콘 export 없음).
-// 디자인 SWAP SPOT SHEET :1046 sp.iconIsFood/iconIsAttr/iconIsOther 분기 이식.
-function FoodGlyph() {
-  return (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M12 3c1.918 0 3.52 1.35 3.91 3.151a4 4 0 0 1 2.09 7.723l0 7.126h-12v-7.126a4 4 0 1 1 2.092 -7.723a4 4 0 0 1 3.908 -3.151" />
-      <path d="M6.161 17.009l11.839 -.009" />
-    </svg>
-  );
-}
-
-function MountainGlyph() {
-  return (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M3 20h18l-6.921 -14.612a2.3 2.3 0 0 0 -4.158 0l-6.921 14.612" />
-      <path d="M7.5 11l2 2.5l2.5 -2.5l2 3l2.5 -2" />
-    </svg>
-  );
-}
-
-// spotIconKind==="other"일 때 spot.icon 이름 → WDS 아이콘 매핑(mock 데이터 기준). ExploreScreen.tsx/ThemeSelectPage.tsx와 동일.
-const OTHER_SPOT_ICONS: Record<string, ReactNode> = {
-  coffee: <IconCoffee sx={{ fontSize: "24px" }} />,
-  location: <IconLocation sx={{ fontSize: "24px" }} />,
-  sun: <IconSun sx={{ fontSize: "24px" }} />,
-  umbrella: <IconUmbrella sx={{ fontSize: "24px" }} />,
-};
-
-// 스왑 후보 스팟 카드 한 줄 — 디자인 SWAP SPOT SHEET :1045-1052 이식.
+// 스왑 후보 스팟 카드 한 줄 — 디자인 SWAP SPOT SHEET :1045-1052 구조에 실 DB 썸네일 적용.
 function SwapCandidateCard({
   spot,
-  locale,
   t,
   onPick,
 }: {
-  spot: Spot;
-  locale: Locale;
+  spot: ReachableSpot;
   t: (key: StringKey) => string;
   onPick: (id: string) => void;
 }) {
-  const iconKind = spotIconKind(spot.themes);
-  let iconNode: ReactNode;
-  if (iconKind === "food") iconNode = <FoodGlyph />;
-  else if (iconKind === "attraction") iconNode = <MountainGlyph />;
-  else iconNode = OTHER_SPOT_ICONS[spot.icon] ?? null;
-
   return (
     <Box
       as="button"
@@ -563,21 +501,7 @@ function SwapCandidateCard({
         padding: "12px 14px",
       })}
     >
-      <Box
-        sx={{
-          width: "46px",
-          height: "46px",
-          borderRadius: "12px",
-          background: spot.color,
-          color: spot.iconColor,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-        }}
-      >
-        {iconNode}
-      </Box>
+      <SpotThumb thumbnail={spot.thumbnail} size={46} radius={12} />
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Box
           as="span"
@@ -588,7 +512,7 @@ function SwapCandidateCard({
             color: theme.semantic.label.normal,
           })}
         >
-          {spot.name[locale]}
+          {spot.name}
         </Box>
         <Box
           as="span"
@@ -599,7 +523,7 @@ function SwapCandidateCard({
             marginTop: "2px",
           })}
         >
-          {`${spot.cat[locale]} · ${spot.km}km · ${t("approx")} ${spot.min}${t("min")}`}
+          {`${spot.categoryLabel} · ${spot.km}km · ${t("approx")} ${spot.driveMinutes}${t("min")}`}
         </Box>
       </Box>
       <Box
@@ -616,17 +540,56 @@ function SwapCandidateCard({
   );
 }
 
+// 스팟 썸네일(실 DB thumbnail) — 없으면 위치 아이콘 폴백
+function SpotThumb({
+  thumbnail,
+  size,
+  radius,
+}: {
+  thumbnail: string | null;
+  size: number;
+  radius: number;
+}) {
+  return (
+    <Box
+      as="span"
+      sx={(theme) => ({
+        width: `${size}px`,
+        height: `${size}px`,
+        borderRadius: `${radius}px`,
+        background: theme.semantic.fill.normal,
+        color: theme.semantic.label.assistive,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+        overflow: "hidden",
+      })}
+    >
+      {thumbnail ? (
+        <img
+          src={thumbnail}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+        />
+      ) : (
+        <IconLocation sx={{ fontSize: "22px" }} />
+      )}
+    </Box>
+  );
+}
+
 // 스왑 바텀시트 — 디자인 SWAP SPOT SHEET :1029-1060 이식. 오버레이+시트는 코드로 직접(fixed, 딤 배경) —
 // 디자인은 absolute(프리뷰 프레임이 relative 컨테이너)지만 이 페이지 루트엔 그런 컨테이너가 없어 fixed로 전체 뷰포트를 덮는다.
 function SwapSpotSheet({
   candidates,
-  locale,
   t,
   onPick,
   onClose,
 }: {
-  candidates: Spot[];
-  locale: Locale;
+  candidates: ReachableSpot[];
   t: (key: StringKey) => string;
   onPick: (id: string) => void;
   onClose: () => void;
@@ -635,7 +598,7 @@ function SwapSpotSheet({
     <BottomSheet onClose={onClose} title={t("swap_title")} subtitle={t("swap_sub")}>
       <FlexBox flexDirection="column" gap="10px" sx={{ padding: "6px 22px 26px" }}>
         {candidates.map((spot) => (
-          <SwapCandidateCard key={spot.id} spot={spot} locale={locale} t={t} onPick={onPick} />
+          <SwapCandidateCard key={spot.id} spot={spot} t={t} onPick={onPick} />
         ))}
         {candidates.length === 0 && (
           <Box
@@ -691,15 +654,16 @@ export function AiPackagePage() {
     queryFn: () => getCruise(cruiseId ?? "", locale),
     enabled: !!cruiseId,
   });
-  const portKey = cruise?.portKey ?? "jeju";
+  // 실 DB 스팟 — 컨셉/테마 픽커와 동일 소스·캐시 키
   const { data: allSpots = [] } = useQuery({
-    queryKey: ["spots", portKey],
-    queryFn: () => listSpots({ portKey }),
+    queryKey: ["reachable-spots", cruiseId, locale, 30],
+    queryFn: () => listReachableSpots(cruiseId ?? "", locale, 30),
+    enabled: !!cruiseId,
   });
 
   const spots = pkgSpotIds
     .map((id) => allSpots.find((s) => s.id === id))
-    .filter((s): s is Spot => s != null);
+    .filter((s): s is ReachableSpot => s != null);
 
   const course = cruise ? buildCourse(spots, cruise) : null;
   // 실거리 slack 모델(진입leg+체류+스팟간 이동+복귀leg 누적 vs 탑승마감) — 디자인 renderVals :1537-1562와 동일.
@@ -856,7 +820,6 @@ export function AiPackagePage() {
                     key={stop.spotId}
                     stop={stop}
                     spot={spots[i]}
-                    locale={locale}
                     t={t}
                     editMode={editMode}
                     onSwap={setSwapTargetId}
@@ -974,7 +937,10 @@ export function AiPackagePage() {
               size="large"
               fullWidth
               disabled={course.stops.length === 0}
-              onClick={() => navigate({ to: "/app/transport" })}
+              onClick={() => {
+                sessionActions.setRouteConfirmed(true);
+                navigate({ to: "/app/transport" });
+              }}
             >
               {t("confirm_now")}
             </Button>
@@ -982,7 +948,8 @@ export function AiPackagePage() {
               as="button"
               type="button"
               onClick={() => {
-                // 디자인 confirmRoute(false) :1309 — 확정 토스트 후 홈 복귀
+                // 디자인 confirmRoute(false) :1309 — 확정 후 토스트, 홈 복귀
+                sessionActions.setRouteConfirmed(true);
                 toast({
                   content: t("route_confirmed_toast"),
                   variant: "positive",
@@ -1011,7 +978,6 @@ export function AiPackagePage() {
       {swapTargetId && (
         <SwapSpotSheet
           candidates={swapCandidates}
-          locale={locale}
           t={t}
           onPick={handleSwapPick}
           onClose={() => setSwapTargetId(null)}

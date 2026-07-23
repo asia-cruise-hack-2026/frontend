@@ -1,87 +1,30 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Box, Button, ContentBadge, FlexBox, addOpacity } from "@wanteddev/wds";
-import {
-  IconArrowLeft,
-  IconCoffee,
-  IconLocation,
-  IconPinFill,
-  IconPlus,
-  IconSun,
-  IconUmbrella,
-} from "@wanteddev/wds-icon";
-import type { ReactNode } from "react";
+import { IconArrowLeft, IconLocation, IconPlus } from "@wanteddev/wds-icon";
 
-import { getSpot, type Spot, spotIconKind } from "@/entities/spot";
+import { getSpotDetail, listNearbySpots } from "@/entities/spot";
 import { useI18n } from "@/shared/i18n";
 import { usePkgSpotIds, sessionActions } from "@/shared/store";
 
-// 디자인 :288 원본 SVG(수저=food) — WDS에 대응 아이콘 없어 코드로 직접(D2).
-function FoodHeroIcon() {
-  return (
-    <svg
-      width="56"
-      height="56"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M12 3c1.918 0 3.52 1.35 3.91 3.151a4 4 0 0 1 2.09 7.723l0 7.126h-12v-7.126a4 4 0 1 1 2.092 -7.723a4 4 0 0 1 3.908 -3.151" />
-      <path d="M6.161 17.009l11.839 -.009" />
-    </svg>
-  );
-}
-
-// 디자인 :288 원본 SVG(산=attraction) — WDS에 대응 아이콘 없어 코드로 직접(D2).
-function AttractionHeroIcon() {
-  return (
-    <svg
-      width="56"
-      height="56"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M3 20h18l-6.921 -14.612a2.3 2.3 0 0 0 -4.158 0l-6.921 14.612" />
-      <path d="M7.5 11l2 2.5l2.5 -2.5l2 3l2.5 -2" />
-    </svg>
-  );
-}
-
-// spot.icon(문자열) → WDS 아이콘. "other" 케이스 전용(:1489 spotIconKind 참고).
-const OTHER_HERO_ICONS: Record<string, ReactNode> = {
-  coffee: <IconCoffee sx={{ fontSize: "56px" }} />,
-  location: <IconLocation sx={{ fontSize: "56px" }} />,
-  sun: <IconSun sx={{ fontSize: "56px" }} />,
-  umbrella: <IconUmbrella sx={{ fontSize: "56px" }} />,
-};
-
-function HeroIcon({ spot }: { spot: Spot }) {
-  const kind = spotIconKind(spot.themes);
-  if (kind === "food") return <FoodHeroIcon />;
-  if (kind === "attraction") return <AttractionHeroIcon />;
-  return OTHER_HERO_ICONS[spot.icon] ?? <IconLocation sx={{ fontSize: "56px" }} />;
-}
-
-/** 스팟 상세 — 프로토타입 "SPOT DETAIL"(:283-317) 이식. */
+/** 스팟 상세 — 프로토타입 "SPOT DETAIL"(:283-317) 구조에 실 API(GET /spots/:id) 이미지·설명·태그 적용. */
 export function SpotDetailScreen({ spotId }: { spotId: string }) {
   const { t, locale } = useI18n();
   const navigate = useNavigate();
   const pkgSpotIds = usePkgSpotIds();
   const { data: spot } = useQuery({
-    queryKey: ["spot", spotId],
-    queryFn: () => getSpot(spotId),
+    queryKey: ["spot-detail", spotId, locale],
+    queryFn: () => getSpotDetail(spotId, locale),
+  });
+  // 주변 추천(디자인 nearby_subs) — 실 nearby 엔드포인트
+  const { data: nearby = [] } = useQuery({
+    queryKey: ["spot-nearby", spotId, locale],
+    queryFn: () => listNearbySpots(spotId, locale),
   });
 
   if (!spot) return null;
+
+  const hero = spot.images[0] ?? spot.thumbnail;
 
   const ensureInPackage = () => {
     if (!pkgSpotIds.includes(spotId)) sessionActions.togglePkgSpot(spotId);
@@ -100,18 +43,29 @@ export function SpotDetailScreen({ spotId }: { spotId: string }) {
   return (
     <FlexBox flexDirection="column" sx={{ minHeight: "100dvh" }}>
       <Box sx={{ flex: 1, overflowY: "auto" }}>
+        {/* 히어로 — 실 이미지(images[0] → thumbnail 폴백), 없으면 아이콘 플레이스홀더 */}
         <Box
-          sx={{
+          sx={(theme) => ({
             position: "relative",
-            height: "170px",
-            background: spot.color,
+            height: "200px",
+            background: theme.semantic.fill.normal,
+            color: theme.semantic.label.assistive,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: spot.iconColor,
-          }}
+            overflow: "hidden",
+          })}
         >
-          <HeroIcon spot={spot} />
+          {hero ? (
+            <img
+              src={hero}
+              alt=""
+              aria-hidden="true"
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+          ) : (
+            <IconLocation sx={{ fontSize: "56px" }} />
+          )}
           <Box
             as="button"
             type="button"
@@ -145,7 +99,7 @@ export function SpotDetailScreen({ spotId }: { spotId: string }) {
               color="accent"
               accentColor="semantic.primary.normal"
             >
-              {spot.cat[locale]}
+              {spot.categoryLabel}
             </ContentBadge>
           </Box>
           <Box
@@ -158,25 +112,58 @@ export function SpotDetailScreen({ spotId }: { spotId: string }) {
               color: theme.semantic.label.normal,
             })}
           >
-            {spot.name[locale]}
+            {spot.name}
           </Box>
           <Box sx={(theme) => ({ fontSize: "13px", color: theme.semantic.label.alternative })}>
-            {`${spot.km}km ${t("from_port")} · ${t("approx")} ${spot.min}${t("min")}`}
+            {`${spot.km}km ${t("from_port")} · ${t("approx")} ${spot.driveMinutes}${t("min")}`}
           </Box>
-          <Box
-            as="p"
-            sx={(theme) => ({
-              margin: "14px 0 0",
-              fontSize: "15px",
-              lineHeight: 1.6,
-              color: theme.semantic.label.neutral,
-            })}
-          >
-            {spot.blurb[locale]}
-          </Box>
+          {spot.description && (
+            <Box
+              as="p"
+              sx={(theme) => ({
+                margin: "14px 0 0",
+                fontSize: "15px",
+                lineHeight: 1.6,
+                color: theme.semantic.label.neutral,
+              })}
+            >
+              {spot.description}
+            </Box>
+          )}
+          {spot.address && (
+            <Box
+              sx={(theme) => ({
+                marginTop: "10px",
+                fontSize: "12px",
+                color: theme.semantic.label.alternative,
+              })}
+            >
+              {spot.address}
+            </Box>
+          )}
+          {spot.tags.length > 0 && (
+            <FlexBox gap="5px" sx={{ marginTop: "12px", flexWrap: "wrap" }}>
+              {spot.tags.slice(0, 6).map((tag) => (
+                <Box
+                  key={tag}
+                  as="span"
+                  sx={(theme) => ({
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    color: theme.semantic.label.neutral,
+                    background: theme.semantic.fill.normal,
+                    borderRadius: "999px",
+                    padding: "3px 9px",
+                  })}
+                >
+                  {tag}
+                </Box>
+              ))}
+            </FlexBox>
+          )}
         </Box>
 
-        {spot.subs.length > 0 && (
+        {nearby.length > 0 && (
           <>
             <Box
               sx={(theme) => ({
@@ -189,32 +176,57 @@ export function SpotDetailScreen({ spotId }: { spotId: string }) {
               {t("nearby_subs")}
             </Box>
             <FlexBox flexDirection="column" gap="10px" sx={{ padding: "6px 20px 0" }}>
-              {spot.subs.map((sub) => (
+              {nearby.map((sub) => (
                 <FlexBox
-                  key={sub.name[locale]}
+                  key={sub.id}
+                  as="button"
+                  type="button"
+                  onClick={() => navigate({ to: "/app/spot/$spotId", params: { spotId: sub.id } })}
                   alignItems="center"
                   gap="12px"
                   sx={(theme) => ({
+                    width: "100%",
+                    textAlign: "left",
+                    border: "none",
+                    cursor: "pointer",
                     background: theme.semantic.background.normal.alternative,
                     borderRadius: "14px",
                     padding: "13px 14px",
                   })}
                 >
-                  <FlexBox
-                    alignItems="center"
-                    justifyContent="center"
+                  <Box
+                    as="span"
                     sx={(theme) => ({
                       width: "38px",
                       height: "38px",
                       borderRadius: "10px",
+                      overflow: "hidden",
                       background: theme.semantic.background.normal.normal,
                       boxShadow: `inset 0 0 0 1px ${theme.semantic.line.normal.neutral}`,
                       color: theme.semantic.primary.normal,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       flexShrink: 0,
                     })}
                   >
-                    <IconPinFill sx={{ fontSize: "18px" }} />
-                  </FlexBox>
+                    {sub.thumbnail ? (
+                      <img
+                        src={sub.thumbnail}
+                        alt=""
+                        aria-hidden="true"
+                        loading="lazy"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          display: "block",
+                        }}
+                      />
+                    ) : (
+                      <IconLocation sx={{ fontSize: "18px" }} />
+                    )}
+                  </Box>
                   <Box sx={{ flex: 1, minWidth: 0 }}>
                     <Box
                       sx={(theme) => ({
@@ -223,7 +235,7 @@ export function SpotDetailScreen({ spotId }: { spotId: string }) {
                         color: theme.semantic.label.normal,
                       })}
                     >
-                      {sub.name[locale]}
+                      {sub.name}
                     </Box>
                     <Box
                       sx={(theme) => ({
@@ -231,7 +243,7 @@ export function SpotDetailScreen({ spotId }: { spotId: string }) {
                         color: theme.semantic.label.alternative,
                       })}
                     >
-                      {`${sub.type[locale]} · ${sub.blurb[locale]}`}
+                      {`${sub.type} · ${sub.distanceKm}km · ${t("approx")} ${sub.walkMinutes}${t("min")}`}
                     </Box>
                   </Box>
                 </FlexBox>

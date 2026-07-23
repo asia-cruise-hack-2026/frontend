@@ -4,7 +4,7 @@ import { Box, Button, FlexBox } from "@wanteddev/wds";
 import { IconArrowLeft } from "@wanteddev/wds-icon";
 
 import { getCruise } from "@/entities/cruise";
-import { buildCourse, listSpots, type Spot } from "@/entities/spot";
+import { buildCourse, listReachableSpots, pctProjector, type ReachableSpot } from "@/entities/spot";
 import { GLOBAL_CARS, taxiFare, taxiMinutes, vanFare } from "@/entities/transport";
 import { useI18n } from "@/shared/i18n";
 import { useCruiseId, usePkgSpotIds, useTransportMode } from "@/shared/store";
@@ -60,26 +60,35 @@ export function FinalRoutePage() {
     enabled: !!cruiseId,
   });
   const portKey = cruise?.portKey ?? "jeju";
+  // 실 DB 스팟 — 패키지/홈과 동일 소스·캐시 키
   const { data: allSpots = [] } = useQuery({
-    queryKey: ["spots", portKey],
-    queryFn: () => listSpots({ portKey }),
+    queryKey: ["reachable-spots", cruiseId, locale, 30],
+    queryFn: () => listReachableSpots(cruiseId ?? "", locale, 30),
+    enabled: !!cruiseId,
   });
 
   // pkgSpotIds 순서 유지하며 spots로 변환 — AiPackagePage.tsx와 동일 패턴
   const spots = pkgSpotIds
     .map((id) => allSpots.find((s) => s.id === id))
-    .filter((s): s is Spot => s != null);
+    .filter((s): s is ReachableSpot => s != null);
 
   const course = cruise ? buildCourse(spots, cruise) : null;
   const totalKm = spots.reduce((sum, s) => sum + s.km, 0);
 
-  // 디자인 renderVals :1695 — 항구(제주/강정)에 따라 땅·마커 위치가 다름
+  // 디자인 renderVals :1695 — 항구(제주/강정)에 따라 땅 위치가 다름(장식)
   const landTop = portKey === "jeju" ? "34%" : "-30%";
-  const portY = portKey === "jeju" ? 18 : 84;
   const portLabel = cruise?.portName ?? "";
 
-  // 디자인 renderVals :1606 — 항구(50, portY)에서 시작해 pkg 스팟을 순서대로 잇는 경로선
-  const polylinePoints = [`50,${portY}`, ...spots.map((s) => `${s.x},${s.y}`)].join(" ");
+  // 양식화 지도 유지 — 실좌표(lat/lng)를 x/y%로 투영(mock x/y% 대체)
+  const portPt = { lat: cruise?.portLat ?? 33.523, lng: cruise?.portLng ?? 126.537 };
+  const project = pctProjector([portPt, ...spots]);
+  const portXY = project(portPt);
+  const spotXYs = spots.map((s) => project(s));
+
+  // 디자인 renderVals :1606 — 항구에서 시작해 pkg 스팟을 순서대로 잇는 경로선
+  const polylinePoints = [`${portXY.x},${portXY.y}`, ...spotXYs.map((p) => `${p.x},${p.y}`)].join(
+    " ",
+  );
 
   const finalTimeText = mode === "gtaxi" ? t("gt_dayfull") : `${taxiMinutes(totalKm)}${t("min")}`;
   const finalCostText =
@@ -88,7 +97,7 @@ export function FinalRoutePage() {
       : mode === "gtaxi"
         ? money(GLOBAL_CARS[0].day)
         : money(taxiFare(totalKm));
-  const finalReturnText = cruise ? fmt(cruise.depM - 30) : "";
+  const finalReturnText = cruise ? fmt(cruise.depM - 60) : ""; // 탑승 마감 = 출항-60분(앱 전역 통일)
 
   return (
     <FlexBox flexDirection="column" sx={{ minHeight: "100dvh" }}>
@@ -174,8 +183,8 @@ export function FinalRoutePage() {
             as="span"
             sx={(theme) => ({
               position: "absolute",
-              left: "50%",
-              top: `${portY}%`,
+              left: `${portXY.x}%`,
+              top: `${portXY.y}%`,
               transform: "translate(-50%,-50%)",
               zIndex: 3,
               background: theme.semantic.label.normal,
@@ -194,8 +203,8 @@ export function FinalRoutePage() {
               as="span"
               sx={(theme) => ({
                 position: "absolute",
-                left: `${spot.x}%`,
-                top: `${spot.y}%`,
+                left: `${spotXYs[i]?.x ?? 50}%`,
+                top: `${spotXYs[i]?.y ?? 50}%`,
                 transform: "translate(-50%,-100%)",
                 zIndex: 4,
                 width: "22px",
@@ -267,7 +276,7 @@ export function FinalRoutePage() {
                         color: theme.semantic.label.normal,
                       })}
                     >
-                      {spot.name[locale]}
+                      {spot.name}
                     </Box>
                     <Box
                       as="span"

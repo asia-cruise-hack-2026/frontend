@@ -5,11 +5,19 @@ type TransportMode = "taxi" | "van" | "gtaxi";
 interface SessionState {
   cruiseId: string | null;
   pkgSpotIds: string[];
+  // 디자인 state routeConfirmed — 패키지에서 확정해야 홈에 "현재 경로"로 노출(미확정 초안은 숨김)
+  routeConfirmed: boolean;
   transportMode: TransportMode | null;
   cart: string[];
 }
 
-const EMPTY: SessionState = { cruiseId: null, pkgSpotIds: [], transportMode: null, cart: [] };
+const EMPTY: SessionState = {
+  cruiseId: null,
+  pkgSpotIds: [],
+  routeConfirmed: false,
+  transportMode: null,
+  cart: [],
+};
 
 const STORAGE_KEY = "omong.session.v1";
 
@@ -27,6 +35,7 @@ const load = (): SessionState => {
       pkgSpotIds: Array.isArray(s.pkgSpotIds)
         ? s.pkgSpotIds.filter((x): x is string => typeof x === "string")
         : [],
+      routeConfirmed: s.routeConfirmed === true,
       transportMode:
         s.transportMode === "taxi" || s.transportMode === "van" || s.transportMode === "gtaxi"
           ? s.transportMode
@@ -54,6 +63,7 @@ export const getSessionCruiseId = (): string | null => store.state.cruiseId;
 
 export const useCruiseId = () => useStore(store, (s) => s.cruiseId);
 export const usePkgSpotIds = () => useStore(store, (s) => s.pkgSpotIds);
+export const useRouteConfirmed = () => useStore(store, (s) => s.routeConfirmed);
 export const useTransportMode = () => useStore(store, (s) => s.transportMode);
 export const useCart = () => useStore(store, (s) => s.cart);
 
@@ -67,6 +77,7 @@ export const sessionActions = {
         : [...s.pkgSpotIds, id],
     })),
   setPkgSpots: (ids: string[]) => store.setState((s) => ({ ...s, pkgSpotIds: ids })),
+  setRouteConfirmed: (v: boolean) => store.setState((s) => ({ ...s, routeConfirmed: v })),
   movePkgSpot: (id: string, dir: -1 | 1) =>
     store.setState((s) => {
       const a = [...s.pkgSpotIds];
@@ -96,8 +107,7 @@ export const sessionActions = {
   removeFromCart: (id: string) =>
     store.setState((s) => ({ ...s, cart: s.cart.filter((x) => x !== id) })),
   clearCart: () => store.setState((s) => ({ ...s, cart: [] })),
-  reset: () =>
-    store.setState(() => ({ cruiseId: null, pkgSpotIds: [], transportMode: null, cart: [] })),
+  reset: () => store.setState(() => ({ ...EMPTY })),
 };
 
 export type { TransportMode };

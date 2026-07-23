@@ -4,8 +4,7 @@ import { Box, FlexBox } from "@wanteddev/wds";
 import { IconArrowLeft, IconCameraFill, IconSparkleFill, IconStarFill } from "@wanteddev/wds-icon";
 import type { ReactNode } from "react";
 
-import { getCruise } from "@/entities/cruise";
-import { conceptSpotIds, listSpots } from "@/entities/spot";
+import { conceptSpotIds, listReachableSpots } from "@/entities/spot";
 import { useI18n } from "@/shared/i18n";
 import { sessionActions, useCruiseId } from "@/shared/store";
 
@@ -79,19 +78,16 @@ export function AiConceptPage() {
   const navigate = useNavigate();
   const cruiseId = useCruiseId();
 
-  const { data: cruise } = useQuery({
-    queryKey: ["cruise", cruiseId, locale],
-    queryFn: () => getCruise(cruiseId ?? "", locale),
-    enabled: !!cruiseId,
-  });
-  const portKey = cruise?.portKey ?? "jeju";
+  // 실 DB 스팟(도달 가능 목록) — 컨셉 매칭 풀. 이동/패키지와 동일 소스
   const { data: spots = [] } = useQuery({
-    queryKey: ["spots", portKey],
-    queryFn: () => listSpots({ portKey }),
+    queryKey: ["reachable-spots", cruiseId, locale, 30],
+    queryFn: () => listReachableSpots(cruiseId ?? "", locale, 30),
+    enabled: !!cruiseId,
   });
 
   const pickConcept = (key: ConceptKey) => {
     sessionActions.setPkgSpots(conceptSpotIds(key, spots));
+    sessionActions.setRouteConfirmed(false); // 초안 — 패키지에서 확정해야 홈에 노출
     navigate({ to: "/app/package" });
   };
 

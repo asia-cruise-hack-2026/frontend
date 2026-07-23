@@ -465,12 +465,6 @@ export const strings = {
     zh: "免费又健康",
     ja: "無料で健康的",
   },
-  taxi_only_note: {
-    ko: "짐이 많은 크루즈 승선객을 위해 택시 이동만 제공해요. 기사님이 관광지마다 대기하며 안전하게 모셔다드립니다.",
-    en: "For cruise guests with luggage, we offer taxi only — your driver waits at each stop and gets you back safely.",
-    zh: "为携带行李的邮轮旅客仅提供出租车出行，司机在每个景点等候并安全送返。",
-    ja: "荷物の多いクルーズ乗船客のためタクシー移動のみ。各観光地でドライバーが待機し安全にお送りします。",
-  },
   transport_cta: { ko: "택시 부르기", en: "Call a taxi", zh: "呼叫出租车", ja: "タクシーを呼ぶ" },
   final_title: {
     ko: "최종 경로 안내",

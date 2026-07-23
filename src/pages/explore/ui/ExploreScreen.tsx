@@ -1,19 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { addOpacity, Box, Button, FlexBox } from "@wanteddev/wds";
-import {
-  IconArrowLeft,
-  IconCheck,
-  IconCoffee,
-  IconLocation,
-  IconPlus,
-  IconSun,
-  IconUmbrella,
-} from "@wanteddev/wds-icon";
-import { type ReactNode, useState } from "react";
+import { IconArrowLeft, IconCheck, IconLocation, IconPlus } from "@wanteddev/wds-icon";
+import { useState } from "react";
 
 import { getCruise } from "@/entities/cruise";
-import { listSpots, spotIconKind, THEME_TINT } from "@/entities/spot";
+import { categoryTint, listReachableSpots, pctProjector } from "@/entities/spot";
 import { useI18n } from "@/shared/i18n";
 import { sessionActions, useCruiseId, usePkgSpotIds } from "@/shared/store";
 
@@ -39,63 +31,13 @@ function ShipGlyph() {
   );
 }
 
-// 디자인 :261 원본 음식 SVG(spotIconKind==="food") — WDS 대응 아이콘 없어 코드로 직접(D2).
-function FoodGlyph() {
-  return (
-    <svg
-      width="26"
-      height="26"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M12 3c1.918 0 3.52 1.35 3.91 3.151a4 4 0 0 1 2.09 7.723l0 7.126h-12v-7.126a4 4 0 1 1 2.092 -7.723a4 4 0 0 1 3.908 -3.151" />
-      <path d="M6.161 17.009l11.839 -.009" />
-    </svg>
-  );
-}
-
-// 디자인 :261 원본 관광 SVG(spotIconKind==="attraction") — WDS 대응 아이콘 없어 코드로 직접(D2).
-function MountainGlyph() {
-  return (
-    <svg
-      width="26"
-      height="26"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M3 20h18l-6.921 -14.612a2.3 2.3 0 0 0 -4.158 0l-6.921 14.612" />
-      <path d="M7.5 11l2 2.5l2.5 -2.5l2 3l2.5 -2" />
-    </svg>
-  );
-}
-
-// spotIconKind==="other"일 때 spot.icon 이름 → WDS 아이콘 매핑(mock 데이터 기준 coffee/location/sun/umbrella).
-const OTHER_SPOT_ICONS: Record<string, ReactNode> = {
-  coffee: <IconCoffee sx={{ fontSize: "26px" }} />,
-  location: <IconLocation sx={{ fontSize: "26px" }} />,
-  sun: <IconSun sx={{ fontSize: "26px" }} />,
-  umbrella: <IconUmbrella sx={{ fontSize: "26px" }} />,
-};
-
-type CatKey = "all" | "attraction" | "food" | "cafe" | "package";
-
-/** 탐방(지도) — 프로토타입 "Explore"(:229-281) 이식. */
+/** 탐방(지도) — 프로토타입 "Explore"(:229-281) 구조에 실 DB 스팟·카테고리·썸네일 적용. */
 export function ExploreScreen() {
   const { t, locale } = useI18n();
   const navigate = useNavigate();
   const cruiseId = useCruiseId();
   const pkgSpotIds = usePkgSpotIds();
-  const [activeCat, setActiveCat] = useState<CatKey>("all");
+  const [activeCat, setActiveCat] = useState("all");
 
   const { data: cruise } = useQuery({
     queryKey: ["cruise", cruiseId, locale],
@@ -103,24 +45,37 @@ export function ExploreScreen() {
     enabled: !!cruiseId,
   });
   const portKey = cruise?.portKey ?? "jeju";
+  // 실 DB 스팟 — 패키지/홈/테마와 동일 소스·캐시 키
   const { data: spots = [] } = useQuery({
-    queryKey: ["spots", portKey],
-    queryFn: () => listSpots({ portKey }),
+    queryKey: ["reachable-spots", cruiseId, locale, 30],
+    queryFn: () => listReachableSpots(cruiseId ?? "", locale, 30),
+    enabled: !!cruiseId,
   });
 
-  const filteredSpots = spots.filter((s) => activeCat === "all" || s.themes.includes(activeCat));
-  const catTabs: { key: CatKey; label: string }[] = [
-    { key: "all", label: t("filter_all") },
-    { key: "attraction", label: t("th_attraction") },
-    { key: "food", label: t("th_food") },
-    { key: "cafe", label: t("th_cafe") },
-    { key: "package", label: t("th_package") },
-  ];
+  const filteredSpots = spots.filter((s) => activeCat === "all" || s.categoryKey === activeCat);
+  // 카테고리 탭 — 로드된 스팟에서 도출(빈도순) + 전체
+  const catTabs = (() => {
+    const seen = new Map<string, { key: string; label: string; count: number }>();
+    for (const s of spots) {
+      const c = seen.get(s.categoryKey);
+      if (c) c.count += 1;
+      else seen.set(s.categoryKey, { key: s.categoryKey, label: s.categoryLabel, count: 1 });
+    }
+    return [
+      { key: "all", label: t("filter_all") },
+      ...[...seen.values()].sort((a, b) => b.count - a.count),
+    ];
+  })();
 
-  // 디자인 renderVals :1695 — 항구(제주/강정)에 따라 땅·마커 위치가 다름
+  // 디자인 renderVals :1695 — 항구(제주/강정)에 따라 땅 위치가 다름(장식)
   const landTop = portKey === "jeju" ? "34%" : "-30%";
-  const portTop = portKey === "jeju" ? "18%" : "84%";
   const portLabel = cruise?.portName ?? "";
+
+  // 양식화 지도 유지 — 실좌표를 x/y%로 투영(항구 + 지도 노출 스팟 상위 8곳)
+  const portPt = { lat: cruise?.portLat ?? 33.523, lng: cruise?.portLng ?? 126.537 };
+  const mapSpots = spots.slice(0, 8);
+  const project = pctProjector([portPt, ...mapSpots]);
+  const portXY = project(portPt);
 
   // 디자인 renderVals :1713 — pkgCta 문구 이식
   const pkgCta =
@@ -196,7 +151,7 @@ export function ExploreScreen() {
         )}
       </Box>
 
-      {/* 스타일 지도 — 디자인 :237-248 */}
+      {/* 스타일 지도 — 디자인 :237-248, 마커는 실좌표 투영 */}
       <Box
         sx={{
           position: "relative",
@@ -223,10 +178,10 @@ export function ExploreScreen() {
           gap="3px"
           sx={{
             position: "absolute",
-            left: "50%",
-            top: portTop,
+            left: `${portXY.x}%`,
+            top: `${portXY.y}%`,
             transform: "translate(-50%,-50%)",
-            zIndex: 3,
+            zIndex: 5,
           }}
         >
           <FlexBox
@@ -246,8 +201,9 @@ export function ExploreScreen() {
             {portLabel}
           </FlexBox>
         </FlexBox>
-        {spots.map((spot) => {
+        {mapSpots.map((spot) => {
           const inPkg = pkgSpotIds.includes(spot.id);
+          const xy = project(spot);
           return (
             <Box
               key={spot.id}
@@ -256,8 +212,8 @@ export function ExploreScreen() {
               onClick={() => navigate({ to: "/app/spot/$spotId", params: { spotId: spot.id } })}
               sx={{
                 position: "absolute",
-                left: `${spot.x}%`,
-                top: `${spot.y}%`,
+                left: `${xy.x}%`,
+                top: `${xy.y}%`,
                 transform: "translate(-50%,-100%)",
                 border: "none",
                 background: "none",
@@ -282,7 +238,7 @@ export function ExploreScreen() {
                   boxShadow: "0 3px 10px rgba(0,0,0,.22)",
                 })}
               >
-                {spot.name[locale]}
+                {spot.name}
               </Box>
               <Box
                 as="span"
@@ -323,7 +279,7 @@ export function ExploreScreen() {
         {t("pick_main_hint")}
       </Box>
 
-      {/* 카테고리 칩 — 디자인 :253-257 */}
+      {/* 카테고리 칩 — 디자인 :253-257, 실 DB 카테고리 */}
       <FlexBox gap="8px" sx={{ overflowX: "auto", padding: "2px 20px 12px" }}>
         {catTabs.map((tab) => {
           const active = activeCat === tab.key;
@@ -341,6 +297,7 @@ export function ExploreScreen() {
                 padding: "8px 15px",
                 fontWeight: 600,
                 fontSize: "13px",
+                whiteSpace: "nowrap",
                 background: active ? theme.semantic.primary.normal : theme.semantic.fill.normal,
                 color: active ? theme.semantic.static.white : theme.semantic.label.neutral,
               })}
@@ -351,16 +308,11 @@ export function ExploreScreen() {
         })}
       </FlexBox>
 
-      {/* 스팟 리스트 — 디자인 :258-273 */}
+      {/* 스팟 리스트 — 디자인 :258-273, 실 썸네일·설명 */}
       <FlexBox flexDirection="column" gap="10px" sx={{ padding: "0 20px" }}>
         {filteredSpots.map((spot) => {
           const inPkg = pkgSpotIds.includes(spot.id);
-          const iconKind = spotIconKind(spot.themes);
-          let iconNode: ReactNode;
-          if (iconKind === "food") iconNode = <FoodGlyph />;
-          else if (iconKind === "attraction") iconNode = <MountainGlyph />;
-          else iconNode = OTHER_SPOT_ICONS[spot.icon] ?? null;
-
+          const tint = categoryTint(spot.categoryKey);
           const goDetail = () => navigate({ to: "/app/spot/$spotId", params: { spotId: spot.id } });
 
           return (
@@ -378,20 +330,32 @@ export function ExploreScreen() {
                 as="button"
                 type="button"
                 onClick={goDetail}
-                sx={{
+                sx={(theme) => ({
                   flex: "0 0 60px",
                   height: "60px",
                   border: "none",
                   cursor: "pointer",
                   borderRadius: "12px",
-                  background: spot.color,
-                  color: spot.iconColor,
+                  padding: 0,
+                  overflow: "hidden",
+                  background: theme.semantic.fill.normal,
+                  color: theme.semantic.label.assistive,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                }}
+                })}
               >
-                {iconNode}
+                {spot.thumbnail ? (
+                  <img
+                    src={spot.thumbnail}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                ) : (
+                  <IconLocation sx={{ fontSize: "24px" }} />
+                )}
               </Box>
               <Box
                 as="button"
@@ -414,7 +378,7 @@ export function ExploreScreen() {
                     color: theme.semantic.label.normal,
                   })}
                 >
-                  {spot.name[locale]}
+                  {spot.name}
                 </Box>
                 <Box
                   sx={(theme) => ({
@@ -423,43 +387,38 @@ export function ExploreScreen() {
                     marginTop: "2px",
                   })}
                 >
-                  {`${spot.cat[locale]} · ${spot.km}km · ${t("approx")} ${spot.min}${t("min")}`}
+                  {`${spot.km}km · ${t("approx")} ${spot.driveMinutes}${t("min")}`}
                 </Box>
-                <Box
-                  sx={(theme) => ({
-                    fontSize: "12px",
-                    color: theme.semantic.label.neutral,
-                    marginTop: "5px",
-                    lineHeight: 1.45,
-                    overflow: "hidden",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                  })}
-                >
-                  {spot.blurb[locale]}
-                </Box>
+                {spot.description && (
+                  <Box
+                    sx={(theme) => ({
+                      fontSize: "12px",
+                      color: theme.semantic.label.neutral,
+                      marginTop: "5px",
+                      lineHeight: 1.45,
+                      overflow: "hidden",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                    })}
+                  >
+                    {spot.description}
+                  </Box>
+                )}
                 <FlexBox gap="5px" sx={{ marginTop: "7px", flexWrap: "wrap" }}>
-                  {spot.themes
-                    .filter((themeKey): themeKey is keyof typeof THEME_TINT =>
-                      Object.hasOwn(THEME_TINT, themeKey),
-                    )
-                    .map((themeKey) => (
-                      <Box
-                        key={themeKey}
-                        as="span"
-                        sx={{
-                          fontSize: "10px",
-                          fontWeight: 600,
-                          color: THEME_TINT[themeKey].fg,
-                          background: THEME_TINT[themeKey].bg,
-                          borderRadius: "999px",
-                          padding: "2px 8px",
-                        }}
-                      >
-                        {t(`th_${themeKey}`)}
-                      </Box>
-                    ))}
+                  <Box
+                    as="span"
+                    sx={{
+                      fontSize: "10px",
+                      fontWeight: 600,
+                      color: tint.fg,
+                      background: tint.bg,
+                      borderRadius: "999px",
+                      padding: "2px 8px",
+                    }}
+                  >
+                    {spot.categoryLabel}
+                  </Box>
                 </FlexBox>
               </Box>
               <Box

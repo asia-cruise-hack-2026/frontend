@@ -12,14 +12,12 @@ import {
   IconArrowLeft,
   IconChevronDown,
   IconChevronUp,
-  IconCircleInfoFill,
   IconGlobe,
   IconVerifiedCheckFill,
 } from "@wanteddev/wds-icon";
 import { useEffect, useState } from "react";
 
-import { getCruise } from "@/entities/cruise";
-import { listSpots, type Spot } from "@/entities/spot";
+import { listReachableSpots, type ReachableSpot } from "@/entities/spot";
 import {
   GLOBAL_CARS,
   VEHICLES,
@@ -411,9 +409,9 @@ function GlobalCarCard({
 }
 
 /**
- * 이동수단 선택 — 프로토타입 "TRANSPORT SELECT"(:504-593) 이식.
+ * 이동수단 선택 — 프로토타입 "TRANSPORT SELECT"(:520-610) 이식(헤더 고정: 타이틀+글로벌 팁 말풍선+세그먼트, 카드만 스크롤).
  * 상단 세그먼트(일반/글로벌 택시)로 두 트랙을 전환한다.
- * - 일반: taxi_only_note 정책 배너 + 일반 택시/대형 밴 두 카드(진입 시 택시 프리셀렉트).
+ * - 일반: 일반 택시/대형 밴 두 카드(진입 시 택시 프리셀렉트).
  * - 글로벌: 안내 배너(+요금정책 아코디언) + GLOBAL_CARS 4종 카드.
  * 선택 결과는 sessionActions.setTransportMode로 스토어에 반영한다(taxi/van/gtaxi).
  */
@@ -432,21 +430,17 @@ export function TransportSelectPage() {
     sessionActions.setTransportMode("taxi");
   }, []);
 
-  const { data: cruise } = useQuery({
-    queryKey: ["cruise", cruiseId, locale],
-    queryFn: () => getCruise(cruiseId ?? "", locale),
-    enabled: !!cruiseId,
-  });
-  const portKey = cruise?.portKey ?? "jeju";
+  // 실 DB 스팟 — 패키지/홈과 동일 소스·캐시 키
   const { data: allSpots = [] } = useQuery({
-    queryKey: ["spots", portKey],
-    queryFn: () => listSpots({ portKey }),
+    queryKey: ["reachable-spots", cruiseId, locale, 30],
+    queryFn: () => listReachableSpots(cruiseId ?? "", locale, 30),
+    enabled: !!cruiseId,
   });
 
   // pkgSpotIds 순서 유지 매핑 — AiPackagePage.tsx와 동일 패턴.
   const spots = pkgSpotIds
     .map((id) => allSpots.find((s) => s.id === id))
-    .filter((s): s is Spot => s != null);
+    .filter((s): s is ReachableSpot => s != null);
   const totalKm = spots.reduce((a, s) => a + s.km, 0);
 
   const taxiCost = taxiFare(totalKm);
@@ -489,8 +483,8 @@ export function TransportSelectPage() {
         </Box>
       </FlexBox>
 
-      <Box sx={{ flex: 1, overflowY: "auto", padding: "0 20px 20px" }}>
-        {/* 타이틀 — 디자인 :509-510 */}
+      {/* 헤더 블록(타이틀·글로벌 팁·세그먼트) — 디자인 :526-533, 고정(flex-shrink 0) */}
+      <Box sx={{ padding: "0 20px 10px", flexShrink: 0 }}>
         <Box
           as="h1"
           sx={(theme) => ({
@@ -506,7 +500,7 @@ export function TransportSelectPage() {
         <Box
           as="p"
           sx={(theme) => ({
-            margin: "0 0 16px",
+            margin: 0,
             fontSize: "14px",
             lineHeight: 1.5,
             color: theme.semantic.label.alternative,
@@ -515,53 +509,57 @@ export function TransportSelectPage() {
           {t("transport_sub")}
         </Box>
 
-        {/* 일반/글로벌 세그먼트 — 디자인 :513-516 */}
-        <FlexBox justifyContent="center" sx={{ marginBottom: "16px" }}>
+        {/* 글로벌 택시 팁 말풍선 — 디자인 :530 (꼬리가 세그먼트 '글로벌' 쪽을 가리킴) */}
+        <FlexBox
+          alignItems="center"
+          justifyContent="center"
+          gap="6px"
+          sx={(theme) => ({
+            position: "relative",
+            marginTop: "18px",
+            background: addOpacity(theme.semantic.primary.normal, theme.opacity[8]),
+            color: theme.semantic.primary.normal,
+            fontSize: "12px",
+            fontWeight: 600,
+            lineHeight: 1.4,
+            padding: "9px 13px",
+            borderRadius: "10px",
+            wordBreak: "keep-all",
+          })}
+        >
+          <Box as="span" sx={{ display: "inline-flex", flexShrink: 0 }}>
+            <IconGlobe sx={{ fontSize: "15px" }} />
+          </Box>
+          {t("global_tip")}
+          <Box
+            as="span"
+            sx={(theme) => ({
+              position: "absolute",
+              top: "100%",
+              left: "78%",
+              transform: "translateX(-50%) rotate(45deg)",
+              width: "10px",
+              height: "10px",
+              background: addOpacity(theme.semantic.primary.normal, theme.opacity[8]),
+              marginTop: "-5px",
+              borderRadius: "2px",
+            })}
+          />
+        </FlexBox>
+
+        {/* 일반/글로벌 세그먼트 — 디자인 :531-533 */}
+        <FlexBox justifyContent="center" sx={{ marginTop: "12px" }}>
           <SegmentedControl value={service} onValueChange={handleServiceChange}>
             <SegmentedControlItem value="normal">{t("svc_normal")}</SegmentedControlItem>
             <SegmentedControlItem value="global">{t("svc_global")}</SegmentedControlItem>
           </SegmentedControl>
         </FlexBox>
+      </Box>
 
+      <Box sx={{ flex: 1, overflowY: "auto", padding: "14px 20px 20px" }}>
         {service === "normal" ? (
           <>
-            {/* 안내 배너 — taxi_only_note. 디자인엔 렌더 안 된 문자열이라 MyPage.tsx trust_body 배너
-                (아이콘+문단, 틴트 배경) 톤을 이식. */}
-            <FlexBox
-              alignItems="flex-start"
-              gap="9px"
-              sx={(theme) => ({
-                background: addOpacity(theme.semantic.primary.normal, theme.opacity[8]),
-                borderRadius: "14px",
-                padding: "13px 14px",
-                marginBottom: "16px",
-              })}
-            >
-              <Box
-                as="span"
-                sx={(theme) => ({
-                  display: "inline-flex",
-                  color: theme.semantic.primary.normal,
-                  flexShrink: 0,
-                  marginTop: "1px",
-                })}
-              >
-                <IconCircleInfoFill sx={{ fontSize: "18px" }} />
-              </Box>
-              <Box
-                as="p"
-                sx={(theme) => ({
-                  margin: 0,
-                  fontSize: "12.5px",
-                  lineHeight: 1.5,
-                  color: theme.semantic.label.neutral,
-                })}
-              >
-                {t("taxi_only_note")}
-              </Box>
-            </FlexBox>
-
-            {/* 이동수단 카드 — 디자인 :535-568 */}
+            {/* 이동수단 카드 — 디자인 :562-583 (일반 트랙엔 별도 배너 없음) */}
             <FlexBox flexDirection="column" gap="12px">
               <TransportCard
                 mode="taxi"

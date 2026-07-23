@@ -5,10 +5,10 @@ import { IconChevronRight } from "@wanteddev/wds-icon";
 import { useEffect, useState } from "react";
 
 import { cruiseDepartureMs, getCruise, minutesToDeparture } from "@/entities/cruise";
-import { buildCourse, listReachableSpots, listSpots, type Spot } from "@/entities/spot";
+import { buildCourse, listReachableSpots, type ReachableSpot } from "@/entities/spot";
 import { ApiError } from "@/shared/api";
 import { useI18n } from "@/shared/i18n";
-import { sessionActions, useCruiseId, usePkgSpotIds } from "@/shared/store";
+import { sessionActions, useCruiseId, usePkgSpotIds, useRouteConfirmed } from "@/shared/store";
 import { AiButton } from "@/shared/ui";
 
 import { HomeMap } from "./HomeMap";
@@ -107,16 +107,10 @@ export function HomePage() {
     }
   }, [cruise, cruiseError, navigate, now]);
 
-  const portKey = cruise?.portKey ?? "jeju";
+  // 실 DB 스팟 — 지도 마커·경로 해석 공용(컨셉/패키지와 동일 캐시 키)
   const { data: allSpots = [] } = useQuery({
-    queryKey: ["spots", portKey],
-    queryFn: () => listSpots({ portKey }),
-  });
-
-  // 지도 마커용 DB 스팟 — 이동 탭과 동일 계약(/spots?cruiseId=&sort=distance)·동일 캐시 키
-  const { data: mapSpots = [] } = useQuery({
-    queryKey: ["reachable-spots", cruiseId, locale],
-    queryFn: () => listReachableSpots(cruiseId ?? "", locale),
+    queryKey: ["reachable-spots", cruiseId, locale, 30],
+    queryFn: () => listReachableSpots(cruiseId ?? "", locale, 30),
     enabled: !!cruiseId,
   });
 
@@ -158,15 +152,16 @@ export function HomePage() {
       })()
     : null;
 
-  const isEmpty = pkgSpotIds.length === 0;
-
-  // 현재 경로 타임라인(hasPkg) — 디자인 :170-205 + renderVals :1567-1571
+  // 현재 경로 타임라인(hasPkg) — 디자인 :170-205 + renderVals :1567-1571.
+  // 패키지에서 "확정"한 경로만 노출(routeConfirmed) — 미확정 초안·이전 세션 잔여 초안은 빈 상태로.
+  const routeConfirmed = useRouteConfirmed();
   const spots = pkgSpotIds
     .map((id) => allSpots.find((s) => s.id === id))
-    .filter((s): s is Spot => s != null);
+    .filter((s): s is ReachableSpot => s != null);
   const course = cruise ? buildCourse(spots, cruise) : null;
   const firstSpot = spots[0];
   const firstStop = course?.stops[0];
+  const isEmpty = !routeConfirmed || spots.length === 0;
   const moreLabel =
     locale === "ko"
       ? `전체 ${spots.length}곳 경로 보기`
@@ -482,7 +477,7 @@ export function HomePage() {
             port={{ lat: cruise?.portLat ?? 33.523, lng: cruise?.portLng ?? 126.537 }}
             portName={cruise?.portName ?? ""}
             myPos={myPos}
-            spots={mapSpots}
+            spots={allSpots.slice(0, 10)}
             onExpand={() => navigate({ to: "/app/map", viewTransition: true })}
           />
           <Box
@@ -734,7 +729,7 @@ export function HomePage() {
                         color: theme.semantic.label.normal,
                       })}
                     >
-                      {firstSpot.name[locale]}
+                      {firstSpot.name}
                     </Box>
                     <Box
                       as="span"
