@@ -38,9 +38,10 @@ export function MyPage() {
   const { t, locale, setLocale } = useI18n();
   const cruiseId = useCruiseId();
   const { data: cruise } = useQuery({
-    queryKey: ["cruise", cruiseId],
-    queryFn: () => getCruise(cruiseId ?? ""),
+    queryKey: ["cruise", cruiseId, locale],
+    queryFn: () => getCruise(cruiseId ?? "", locale),
     enabled: !!cruiseId,
+    retry: false,
   });
 
   return (
@@ -111,7 +112,7 @@ export function MyPage() {
                 as="span"
                 sx={(theme) => ({ fontWeight: 600, color: theme.semantic.label.normal })}
               >
-                {cruise.portName[locale]}
+                {cruise.portName}
               </Box>
             </FlexBox>
             <FlexBox
@@ -145,7 +146,7 @@ export function MyPage() {
                 as="span"
                 sx={(theme) => ({ fontWeight: 600, color: theme.semantic.label.normal })}
               >
-                {cruise.nextDest[locale]}
+                {cruise.nextDest}
               </Box>
             </FlexBox>
           </Box>

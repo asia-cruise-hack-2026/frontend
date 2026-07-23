@@ -78,8 +78,8 @@ export function MovePage() {
   const cruiseId = useCruiseId();
 
   const { data: cruise } = useQuery({
-    queryKey: ["cruise", cruiseId],
-    queryFn: () => getCruise(cruiseId ?? ""),
+    queryKey: ["cruise", cruiseId, locale],
+    queryFn: () => getCruise(cruiseId ?? "", locale),
     enabled: !!cruiseId,
   });
   const portKey = cruise?.portKey ?? "jeju";
@@ -106,7 +106,7 @@ export function MovePage() {
     return () => clearTimeout(id);
   }, [callStatus]);
 
-  const portLabel = cruise?.portName[locale] ?? "";
+  const portLabel = cruise?.portName ?? "";
   const destSpot = spots.find((s) => s.id === destId);
   const destLabel = destSpot?.name[locale] ?? "";
   const pickupLabel = pickupName ?? portLabel;

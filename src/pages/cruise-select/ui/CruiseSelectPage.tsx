@@ -4,7 +4,7 @@ import { Box, Button, FlexBox, Option, Select } from "@wanteddev/wds";
 import { IconClockFill, IconLocationFill } from "@wanteddev/wds-icon";
 import { useState } from "react";
 
-import { listCruises } from "@/entities/cruise";
+import { listCruises, localDateStr } from "@/entities/cruise";
 import { useI18n } from "@/shared/i18n";
 import { sessionActions } from "@/shared/store";
 
@@ -34,7 +34,11 @@ function ShipGlyph() {
 export function CruiseSelectPage() {
   const { t, locale } = useI18n();
   const navigate = useNavigate();
-  const { data: cruises = [] } = useQuery({ queryKey: ["cruises"], queryFn: listCruises });
+  const today = localDateStr(new Date());
+  const { data: cruises = [] } = useQuery({
+    queryKey: ["cruises", today, locale],
+    queryFn: () => listCruises({ date: today, lang: locale }),
+  });
   const [cruiseId, setCruiseId] = useState("");
   const selected = cruises.find((c) => c.id === cruiseId);
 
@@ -90,7 +94,7 @@ export function CruiseSelectPage() {
       >
         {cruises.map((c) => (
           <Option key={c.id} value={c.id}>
-            {`${c.ship} · ${c.line}`}
+            {`${c.ship} · ${c.arr}–${c.dep}`}
           </Option>
         ))}
       </Select>
@@ -127,7 +131,7 @@ export function CruiseSelectPage() {
             </Box>
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Box sx={{ fontWeight: 700, fontSize: "17px" }}>{selected.ship}</Box>
-              <Box sx={{ fontSize: "13px", opacity: 0.85 }}>{selected.line}</Box>
+              <Box sx={{ fontSize: "13px", opacity: 0.85 }}>{selected.berth}</Box>
             </Box>
           </FlexBox>
           <Box sx={{ padding: "6px 18px" }}>
@@ -161,7 +165,7 @@ export function CruiseSelectPage() {
                   color: theme.semantic.label.normal,
                 })}
               >
-                {selected.portName[locale]}
+                {selected.portName}
               </Box>
             </FlexBox>
             <FlexBox alignItems="center" gap="12px" sx={{ padding: "13px 0" }}>

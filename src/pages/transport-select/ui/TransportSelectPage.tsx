@@ -418,7 +418,7 @@ function GlobalCarCard({
  * 선택 결과는 sessionActions.setTransportMode로 스토어에 반영한다(taxi/van/gtaxi).
  */
 export function TransportSelectPage() {
-  const { t, money } = useI18n();
+  const { t, money, locale } = useI18n();
   const navigate = useNavigate();
   const cruiseId = useCruiseId();
   const pkgSpotIds = usePkgSpotIds();
@@ -433,8 +433,8 @@ export function TransportSelectPage() {
   }, []);
 
   const { data: cruise } = useQuery({
-    queryKey: ["cruise", cruiseId],
-    queryFn: () => getCruise(cruiseId ?? ""),
+    queryKey: ["cruise", cruiseId, locale],
+    queryFn: () => getCruise(cruiseId ?? "", locale),
     enabled: !!cruiseId,
   });
   const portKey = cruise?.portKey ?? "jeju";

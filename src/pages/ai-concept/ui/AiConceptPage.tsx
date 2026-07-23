@@ -75,13 +75,13 @@ const CONCEPT_DEF: { key: ConceptKey; bg: string; fg: string; icon: ReactNode }[
 
 /** AI 컨셉 픽커 — 프로토타입 "AI CONCEPT"(:319-354) 이식. 컨셉을 고르면 매칭 스팟을 자동 선정해 패키지 화면으로 이동. */
 export function AiConceptPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const navigate = useNavigate();
   const cruiseId = useCruiseId();
 
   const { data: cruise } = useQuery({
-    queryKey: ["cruise", cruiseId],
-    queryFn: () => getCruise(cruiseId ?? ""),
+    queryKey: ["cruise", cruiseId, locale],
+    queryFn: () => getCruise(cruiseId ?? "", locale),
     enabled: !!cruiseId,
   });
   const portKey = cruise?.portKey ?? "jeju";

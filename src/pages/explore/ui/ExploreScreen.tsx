@@ -98,8 +98,8 @@ export function ExploreScreen() {
   const [activeCat, setActiveCat] = useState<CatKey>("all");
 
   const { data: cruise } = useQuery({
-    queryKey: ["cruise", cruiseId],
-    queryFn: () => getCruise(cruiseId ?? ""),
+    queryKey: ["cruise", cruiseId, locale],
+    queryFn: () => getCruise(cruiseId ?? "", locale),
     enabled: !!cruiseId,
   });
   const portKey = cruise?.portKey ?? "jeju";
@@ -120,7 +120,7 @@ export function ExploreScreen() {
   // 디자인 renderVals :1695 — 항구(제주/강정)에 따라 땅·마커 위치가 다름
   const landTop = portKey === "jeju" ? "34%" : "-30%";
   const portTop = portKey === "jeju" ? "18%" : "84%";
-  const portLabel = cruise?.portName[locale] ?? "";
+  const portLabel = cruise?.portName ?? "";
 
   // 디자인 renderVals :1713 — pkgCta 문구 이식
   const pkgCta =

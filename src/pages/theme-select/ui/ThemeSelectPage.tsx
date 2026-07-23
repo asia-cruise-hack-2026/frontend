@@ -97,8 +97,8 @@ export function ThemeSelectPage() {
   const [themeIds, setThemeIds] = useState<ThemeKey[]>([]);
 
   const { data: cruise } = useQuery({
-    queryKey: ["cruise", cruiseId],
-    queryFn: () => getCruise(cruiseId ?? ""),
+    queryKey: ["cruise", cruiseId, locale],
+    queryFn: () => getCruise(cruiseId ?? "", locale),
     enabled: !!cruiseId,
   });
   const portKey = cruise?.portKey ?? "jeju";

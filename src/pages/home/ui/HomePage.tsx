@@ -78,9 +78,10 @@ export function HomePage() {
   const cruiseId = useCruiseId();
   const pkgSpotIds = usePkgSpotIds();
   const { data: cruise } = useQuery({
-    queryKey: ["cruise", cruiseId],
-    queryFn: () => getCruise(cruiseId ?? ""),
+    queryKey: ["cruise", cruiseId, locale],
+    queryFn: () => getCruise(cruiseId ?? "", locale),
     enabled: !!cruiseId,
+    retry: false,
   });
   const portKey = cruise?.portKey ?? "jeju";
   const { data: allSpots = [] } = useQuery({
@@ -167,7 +168,7 @@ export function HomePage() {
               <Box as="span" sx={{ display: "inline-flex" }}>
                 <ShipMini />
               </Box>
-              {cruise.portName[locale]}
+              {cruise.portName}
             </FlexBox>
           </FlexBox>
 
@@ -592,7 +593,7 @@ export function HomePage() {
                         color: theme.semantic.label.normal,
                       })}
                     >
-                      {cruise.portName[locale]}
+                      {cruise.portName}
                     </Box>
                   </Box>
                 </FlexBox>

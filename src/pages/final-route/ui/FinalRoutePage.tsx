@@ -55,8 +55,8 @@ export function FinalRoutePage() {
   const mode = useTransportMode();
 
   const { data: cruise } = useQuery({
-    queryKey: ["cruise", cruiseId],
-    queryFn: () => getCruise(cruiseId ?? ""),
+    queryKey: ["cruise", cruiseId, locale],
+    queryFn: () => getCruise(cruiseId ?? "", locale),
     enabled: !!cruiseId,
   });
   const portKey = cruise?.portKey ?? "jeju";
@@ -76,7 +76,7 @@ export function FinalRoutePage() {
   // 디자인 renderVals :1695 — 항구(제주/강정)에 따라 땅·마커 위치가 다름
   const landTop = portKey === "jeju" ? "34%" : "-30%";
   const portY = portKey === "jeju" ? 18 : 84;
-  const portLabel = cruise?.portName[locale] ?? "";
+  const portLabel = cruise?.portName ?? "";
 
   // 디자인 renderVals :1606 — 항구(50, portY)에서 시작해 pkg 스팟을 순서대로 잇는 경로선
   const polylinePoints = [`50,${portY}`, ...spots.map((s) => `${s.x},${s.y}`)].join(" ");
