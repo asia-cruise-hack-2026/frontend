@@ -183,9 +183,9 @@ export function MyPage() {
                   padding: "12px",
                   background: active
                     ? addOpacity(theme.semantic.primary.normal, theme.opacity[8])
-                    : theme.semantic.background.normal.normal,
+                    : theme.semantic.background.normal.alternative,
                   boxShadow: active
-                    ? `inset 0 0 0 1.5px ${theme.semantic.primary.normal}`
+                    ? `inset 0 0 0 2px ${theme.semantic.primary.normal}`
                     : `inset 0 0 0 1px ${theme.semantic.line.normal.neutral}`,
                 })}
               >

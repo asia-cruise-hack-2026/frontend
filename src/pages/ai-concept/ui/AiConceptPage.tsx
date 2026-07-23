@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Box, FlexBox } from "@wanteddev/wds";
-import { IconArrowLeft, IconCameraFill, IconSparkleFill } from "@wanteddev/wds-icon";
+import { IconArrowLeft, IconCameraFill, IconSparkleFill, IconStarFill } from "@wanteddev/wds-icon";
 import type { ReactNode } from "react";
 
 import { getCruise } from "@/entities/cruise";
@@ -53,7 +53,7 @@ function ChefHatGlyph() {
 type ConceptKey = "highlights" | "nature" | "food" | "photo";
 
 // 컨셉 카드 정의(아이콘 박스 bg/fg) — 디자인 renderVals :1580.
-// highlights는 컨트롤러 지정으로 sparkleFill 사용(디자인 원본 :335는 starFill).
+// highlights 아이콘 = starFill (디자인 원본 :335).
 // photo는 WDS IconCameraFill로 대체, nature·food는 WDS에 대응 아이콘이 없어
 // 디자인 원본 SVG를 그대로 코드로 직접(D2).
 const CONCEPT_DEF: { key: ConceptKey; bg: string; fg: string; icon: ReactNode }[] = [
@@ -61,7 +61,7 @@ const CONCEPT_DEF: { key: ConceptKey; bg: string; fg: string; icon: ReactNode }[
     key: "highlights",
     bg: "#E7F1FF",
     fg: "#0066FF",
-    icon: <IconSparkleFill sx={{ fontSize: "24px" }} />,
+    icon: <IconStarFill sx={{ fontSize: "24px" }} />,
   },
   { key: "nature", bg: "#EAF7EE", fg: "#12A150", icon: <LeafGlyph /> },
   { key: "food", bg: "#FFF1E6", fg: "#E8820E", icon: <ChefHatGlyph /> },
