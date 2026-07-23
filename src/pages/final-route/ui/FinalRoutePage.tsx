@@ -5,9 +5,9 @@ import { IconArrowLeft } from "@wanteddev/wds-icon";
 
 import { getCruise } from "@/entities/cruise";
 import { buildCourse, listSpots, type Spot } from "@/entities/spot";
-import { taxiFare, taxiMinutes } from "@/entities/transport";
+import { GLOBAL_CARS, taxiFare, taxiMinutes, vanFare } from "@/entities/transport";
 import { useI18n } from "@/shared/i18n";
-import { useCruiseId, usePkgSpotIds } from "@/shared/store";
+import { useCruiseId, usePkgSpotIds, useTransportMode } from "@/shared/store";
 
 // 시각 포맷 HH:MM — AiPackagePage.tsx/HomePage.tsx의 fmt와 동일 패턴(엔티티에 미노출이라 로컬 복제).
 function fmt(min: number): string {
@@ -52,6 +52,7 @@ export function FinalRoutePage() {
   const navigate = useNavigate();
   const cruiseId = useCruiseId();
   const pkgSpotIds = usePkgSpotIds();
+  const mode = useTransportMode();
 
   const { data: cruise } = useQuery({
     queryKey: ["cruise", cruiseId],
@@ -80,8 +81,13 @@ export function FinalRoutePage() {
   // 디자인 renderVals :1606 — 항구(50, portY)에서 시작해 pkg 스팟을 순서대로 잇는 경로선
   const polylinePoints = [`50,${portY}`, ...spots.map((s) => `${s.x},${s.y}`)].join(" ");
 
-  const finalTimeText = `${taxiMinutes(totalKm)}${t("min")}`;
-  const finalCostText = money(taxiFare(totalKm));
+  const finalTimeText = mode === "gtaxi" ? t("gt_dayfull") : `${taxiMinutes(totalKm)}${t("min")}`;
+  const finalCostText =
+    mode === "van"
+      ? money(vanFare(taxiFare(totalKm)))
+      : mode === "gtaxi"
+        ? money(GLOBAL_CARS[0].day)
+        : money(taxiFare(totalKm));
   const finalReturnText = cruise ? fmt(cruise.depM - 30) : "";
 
   return (
@@ -93,7 +99,7 @@ export function FinalRoutePage() {
             as="button"
             type="button"
             aria-label="back"
-            onClick={() => navigate({ to: "/app" })}
+            onClick={() => navigate({ to: "/app/transport" })}
             sx={(theme) => ({
               width: "40px",
               height: "40px",
