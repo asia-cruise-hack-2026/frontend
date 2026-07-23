@@ -1,9 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/cruise")({
-  component: CruiseSelectRoute,
-});
+import { CruiseSelectPage } from "@/pages/cruise-select";
 
-function CruiseSelectRoute() {
-  return <div style={{ padding: 24 }}>크루즈 선택 (구현 예정)</div>;
-}
+export const Route = createFileRoute("/cruise")({
+  component: CruiseSelectPage,
+});
