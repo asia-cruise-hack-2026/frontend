@@ -18,6 +18,7 @@ import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppConceptRouteImport } from './routes/app/concept'
 import { Route as AppExploreRouteImport } from './routes/app/explore'
 import { Route as AppFinalRouteImport } from './routes/app/final'
+import { Route as AppMapRouteImport } from './routes/app/map'
 import { Route as AppMoveRouteImport } from './routes/app/move'
 import { Route as AppMyRouteImport } from './routes/app/my'
 import { Route as AppPackageRouteImport } from './routes/app/package'
@@ -72,6 +73,11 @@ const AppFinalRoute = AppFinalRouteImport.update({
   path: '/final',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMapRoute = AppMapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppMoveRoute = AppMoveRouteImport.update({
   id: '/move',
   path: '/move',
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/app/concept': typeof AppConceptRoute
   '/app/explore': typeof AppExploreRoute
   '/app/final': typeof AppFinalRoute
+  '/app/map': typeof AppMapRoute
   '/app/move': typeof AppMoveRoute
   '/app/my': typeof AppMyRoute
   '/app/package': typeof AppPackageRoute
@@ -140,6 +147,7 @@ export interface FileRoutesByTo {
   '/app/concept': typeof AppConceptRoute
   '/app/explore': typeof AppExploreRoute
   '/app/final': typeof AppFinalRoute
+  '/app/map': typeof AppMapRoute
   '/app/move': typeof AppMoveRoute
   '/app/my': typeof AppMyRoute
   '/app/package': typeof AppPackageRoute
@@ -160,6 +168,7 @@ export interface FileRoutesById {
   '/app/concept': typeof AppConceptRoute
   '/app/explore': typeof AppExploreRoute
   '/app/final': typeof AppFinalRoute
+  '/app/map': typeof AppMapRoute
   '/app/move': typeof AppMoveRoute
   '/app/my': typeof AppMyRoute
   '/app/package': typeof AppPackageRoute
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
     | '/app/concept'
     | '/app/explore'
     | '/app/final'
+    | '/app/map'
     | '/app/move'
     | '/app/my'
     | '/app/package'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/app/concept'
     | '/app/explore'
     | '/app/final'
+    | '/app/map'
     | '/app/move'
     | '/app/my'
     | '/app/package'
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/app/concept'
     | '/app/explore'
     | '/app/final'
+    | '/app/map'
     | '/app/move'
     | '/app/my'
     | '/app/package'
@@ -302,6 +314,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFinalRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/map': {
+      id: '/app/map'
+      path: '/map'
+      fullPath: '/app/map'
+      preLoaderRoute: typeof AppMapRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/move': {
       id: '/app/move'
       path: '/move'
@@ -365,6 +384,7 @@ interface AppRouteChildren {
   AppConceptRoute: typeof AppConceptRoute
   AppExploreRoute: typeof AppExploreRoute
   AppFinalRoute: typeof AppFinalRoute
+  AppMapRoute: typeof AppMapRoute
   AppMoveRoute: typeof AppMoveRoute
   AppMyRoute: typeof AppMyRoute
   AppPackageRoute: typeof AppPackageRoute
@@ -380,6 +400,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppConceptRoute: AppConceptRoute,
   AppExploreRoute: AppExploreRoute,
   AppFinalRoute: AppFinalRoute,
+  AppMapRoute: AppMapRoute,
   AppMoveRoute: AppMoveRoute,
   AppMyRoute: AppMyRoute,
   AppPackageRoute: AppPackageRoute,

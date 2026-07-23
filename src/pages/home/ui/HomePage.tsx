@@ -5,7 +5,7 @@ import { IconChevronRight } from "@wanteddev/wds-icon";
 import { useEffect, useState } from "react";
 
 import { cruiseDepartureMs, getCruise, minutesToDeparture } from "@/entities/cruise";
-import { buildCourse, listSpots, type Spot } from "@/entities/spot";
+import { buildCourse, listReachableSpots, listSpots, type Spot } from "@/entities/spot";
 import { ApiError } from "@/shared/api";
 import { useI18n } from "@/shared/i18n";
 import { sessionActions, useCruiseId, usePkgSpotIds } from "@/shared/store";
@@ -111,6 +111,25 @@ export function HomePage() {
     queryKey: ["spots", portKey],
     queryFn: () => listSpots({ portKey }),
   });
+
+  // 지도 마커용 DB 스팟 — 이동 탭과 동일 계약(/spots?cruiseId=&sort=distance)·동일 캐시 키
+  const { data: mapSpots = [] } = useQuery({
+    queryKey: ["reachable-spots", cruiseId, locale],
+    queryFn: () => listReachableSpots(cruiseId ?? "", locale),
+    enabled: !!cruiseId,
+  });
+
+  // 내 위치 — 이동 탭과 동일 패턴(거부/실패 시 항구 중심 유지)
+  const [myPos, setMyPos] = useState<{ lat: number; lng: number } | null>(null);
+  useEffect(() => {
+    if (!("geolocation" in navigator)) return;
+    const id = navigator.geolocation.watchPosition(
+      (pos) => setMyPos({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => {},
+      { enableHighAccuracy: true, maximumAge: 10_000 },
+    );
+    return () => navigator.geolocation.clearWatch(id);
+  }, []);
 
   const unitH =
     locale === "ko" ? "시간" : locale === "zh" ? "小时" : locale === "ja" ? "時間" : "h";
@@ -457,8 +476,14 @@ export function HomePage() {
             overflow: "hidden",
           })}
         >
-          {/* 구글맵 1단계 — 항구 중심, 마커는 다음 단계(/spots?compact=1) */}
-          <HomeMap lat={cruise?.portLat ?? 33.523} lng={cruise?.portLng ?? 126.537} />
+          {/* 홈 지도 — 내 위치 중심(원거리 시 항구 폴백)·정박항/스팟 마커, 탭=풀맵 확대 전환 */}
+          <HomeMap
+            port={{ lat: cruise?.portLat ?? 33.523, lng: cruise?.portLng ?? 126.537 }}
+            portName={cruise?.portName ?? ""}
+            myPos={myPos}
+            spots={mapSpots}
+            onExpand={() => navigate({ to: "/app/map", viewTransition: true })}
+          />
           <Box
             sx={(theme) => ({ height: "1px", background: theme.semantic.line.normal.neutral })}
           />
