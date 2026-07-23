@@ -10,6 +10,8 @@ import { ApiError } from "@/shared/api";
 import { useI18n } from "@/shared/i18n";
 import { sessionActions, useCruiseId, usePkgSpotIds } from "@/shared/store";
 
+import { HomeMap } from "./HomeMap";
+
 // 포트 배지 · 카운트다운 슬라이더 선박 아이콘 — 디자인 :135 / 최종 슬라이더
 function ShipMini({ size = 14 }: { size?: number }) {
   return (
@@ -445,8 +447,8 @@ export function HomePage() {
             overflow: "hidden",
           })}
         >
-          {/* 지도 placeholder — S2에서 Google Maps(client-only)로 교체 */}
-          <Box sx={{ position: "relative", height: "270px", background: "#CFE4F2" }} />
+          {/* 구글맵 1단계 — 항구 중심, 마커는 다음 단계(/spots?compact=1) */}
+          <HomeMap lat={cruise?.portLat ?? 33.523} lng={cruise?.portLng ?? 126.537} />
           <Box
             sx={(theme) => ({ height: "1px", background: theme.semantic.line.normal.neutral })}
           />
