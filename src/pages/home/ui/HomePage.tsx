@@ -123,16 +123,11 @@ export function HomePage() {
           })}
         >
           <FlexBox alignItems="flex-start" justifyContent="space-between" gap="10px">
-            <Box
-              sx={(theme) => ({
-                fontWeight: 700,
-                fontSize: "18px",
-                color: theme.semantic.primary.normal,
-                letterSpacing: ".02em",
-              })}
-            >
-              OMONG
-            </Box>
+            <img
+              src="/brand/omong.svg"
+              alt="OMONG"
+              style={{ height: "26px", width: "auto", display: "block", objectFit: "contain" }}
+            />
             <FlexBox
               as="span"
               alignItems="center"
