@@ -15,6 +15,7 @@ import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CruiseRouteImport } from './routes/cruise'
 import { Route as PayDemoRouteImport } from './routes/pay-demo'
 import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppExploreRouteImport } from './routes/app/explore'
 import { Route as AppMoveRouteImport } from './routes/app/move'
 import { Route as AppMyRouteImport } from './routes/app/my'
 import { Route as AppShopRouteImport } from './routes/app/shop'
@@ -49,6 +50,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppExploreRoute = AppExploreRouteImport.update({
+  id: '/explore',
+  path: '/explore',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppMoveRoute = AppMoveRouteImport.update({
   id: '/move',
   path: '/move',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/cruise': typeof CruiseRoute
   '/pay-demo': typeof PayDemoRoute
+  '/app/explore': typeof AppExploreRoute
   '/app/move': typeof AppMoveRoute
   '/app/my': typeof AppMyRoute
   '/app/shop': typeof AppShopRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/cruise': typeof CruiseRoute
   '/pay-demo': typeof PayDemoRoute
+  '/app/explore': typeof AppExploreRoute
   '/app/move': typeof AppMoveRoute
   '/app/my': typeof AppMyRoute
   '/app/shop': typeof AppShopRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/cruise': typeof CruiseRoute
   '/pay-demo': typeof PayDemoRoute
+  '/app/explore': typeof AppExploreRoute
   '/app/move': typeof AppMoveRoute
   '/app/my': typeof AppMyRoute
   '/app/shop': typeof AppShopRoute
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/cruise'
     | '/pay-demo'
+    | '/app/explore'
     | '/app/move'
     | '/app/my'
     | '/app/shop'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/cruise'
     | '/pay-demo'
+    | '/app/explore'
     | '/app/move'
     | '/app/my'
     | '/app/shop'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/cruise'
     | '/pay-demo'
+    | '/app/explore'
     | '/app/move'
     | '/app/my'
     | '/app/shop'
@@ -185,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/explore': {
+      id: '/app/explore'
+      path: '/explore'
+      fullPath: '/app/explore'
+      preLoaderRoute: typeof AppExploreRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/move': {
       id: '/app/move'
       path: '/move'
@@ -210,6 +229,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppExploreRoute: typeof AppExploreRoute
   AppMoveRoute: typeof AppMoveRoute
   AppMyRoute: typeof AppMyRoute
   AppShopRoute: typeof AppShopRoute
@@ -217,6 +237,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppExploreRoute: AppExploreRoute,
   AppMoveRoute: AppMoveRoute,
   AppMyRoute: AppMyRoute,
   AppShopRoute: AppShopRoute,
