@@ -19,5 +19,6 @@ export const sessionActions = {
         ? s.pkgSpotIds.filter((x) => x !== id)
         : [...s.pkgSpotIds, id],
     })),
+  setPkgSpots: (ids: string[]) => store.setState((s) => ({ ...s, pkgSpotIds: ids })),
   reset: () => store.setState(() => ({ cruiseId: null, pkgSpotIds: [] })),
 };
