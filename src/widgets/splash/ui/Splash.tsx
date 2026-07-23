@@ -1,5 +1,4 @@
 import { Box } from "@wanteddev/wds";
-import { IconVerifiedCheckFill } from "@wanteddev/wds-icon";
 import { type PointerEvent, useEffect, useRef, useState } from "react";
 
 import { useI18n } from "@/shared/i18n";
@@ -397,7 +396,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
         ))}
       </Box>
 
-      {/* 하단 힌트 + 제휴 크레딧 */}
+      {/* 하단 힌트 */}
       <Box
         sx={{
           position: "absolute",
@@ -423,21 +422,6 @@ export function Splash({ onDone }: { onDone: () => void }) {
         >
           {t("splash_tap_hint")}
         </span>
-        <Box
-          sx={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "7px",
-            fontSize: "12px",
-            fontWeight: 600,
-            color: "rgba(255,255,255,.82)",
-          }}
-        >
-          <Box as="span" sx={{ color: "#7FFFB0", display: "inline-flex" }}>
-            <IconVerifiedCheckFill sx={{ fontSize: "15px" }} />
-          </Box>
-          {t("splash_credit")}
-        </Box>
       </Box>
     </Box>
   );

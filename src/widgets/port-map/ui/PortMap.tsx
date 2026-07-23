@@ -52,8 +52,8 @@ export function PortMap({
           gestureHandling={interactive ? "greedy" : "none"}
           style={{ width: "100%", height: "100%" }}
         >
-          {/* 시안 마커 — 이름 pill+스템(스팟=브랜드색, 정박항=검정 pill+배) */}
-          <Marker position={port} icon={portPin(portName)} title={portName} zIndex={3} />
+          {/* 시안 마커 — 이름 pill+스템(스팟=브랜드색, 정박항=검정 pill+배). 항구는 항상 최상위 */}
+          <Marker position={port} icon={portPin(portName)} title={portName} zIndex={10} />
           {spots.map((s) => (
             <Marker
               key={s.id}

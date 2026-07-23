@@ -966,12 +966,6 @@ export const strings = {
     zh: "点击屏幕，让水面荡漾",
     ja: "画面をタップして水面を揺らしてみて",
   },
-  splash_credit: {
-    ko: "제주 공식 · 탐나오 제휴",
-    en: "Official Jeju · with Tamnao",
-    zh: "济州官方 · 携手Tamnao",
-    ja: "済州公式 · Tamnao提携",
-  },
 } as const;
 
 export type StringKey = keyof typeof strings;

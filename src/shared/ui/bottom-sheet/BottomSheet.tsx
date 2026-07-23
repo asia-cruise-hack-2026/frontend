@@ -244,9 +244,9 @@ export function BottomSheet({
       <Box
         onClick={(e: ReactMouseEvent) => e.stopPropagation()}
         sx={(theme) => ({
-          // 앱 모바일 컬럼(430px)을 넘지 않게 — 넓은 뷰포트에서도 컬럼 폭 유지
+          // 앱 컬럼(620px — __root와 동일)을 넘지 않게 — 넓은 뷰포트에서도 컬럼 폭 유지
           width: "100%",
-          maxWidth: "430px",
+          maxWidth: "620px",
           margin: "0 auto",
           background: theme.semantic.background.normal.normal,
           borderRadius: "24px 24px 0 0",

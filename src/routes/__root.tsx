@@ -51,7 +51,7 @@ function RootComponent() {
       <body>
         <AppProviders>
           {/* 앱처럼 — 모바일 폭으로 센터링(넓은 뷰포트에서 가로 스트레치 방지) */}
-          <div style={{ maxWidth: 430, margin: "0 auto", width: "100%", minHeight: "100dvh" }}>
+          <div style={{ maxWidth: 620, margin: "0 auto", width: "100%", minHeight: "100dvh" }}>
             <Outlet />
           </div>
           {showSplash && (
