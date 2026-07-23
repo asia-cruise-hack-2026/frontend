@@ -888,12 +888,6 @@ export const strings = {
     zh: "英语·中文·日语",
     ja: "英語·中国語·日本語対応",
   },
-  global_partner: {
-    ko: "제주 글로벌 택시 연동",
-    en: "Powered by Jeju Global Taxi",
-    zh: "接入济州国际出租车",
-    ja: "済州グローバルタクシー連携",
-  },
   global_driver_tag: {
     ko: "다국어 기사",
     en: "Multilingual driver",

@@ -1,41 +1,27 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import {
-  addOpacity,
-  Box,
-  Button,
-  FlexBox,
-  SearchField,
-  SegmentedControl,
-  SegmentedControlItem,
-  useToast,
-} from "@wanteddev/wds";
+import { addOpacity, Box, Button, FlexBox, SearchField, useToast } from "@wanteddev/wds";
 import {
   IconArrowLeft,
   IconCircleCheckFill,
-  IconGlobe,
   IconLocationFill,
   IconPhone,
   IconPinFill,
   IconStarFill,
-  IconVerifiedCheckFill,
 } from "@wanteddev/wds-icon";
 import { type ReactNode, useEffect, useState } from "react";
 
 import { getCruise } from "@/entities/cruise";
 import { listReachableSpots, type ReachableSpot, searchReachableSpots } from "@/entities/spot";
 import {
-  GLOBAL_CARS,
   TAXI_DRIVER,
   VEHICLES,
   taxiFare,
   taxiMinutes,
   vanFare,
-  type GlobalCar,
-  type GlobalCarKey,
   type VehicleType,
 } from "@/entities/transport";
-import { type Locale, useI18n } from "@/shared/i18n";
+import { useI18n } from "@/shared/i18n";
 import { useCruiseId } from "@/shared/store";
 import { OverlaySheet } from "@/shared/ui";
 
@@ -45,7 +31,6 @@ const CALL_SIM_MS = 2400; // 디자인 callTaxi 타이밍(:1169) 이식.
 
 type Step = "dest" | "pickup" | "car" | "confirm";
 type CallStatus = "idle" | "finding" | "assigned";
-type Service = "normal" | "global";
 // 디자인 최종: 배정 이후 라이드 시뮬레이션 단계(탑승→이동→관광→복귀→완료)
 type RideStage = "coming" | "onboard" | "touring" | "returning" | "done";
 
@@ -57,12 +42,6 @@ const PREV_STEP: Record<Step, Step> = {
   confirm: "car",
 };
 
-function seatsUnitFor(locale: Locale): string {
-  if (locale === "ko") return "인";
-  if (locale === "ja" || locale === "zh") return "人";
-  return " seats";
-}
-
 function stepTitleKey(step: Step): "pickup_title" | "select_vehicle" | "confirm_title" {
   if (step === "pickup") return "pickup_title";
   if (step === "car") return "select_vehicle";
@@ -72,7 +51,7 @@ function stepTitleKey(step: Step): "pickup_title" | "select_vehicle" | "confirm_
 /**
  * 이동/택시 호출 — 디자인 "MOVE / TAXI"(:783-937) 이식.
  * 로컬 state로 4단계(목적지→출발지→차량→호출확인)를 관리하고, 호출확인 후 기사배정을 setTimeout으로 시뮬레이션.
- * 글로벌택시(일반/글로벌 세그 + GLOBAL_CARS)는 원래 별도 "TRANSPORT SELECT" 화면(:504-592)의 개념을 이 탭에 통합했다.
+ * 글로벌 택시는 이 탭에서 제공하지 않는다(일반 택시만 — 제품 결정).
  */
 export function MovePage() {
   const { t, locale, money } = useI18n();
@@ -123,9 +102,7 @@ export function MovePage() {
   });
   const [pickupName, setPickupName] = useState<string | null>(null);
   const [pickupQuery, setPickupQuery] = useState("");
-  const [service, setService] = useState<Service>("normal");
   const [vehicleType, setVehicleType] = useState<VehicleType>("normal");
-  const [globalCarKey, setGlobalCarKey] = useState<GlobalCarKey>("basic");
   const [rideStage, setRideStage] = useState<RideStage>("coming");
 
   // 기사 찾는 중 → 배정 시뮬레이션 (디자인 callTaxi :1169 이식).
@@ -140,25 +117,14 @@ export function MovePage() {
   const pickupLabel = pickupName ?? portLabel;
 
   const km = destSpot?.km ?? 0;
-  const svcMul = service === "global" ? 1.25 : 1; // 디자인 renderVals :1587 이식.
-  const fareNormal = taxiFare(km, svcMul);
+  const fareNormal = taxiFare(km);
   const fareVan = vanFare(fareNormal);
   const minutes = taxiMinutes(km);
-  const globalCar = GLOBAL_CARS.find((c) => c.key === globalCarKey) ?? GLOBAL_CARS[0];
 
-  const confirmLabel =
-    service === "global"
-      ? t(globalCar.nameKey)
-      : t(vehicleType === "van" ? "car_van" : "car_normal");
-  const confirmMeta =
-    service === "global"
-      ? `${globalCar.cap}${seatsUnitFor(locale)} · ${t("gt_dayfull")}`
-      : `${VEHICLES[vehicleType].car[locale]} · ${minutes}${t("min")}`;
-  const confirmFare =
-    service === "global"
-      ? money(globalCar.day)
-      : money(vehicleType === "van" ? fareVan : fareNormal);
-  const confirmIsVan = service === "global" ? globalCar.van : vehicleType === "van";
+  const confirmLabel = t(vehicleType === "van" ? "car_van" : "car_normal");
+  const confirmMeta = `${VEHICLES[vehicleType].car[locale]} · ${minutes}${t("min")}`;
+  const confirmFare = money(vehicleType === "van" ? fareVan : fareNormal);
+  const confirmIsVan = vehicleType === "van";
 
   const selectDest = (spot: ReachableSpot) => {
     setDestSpot(spot);
@@ -223,15 +189,11 @@ export function MovePage() {
               pickupLabel={pickupLabel}
               destLabel={destLabel}
               onChangeDest={changeDest}
-              service={service}
-              onServiceChange={setService}
               vehicleType={vehicleType}
               onSelectVehicle={setVehicleType}
               fareNormal={fareNormal}
               fareVan={fareVan}
               minutes={minutes}
-              globalCarKey={globalCarKey}
-              onSelectGlobalCar={setGlobalCarKey}
               onNext={goConfirm}
             />
           )}
@@ -527,21 +489,17 @@ function PickupStep({
   );
 }
 
-/* ─────────────── 3. 차량 선택 (+ 글로벌택시 세그) ─────────────── */
+/* ─────────────── 3. 차량 선택 ─────────────── */
 
 interface CarStepProps {
   pickupLabel: string;
   destLabel: string;
   onChangeDest: () => void;
-  service: Service;
-  onServiceChange: (service: Service) => void;
   vehicleType: VehicleType;
   onSelectVehicle: (type: VehicleType) => void;
   fareNormal: number;
   fareVan: number;
   minutes: number;
-  globalCarKey: GlobalCarKey;
-  onSelectGlobalCar: (key: GlobalCarKey) => void;
   onNext: () => void;
 }
 
@@ -549,21 +507,14 @@ function CarStep({
   pickupLabel,
   destLabel,
   onChangeDest,
-  service,
-  onServiceChange,
   vehicleType,
   onSelectVehicle,
   fareNormal,
   fareVan,
   minutes,
-  globalCarKey,
-  onSelectGlobalCar,
   onNext,
 }: CarStepProps) {
   const { t, money } = useI18n();
-  const handleServiceChange = (value: string) => {
-    if (value === "normal" || value === "global") onServiceChange(value);
-  };
   const etaLabel = `${minutes}${t("min")}`;
 
   return (
@@ -617,71 +568,39 @@ function CarStep({
         </Button>
       </FlexBox>
 
-      <FlexBox justifyContent="center" sx={{ marginBottom: "16px" }}>
-        <SegmentedControl value={service} onValueChange={handleServiceChange}>
-          <SegmentedControlItem value="normal">{t("svc_normal")}</SegmentedControlItem>
-          <SegmentedControlItem value="global">{t("svc_global")}</SegmentedControlItem>
-        </SegmentedControl>
-      </FlexBox>
-
-      {service === "global" && <GlobalBanner />}
-
-      <Box
-        sx={(theme) => ({
-          fontWeight: 700,
-          fontSize: "15px",
-          color: theme.semantic.label.normal,
-          marginBottom: "10px",
-        })}
-      >
-        {t("select_vehicle")}
-      </Box>
-
-      {service === "normal" ? (
-        <FlexBox gap="12px" sx={{ overflowX: "auto", paddingBottom: "6px" }}>
-          <CarCard
-            active={vehicleType === "normal"}
-            icon={
-              <img
-                src={VEHICLES.normal.img}
-                alt=""
-                aria-hidden="true"
-                style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
-              />
-            }
-            label={t("car_normal")}
-            sub={`${t("car_normal_sub")} · ${etaLabel}`}
-            price={money(fareNormal)}
-            onClick={() => onSelectVehicle("normal")}
-          />
-          <CarCard
-            active={vehicleType === "van"}
-            icon={
-              <img
-                src={VEHICLES.van.img}
-                alt=""
-                aria-hidden="true"
-                style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
-              />
-            }
-            label={t("car_van")}
-            sub={`${t("car_van_sub")} · ${etaLabel}`}
-            price={money(fareVan)}
-            onClick={() => onSelectVehicle("van")}
-          />
-        </FlexBox>
-      ) : (
-        <FlexBox flexDirection="column" gap="10px">
-          {GLOBAL_CARS.map((car) => (
-            <GlobalCarRow
-              key={car.key}
-              car={car}
-              active={globalCarKey === car.key}
-              onClick={() => onSelectGlobalCar(car.key)}
+      {/* 시트 타이틀이 이미 "차량을 선택하세요"라 본문 중복 헤딩은 두지 않는다 */}
+      <FlexBox gap="12px">
+        <CarCard
+          active={vehicleType === "normal"}
+          icon={
+            <img
+              src={VEHICLES.normal.img}
+              alt=""
+              aria-hidden="true"
+              style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
             />
-          ))}
-        </FlexBox>
-      )}
+          }
+          label={t("car_normal")}
+          sub={`${t("car_normal_sub")} · ${etaLabel}`}
+          price={money(fareNormal)}
+          onClick={() => onSelectVehicle("normal")}
+        />
+        <CarCard
+          active={vehicleType === "van"}
+          icon={
+            <img
+              src={VEHICLES.van.img}
+              alt=""
+              aria-hidden="true"
+              style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+            />
+          }
+          label={t("car_van")}
+          sub={`${t("car_van_sub")} · ${etaLabel}`}
+          price={money(fareVan)}
+          onClick={() => onSelectVehicle("van")}
+        />
+      </FlexBox>
 
       <Box sx={{ marginTop: "16px" }}>
         <Button variant="solid" color="primary" size="large" fullWidth onClick={onNext}>
@@ -714,17 +633,7 @@ function ConfirmStep({
   const { t } = useI18n();
   return (
     <Box sx={{ padding: "12px 20px 22px" }}>
-      <Box
-        sx={(theme) => ({
-          fontWeight: 700,
-          fontSize: "19px",
-          color: theme.semantic.label.normal,
-          marginBottom: "14px",
-        })}
-      >
-        {t("confirm_title")}
-      </Box>
-
+      {/* 시트 타이틀이 이미 "호출 정보를 확인하세요"라 본문 중복 헤딩은 두지 않는다 */}
       <Box
         sx={(theme) => ({
           background: theme.semantic.background.normal.normal,
@@ -1481,7 +1390,8 @@ function CarCard({
       type="button"
       onClick={onClick}
       sx={(theme) => ({
-        flex: "0 0 156px",
+        flex: "1 1 0",
+        minWidth: 0,
         textAlign: "left",
         border: "none",
         cursor: "pointer",
@@ -1526,7 +1436,8 @@ function CarCard({
           </Box>
         )}
       </FlexBox>
-      <Box>
+      {/* flex 1 — 설명 줄수가 달라도 두 카드의 가격이 같은 바닥선에 정렬되게 */}
+      <Box sx={{ flex: 1 }}>
         <Box
           as="span"
           sx={(theme) => ({
@@ -1545,6 +1456,7 @@ function CarCard({
             fontSize: "12px",
             color: theme.semantic.label.alternative,
             marginTop: "1px",
+            wordBreak: "keep-all",
           })}
         >
           {sub}
@@ -1556,206 +1468,6 @@ function CarCard({
       >
         {price}
       </Box>
-    </Box>
-  );
-}
-
-function GlobalCarRow({
-  car,
-  active,
-  onClick,
-}: {
-  car: GlobalCar;
-  active: boolean;
-  onClick: () => void;
-}) {
-  const { t, locale, money } = useI18n();
-  const capLabel = `${car.cap}${seatsUnitFor(locale)}`;
-  return (
-    <Box
-      as="button"
-      type="button"
-      onClick={onClick}
-      sx={(theme) => ({
-        display: "flex",
-        alignItems: "center",
-        gap: "14px",
-        textAlign: "left",
-        border: "none",
-        cursor: "pointer",
-        borderRadius: "16px",
-        padding: "16px",
-        transition: "box-shadow 0.12s",
-        background: active
-          ? addOpacity(theme.semantic.primary.normal, theme.opacity[8])
-          : theme.semantic.background.normal.normal,
-        boxShadow: active
-          ? `inset 0 0 0 2px ${theme.semantic.primary.normal}`
-          : `inset 0 0 0 1px ${theme.semantic.line.normal.neutral}`,
-      })}
-    >
-      <Box
-        as="span"
-        sx={{
-          width: "56px",
-          height: "56px",
-          flexShrink: 0,
-          borderRadius: "13px",
-          background: car.ibg,
-          color: car.ifg,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
-        }}
-      >
-        <img
-          src={car.img}
-          alt=""
-          aria-hidden="true"
-          style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
-        />
-      </Box>
-      <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Box
-          as="span"
-          sx={(theme) => ({
-            display: "block",
-            fontWeight: 700,
-            fontSize: "16px",
-            color: theme.semantic.label.normal,
-          })}
-        >
-          {t(car.nameKey)}
-        </Box>
-        <Box
-          as="span"
-          sx={(theme) => ({
-            display: "block",
-            fontSize: "12px",
-            color: theme.semantic.label.alternative,
-            marginTop: "2px",
-          })}
-        >
-          {`${capLabel} · ${t("gt_over")} ${money(car.over)}`}
-        </Box>
-      </Box>
-      <Box sx={{ textAlign: "right", flexShrink: 0 }}>
-        <Box
-          as="span"
-          sx={(theme) => ({
-            display: "block",
-            fontWeight: 700,
-            fontSize: "15px",
-            color: theme.semantic.label.normal,
-          })}
-        >
-          {money(car.day)}
-        </Box>
-        <Box
-          as="span"
-          sx={(theme) => ({
-            display: "block",
-            fontSize: "12px",
-            color: theme.semantic.label.alternative,
-            marginTop: "2px",
-          })}
-        >
-          {t("gt_day")}
-        </Box>
-      </Box>
-    </Box>
-  );
-}
-
-function GlobalBanner() {
-  const { t } = useI18n();
-  return (
-    <Box
-      sx={(theme) => ({
-        borderRadius: "14px",
-        background: addOpacity(theme.semantic.primary.normal, theme.opacity[8]),
-        padding: "14px",
-        marginBottom: "16px",
-      })}
-    >
-      <FlexBox alignItems="center" gap="10px">
-        <Box
-          as="span"
-          sx={(theme) => ({
-            width: "36px",
-            height: "36px",
-            borderRadius: "10px",
-            background: theme.semantic.primary.normal,
-            color: theme.semantic.static.white,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          })}
-        >
-          <IconGlobe sx={{ fontSize: "20px" }} />
-        </Box>
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Box
-            as="span"
-            sx={(theme) => ({
-              display: "block",
-              fontWeight: 700,
-              fontSize: "15px",
-              color: theme.semantic.label.normal,
-            })}
-          >
-            {t("global_title")}
-          </Box>
-          <Box
-            as="span"
-            sx={(theme) => ({
-              display: "block",
-              fontSize: "11px",
-              fontWeight: 600,
-              color: theme.semantic.primary.normal,
-              marginTop: "1px",
-            })}
-          >
-            {t("global_partner")}
-          </Box>
-        </Box>
-      </FlexBox>
-      <Box
-        as="p"
-        sx={(theme) => ({
-          margin: "10px 0 0",
-          fontSize: "13px",
-          lineHeight: 1.5,
-          color: theme.semantic.label.neutral,
-        })}
-      >
-        {t("global_desc")}
-      </Box>
-      <FlexBox
-        as="span"
-        alignItems="center"
-        gap="6px"
-        sx={(theme) => ({
-          display: "inline-flex",
-          marginTop: "10px",
-          background: theme.semantic.background.normal.normal,
-          borderRadius: "999px",
-          padding: "5px 11px",
-          fontSize: "12px",
-          fontWeight: 600,
-          color: theme.semantic.label.neutral,
-        })}
-      >
-        <Box
-          as="span"
-          sx={(theme) => ({ display: "inline-flex", color: theme.semantic.primary.normal })}
-        >
-          <IconVerifiedCheckFill sx={{ fontSize: "14px" }} />
-        </Box>
-        {t("global_langs")}
-      </FlexBox>
     </Box>
   );
 }
