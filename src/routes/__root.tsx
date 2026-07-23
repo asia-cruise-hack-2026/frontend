@@ -1,6 +1,8 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { useState } from "react";
 
 import { AppProviders } from "@/app/providers";
+import { Splash } from "@/widgets/splash";
 
 import "@wanteddev/wds/global.css";
 // Montage 기본 테마 뒤에 브랜드 오버라이드(#2563EB · Wanted Sans) 적용 — import 순서 유지
@@ -36,7 +38,11 @@ export const Route = createRootRoute({
   component: RootComponent,
 });
 
+// 콜드 로드당 1회만 — 클라이언트 내비게이션에는 다시 띄우지 않는다.
+let splashShown = false;
+
 function RootComponent() {
+  const [showSplash, setShowSplash] = useState(() => !splashShown);
   return (
     <html lang="ko">
       <head>
@@ -48,6 +54,14 @@ function RootComponent() {
           <div style={{ maxWidth: 430, margin: "0 auto", width: "100%", minHeight: "100dvh" }}>
             <Outlet />
           </div>
+          {showSplash && (
+            <Splash
+              onDone={() => {
+                splashShown = true;
+                setShowSplash(false);
+              }}
+            />
+          )}
         </AppProviders>
         <Scripts />
       </body>
