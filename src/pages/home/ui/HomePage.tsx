@@ -9,6 +9,7 @@ import { buildCourse, listReachableSpots, listSpots, type Spot } from "@/entitie
 import { ApiError } from "@/shared/api";
 import { useI18n } from "@/shared/i18n";
 import { sessionActions, useCruiseId, usePkgSpotIds } from "@/shared/store";
+import { AiButton } from "@/shared/ui";
 
 import { HomeMap } from "./HomeMap";
 
@@ -492,15 +493,10 @@ export function HomePage() {
             {isEmpty && (
               <>
                 <FlexBox flexDirection="column" gap="8px" sx={{ marginBottom: "12px" }}>
-                  <Button
-                    variant="solid"
-                    color="primary"
-                    size="large"
-                    fullWidth
-                    onClick={() => navigate({ to: "/app/concept" })}
-                  >
+                  {/* AI 핸드오프 1a — 핵심 AI 액션은 그라데이션 AI 버튼(shared/ui/AiButton) */}
+                  <AiButton fullWidth onClick={() => navigate({ to: "/app/concept" })}>
                     {t("home_ai_fill")}
-                  </Button>
+                  </AiButton>
                   <Button
                     variant="outlined"
                     color="primary"
