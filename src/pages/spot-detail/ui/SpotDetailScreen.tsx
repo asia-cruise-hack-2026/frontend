@@ -239,7 +239,7 @@ export function SpotDetailScreen({ spotId }: { spotId: string }) {
             </FlexBox>
           </>
         )}
-        <Box sx={{ height: "24px" }} />
+        <Box sx={{ height: "150px" }} />
       </Box>
 
       <FlexBox
@@ -256,7 +256,7 @@ export function SpotDetailScreen({ spotId }: { spotId: string }) {
         </Button>
         <Button
           variant="outlined"
-          color="primary"
+          color="assistive"
           size="large"
           fullWidth
           leadingContent={<IconPlus sx={{ fontSize: "18px" }} />}

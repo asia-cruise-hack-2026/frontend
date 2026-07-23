@@ -360,6 +360,7 @@ function CourseStopRow({
                 gap: "5px",
                 fontWeight: 700,
                 fontSize: "12px",
+                lineHeight: 1,
                 whiteSpace: "nowrap",
               })}
             >

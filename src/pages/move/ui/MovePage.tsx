@@ -291,7 +291,7 @@ function DestStep({
   const results = spots.filter((s) => !q || s.name[locale].toLowerCase().includes(q));
 
   return (
-    <Box sx={{ padding: "14px 20px 28px" }}>
+    <Box sx={{ padding: "8px 20px 22px" }}>
       <SearchField
         width="100%"
         value={query}
@@ -303,7 +303,7 @@ function DestStep({
           fontSize: "12px",
           fontWeight: 600,
           color: theme.semantic.label.assistive,
-          margin: "16px 0 2px",
+          margin: "8px 0 2px",
         })}
       >
         {t("search_results")}
@@ -358,7 +358,7 @@ function PickupStep({
   const results = quickOptions.filter((option) => option.title.toLowerCase().includes(q));
 
   return (
-    <Box sx={{ padding: "10px 20px 28px" }}>
+    <Box sx={{ padding: "12px 20px 22px" }}>
       <SearchField
         width="100%"
         value={query}
@@ -400,7 +400,7 @@ function PickupStep({
               flexShrink: 0,
             })}
           >
-            <IconLocationFill sx={{ fontSize: "18px" }} />
+            <IconLocationFill sx={{ fontSize: "20px" }} />
           </Box>
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Box
@@ -419,7 +419,7 @@ function PickupStep({
             as="span"
             sx={(theme) => ({ display: "inline-flex", color: theme.semantic.primary.normal })}
           >
-            <IconCircleCheckFill sx={{ fontSize: "20px" }} />
+            <IconCircleCheckFill sx={{ fontSize: "22px" }} />
           </Box>
         </Box>
       )}
@@ -429,7 +429,7 @@ function PickupStep({
           fontSize: "12px",
           fontWeight: 600,
           color: theme.semantic.label.assistive,
-          margin: "16px 0 2px",
+          margin: "16px 0 4px",
         })}
       >
         {t("recent_places")}
@@ -501,7 +501,7 @@ function CarStep({
   const etaLabel = `${minutes}${t("min")}`;
 
   return (
-    <Box sx={{ padding: "12px 20px 28px" }}>
+    <Box sx={{ padding: "12px 20px 22px" }}>
       <FlexBox
         alignItems="center"
         gap="10px"
@@ -603,7 +603,7 @@ function CarStep({
         </FlexBox>
       )}
 
-      <Box sx={{ marginTop: "20px" }}>
+      <Box sx={{ marginTop: "16px" }}>
         <Button variant="solid" color="primary" size="large" fullWidth onClick={onNext}>
           {t("next_step")}
         </Button>
@@ -633,7 +633,7 @@ function ConfirmStep({
 }) {
   const { t } = useI18n();
   return (
-    <Box sx={{ padding: "12px 20px 28px" }}>
+    <Box sx={{ padding: "12px 20px 22px" }}>
       <Box
         sx={(theme) => ({
           fontWeight: 700,
@@ -832,7 +832,7 @@ function FindingView({
 }) {
   const { t } = useI18n();
   return (
-    <Box sx={{ padding: "48px 24px 24px", textAlign: "center" }}>
+    <Box sx={{ padding: "20px", textAlign: "center" }}>
       <style>{"@keyframes mp-spin{to{transform:rotate(360deg)}}"}</style>
       <Box
         sx={(theme) => ({
@@ -893,7 +893,7 @@ function AssignedView({
 }) {
   const { t } = useI18n();
   return (
-    <Box sx={{ padding: "14px 20px 28px" }}>
+    <Box sx={{ padding: "14px 20px 20px" }}>
       <FlexBox alignItems="center" gap="8px" sx={{ marginBottom: "12px" }}>
         <Box
           as="span"
@@ -1112,11 +1112,12 @@ function CarCard({
         display: "flex",
         flexDirection: "column",
         gap: "10px",
+        transition: "box-shadow 0.12s",
         background: active
           ? addOpacity(theme.semantic.primary.normal, theme.opacity[8])
           : theme.semantic.background.normal.normal,
         boxShadow: active
-          ? `inset 0 0 0 1.5px ${theme.semantic.primary.normal}`
+          ? `inset 0 0 0 2px ${theme.semantic.primary.normal}`
           : `inset 0 0 0 1px ${theme.semantic.line.normal.neutral}`,
       })}
     >
@@ -1142,7 +1143,7 @@ function CarCard({
             as="span"
             sx={(theme) => ({ display: "inline-flex", color: theme.semantic.primary.normal })}
           >
-            <IconCircleCheckFill sx={{ fontSize: "18px" }} />
+            <IconCircleCheckFill sx={{ fontSize: "20px" }} />
           </Box>
         )}
       </FlexBox>
@@ -1205,11 +1206,12 @@ function GlobalCarRow({
         cursor: "pointer",
         borderRadius: "16px",
         padding: "16px",
+        transition: "box-shadow 0.12s",
         background: active
           ? addOpacity(theme.semantic.primary.normal, theme.opacity[8])
           : theme.semantic.background.normal.normal,
         boxShadow: active
-          ? `inset 0 0 0 1.5px ${theme.semantic.primary.normal}`
+          ? `inset 0 0 0 2px ${theme.semantic.primary.normal}`
           : `inset 0 0 0 1px ${theme.semantic.line.normal.neutral}`,
       })}
     >

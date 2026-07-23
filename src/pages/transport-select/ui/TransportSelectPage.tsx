@@ -112,6 +112,7 @@ function TransportCard({
         cursor: "pointer",
         borderRadius: "16px",
         padding: "16px",
+        transition: "box-shadow 0.12s",
         background: active
           ? addOpacity(theme.semantic.primary.normal, theme.opacity[8])
           : theme.semantic.background.normal.normal,
@@ -289,9 +290,9 @@ function GlobalBanner({
       >
         {t("gt_policy_title")}
         {policyOpen ? (
-          <IconChevronUp sx={{ fontSize: "14px" }} />
+          <IconChevronUp sx={{ fontSize: "15px" }} />
         ) : (
-          <IconChevronDown sx={{ fontSize: "14px" }} />
+          <IconChevronDown sx={{ fontSize: "15px" }} />
         )}
       </Box>
       {policyOpen && (
@@ -360,6 +361,7 @@ function GlobalCarCard({
         cursor: "pointer",
         borderRadius: "16px",
         padding: "16px",
+        transition: "box-shadow 0.12s",
         background: active
           ? addOpacity(theme.semantic.primary.normal, theme.opacity[8])
           : theme.semantic.background.normal.normal,
@@ -371,8 +373,8 @@ function GlobalCarCard({
       <Box
         as="span"
         sx={{
-          width: "48px",
-          height: "48px",
+          width: "56px",
+          height: "56px",
           borderRadius: "13px",
           background: car.ibg,
           color: car.ifg,
@@ -520,9 +522,9 @@ export function TransportSelectPage() {
         <Box
           as="h1"
           sx={(theme) => ({
-            margin: "12px 0 4px",
+            margin: "0 0 6px",
             fontWeight: 700,
-            fontSize: "23px",
+            fontSize: "22px",
             letterSpacing: "-0.02em",
             color: theme.semantic.label.normal,
           })}

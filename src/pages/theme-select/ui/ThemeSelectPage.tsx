@@ -82,10 +82,10 @@ const THEME_KEYS: ThemeKey[] = ["attraction", "food", "cafe", "package"];
 
 // 테마 칩 리딩 아이콘(디자인 :366-373) — attraction/food는 위 글리프를 축소 재사용, cafe/package는 WDS 아이콘으로 대체(D2).
 const THEME_CHIP_ICON: Record<ThemeKey, ReactNode> = {
-  attraction: <MountainGlyph size={16} />,
-  food: <FoodGlyph size={16} />,
-  cafe: <IconCoffee sx={{ fontSize: "16px" }} />,
-  package: <IconTicket sx={{ fontSize: "16px" }} />,
+  attraction: <MountainGlyph size={17} />,
+  food: <FoodGlyph size={17} />,
+  cafe: <IconCoffee sx={{ fontSize: "17px" }} />,
+  package: <IconTicket sx={{ fontSize: "17px" }} />,
 };
 
 /** 테마 선택(수동 스팟 고르기) — 디자인 "THEME + SPOTS"(:355-412) 이식. */
@@ -155,7 +155,7 @@ export function ThemeSelectPage() {
     <Box
       sx={(theme) => ({
         minHeight: "100%",
-        background: theme.semantic.background.normal.alternative,
+        background: theme.semantic.background.normal.normal,
       })}
     >
       {/* 헤더 — 디자인 :358-362 */}
@@ -227,7 +227,7 @@ export function ThemeSelectPage() {
                 padding: "9px 15px 9px 12px",
                 fontWeight: 600,
                 fontSize: "13px",
-                background: active ? THEME_TINT[key].bg : theme.semantic.fill.normal,
+                background: active ? THEME_TINT[key].bg : theme.semantic.background.normal.normal,
                 color: active ? THEME_TINT[key].fg : theme.semantic.label.neutral,
                 boxShadow: active
                   ? `inset 0 0 0 1.5px ${THEME_TINT[key].fg}`

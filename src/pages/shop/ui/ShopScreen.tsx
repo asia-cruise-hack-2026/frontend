@@ -123,7 +123,7 @@ export function ShopScreen() {
                   height: "16px",
                   padding: "0 4px",
                   boxSizing: "border-box",
-                  background: theme.semantic.primary.normal,
+                  background: theme.semantic.status.negative,
                   color: theme.semantic.static.white,
                   borderRadius: "999px",
                   fontSize: "10px",

@@ -285,7 +285,7 @@ export function FinalRoutePage() {
           </>
         )}
 
-        <Box sx={{ height: "16px" }} />
+        <Box sx={{ height: "96px" }} />
       </Box>
 
       {/* 하단 CTA — 디자인 :632 구조 참고. 문구·동작은 작업 지시대로 단일 버튼("홈으로" → /app) */}

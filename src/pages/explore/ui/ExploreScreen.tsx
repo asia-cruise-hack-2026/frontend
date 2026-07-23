@@ -497,7 +497,7 @@ export function ExploreScreen() {
         })}
       </FlexBox>
 
-      <Box sx={{ height: "16px" }} />
+      <Box sx={{ height: "96px" }} />
 
       {/* 하단 CTA — 디자인 :276-280 */}
       {pkgSpotIds.length > 0 && (

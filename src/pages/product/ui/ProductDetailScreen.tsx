@@ -313,7 +313,7 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
                   background: active
                     ? addOpacity(theme.semantic.primary.normal, theme.opacity[8])
                     : theme.semantic.background.normal.alternative,
-                  boxShadow: active ? `inset 0 0 0 1.5px ${theme.semantic.primary.normal}` : "none",
+                  boxShadow: active ? `inset 0 0 0 2px ${theme.semantic.primary.normal}` : "none",
                 })}
               >
                 <Box
@@ -323,7 +323,7 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
                     borderRadius: "999px",
                     flexShrink: 0,
                     boxShadow: `inset 0 0 0 2px ${
-                      active ? theme.semantic.primary.normal : theme.semantic.line.normal.normal
+                      active ? theme.semantic.primary.normal : theme.semantic.line.normal.neutral
                     }`,
                     display: "flex",
                     alignItems: "center",
@@ -345,7 +345,7 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
                   as="span"
                   sx={(theme) => ({
                     fontSize: "14px",
-                    fontWeight: active ? 700 : 500,
+                    fontWeight: active ? 600 : 500,
                     color: theme.semantic.label.normal,
                   })}
                 >
@@ -356,7 +356,7 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
           })}
         </FlexBox>
 
-        <Box sx={{ height: "24px" }} />
+        <Box sx={{ height: "120px" }} />
       </Box>
 
       <FlexBox

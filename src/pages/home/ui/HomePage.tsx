@@ -131,7 +131,7 @@ export function HomePage() {
                 letterSpacing: ".02em",
               })}
             >
-              Omong
+              OMONG
             </Box>
             <FlexBox
               as="span"
@@ -145,6 +145,7 @@ export function HomePage() {
                 padding: "6px 11px",
                 fontSize: "12px",
                 fontWeight: 700,
+                marginTop: "2px",
               })}
             >
               <Box as="span" sx={{ display: "inline-flex" }}>
@@ -300,7 +301,7 @@ export function HomePage() {
                         width: "30px",
                         height: "30px",
                         borderRadius: "999px",
-                        border: `2px dashed ${theme.semantic.line.normal.neutral}`,
+                        border: `2px dashed ${theme.semantic.line.normal.normal}`,
                         flexShrink: 0,
                       })}
                     />
@@ -312,7 +313,7 @@ export function HomePage() {
                     sx={(theme) => ({
                       flex: 1,
                       textAlign: "left",
-                      border: `1.5px dashed ${theme.semantic.line.normal.neutral}`,
+                      border: `1.5px dashed ${theme.semantic.line.normal.normal}`,
                       background: theme.semantic.background.normal.alternative,
                       borderRadius: "14px",
                       padding: "14px 15px",

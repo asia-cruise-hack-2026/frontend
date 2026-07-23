@@ -119,6 +119,12 @@ export function CruiseSelectPage() {
         ))}
       </Select>
 
+      {/* 디자인 :93 카드 등장 페이드 */}
+      <style>
+        {
+          "@keyframes cs-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}"
+        }
+      </style>
       {selected && (
         <Box
           sx={(theme) => ({
@@ -127,6 +133,8 @@ export function CruiseSelectPage() {
             background: theme.semantic.background.normal.normal,
             boxShadow: `inset 0 0 0 1px ${theme.semantic.line.normal.neutral}`,
             overflow: "hidden",
+            animation: "cs-fade 0.3s ease both",
+            "@media (prefers-reduced-motion: reduce)": { animation: "none" },
           })}
         >
           <FlexBox
