@@ -127,9 +127,14 @@ export function LangSelectPage() {
                     fontSize: "13px",
                     color: theme.semantic.label.neutral,
                     flexShrink: 0,
+                    overflow: "hidden",
                   })}
                 >
-                  {meta.code}
+                  <img
+                    src={`/flags/flag-${l}.svg`}
+                    alt={meta.code}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
                 </Box>
                 <Box as="span" sx={{ flex: 1, minWidth: 0 }}>
                   <Box
