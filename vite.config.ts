@@ -3,7 +3,16 @@ import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  server: { port: 3000 },
+  server: {
+    port: 3000,
+    // dev에서만: /api → Cloud Run 라이브(배포에선 같은 오리진 nginx가 /api/ 프록시)
+    proxy: {
+      "/api": {
+        target: "https://tamrapass-34273089941.asia-northeast3.run.app",
+        changeOrigin: true,
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": new URL("./src", import.meta.url).pathname,
