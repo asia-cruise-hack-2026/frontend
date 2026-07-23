@@ -1,11 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { Box, Button, FlexBox } from "@wanteddev/wds";
+import { Box, Button, FlexBox, useToast } from "@wanteddev/wds";
 import {
   IconArrowLeft,
-  IconChevronDown,
   IconChevronRight,
-  IconChevronUp,
   IconCircleCheckFill,
   IconClose,
   IconCoffee,
@@ -20,7 +18,6 @@ import { type ReactNode, useEffect, useState } from "react";
 
 import { getCruise } from "@/entities/cruise";
 import {
-  availableMinutes,
   buildCourse,
   courseSlack,
   listSpots,
@@ -334,17 +331,13 @@ function AiLoadingView({ aiStep, t }: { aiStep: number; t: (key: StringKey) => s
   );
 }
 
-// 여행 코스 타임라인 한 줄 — 디자인 :456-474. 편집모드면 순서변경(▲▼)·스왑·제거, 아니면 제거만(기존 유지).
+// 여행 코스 타임라인 한 줄 — 디자인 :456-474. 편집모드에만 스왑·제거 노출(디자인 editPkg 게이트, ▲▼는 디자인 템플릿에 없음).
 function CourseStopRow({
   stop,
   spot,
   locale,
   t,
   editMode,
-  isFirst,
-  isLast,
-  onMoveUp,
-  onMoveDown,
   onSwap,
   onRemove,
 }: {
@@ -353,10 +346,6 @@ function CourseStopRow({
   locale: Locale;
   t: (key: StringKey) => string;
   editMode: boolean;
-  isFirst: boolean;
-  isLast: boolean;
-  onMoveUp: (id: string) => void;
-  onMoveDown: (id: string) => void;
   onSwap: (id: string) => void;
   onRemove: (id: string) => void;
 }) {
@@ -383,34 +372,14 @@ function CourseStopRow({
         </Box>
         {stop.legToNextMin !== null && (
           <Box
+            as="span"
             sx={(theme) => ({
-              position: "relative",
               flex: 1,
               width: "2px",
               background: theme.semantic.line.normal.neutral,
               margin: "2px 0",
             })}
-          >
-            <Box
-              as="span"
-              sx={(theme) => ({
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                whiteSpace: "nowrap",
-                fontSize: "10px",
-                fontWeight: 700,
-                color: theme.semantic.label.alternative,
-                background: theme.semantic.background.normal.normal,
-                padding: "1px 6px",
-                borderRadius: "999px",
-                boxShadow: `inset 0 0 0 1px ${theme.semantic.line.normal.neutral}`,
-              })}
-            >
-              {`${stop.legToNextMin}${t("min")}`}
-            </Box>
-          </Box>
+          />
         )}
       </FlexBox>
       <Box sx={{ flex: 1, minWidth: 0, paddingBottom: "16px" }}>
@@ -437,102 +406,55 @@ function CourseStopRow({
           {`${spot.cat[locale]} · ${fmt(stop.startMin)} · ${stop.stayMin}${t("min")}`}
         </Box>
       </Box>
-      <FlexBox alignItems="center" gap="6px" sx={{ flexShrink: 0, paddingBottom: "16px" }}>
-        {editMode && (
-          <>
-            {/* 순서변경 — 디자인 renderVals :1529-1530 up/down·canUp/canDown·upOp/downOp(.28) 이식. 템플릿(:465-503)엔 버튼 미노출이나 로직 존재. */}
-            <Box
-              as="button"
-              type="button"
-              aria-label="move up"
-              disabled={isFirst}
-              onClick={() => onMoveUp(spot.id)}
-              sx={(theme) => ({
-                width: "30px",
-                height: "30px",
-                border: "none",
-                background: theme.semantic.fill.normal,
-                borderRadius: "8px",
-                cursor: isFirst ? "default" : "pointer",
-                opacity: isFirst ? 0.28 : 1,
-                color: theme.semantic.label.neutral,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              })}
-            >
-              <IconChevronUp sx={{ fontSize: "16px" }} />
-            </Box>
-            <Box
-              as="button"
-              type="button"
-              aria-label="move down"
-              disabled={isLast}
-              onClick={() => onMoveDown(spot.id)}
-              sx={(theme) => ({
-                width: "30px",
-                height: "30px",
-                border: "none",
-                background: theme.semantic.fill.normal,
-                borderRadius: "8px",
-                cursor: isLast ? "default" : "pointer",
-                opacity: isLast ? 0.28 : 1,
-                color: theme.semantic.label.neutral,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              })}
-            >
-              <IconChevronDown sx={{ fontSize: "16px" }} />
-            </Box>
-            {/* 장소 변경 — 디자인 :468 이식(스왑 시트 오픈) */}
-            <Box
-              as="button"
-              type="button"
-              onClick={() => onSwap(spot.id)}
-              sx={(theme) => ({
-                height: "30px",
-                padding: "0 11px",
-                border: "none",
-                background: theme.semantic.fill.normal,
-                borderRadius: "8px",
-                cursor: "pointer",
-                color: theme.semantic.label.neutral,
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "5px",
-                fontWeight: 700,
-                fontSize: "12px",
-                lineHeight: 1,
-                whiteSpace: "nowrap",
-              })}
-            >
-              <SwapGlyph />
-              {t("swap_action")}
-            </Box>
-          </>
-        )}
-        <Box
-          as="button"
-          type="button"
-          aria-label="remove"
-          onClick={() => onRemove(spot.id)}
-          sx={{
-            width: "30px",
-            height: "30px",
-            border: "none",
-            background: "#FDECEC",
-            borderRadius: "8px",
-            cursor: "pointer",
-            color: "#E23B3B",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <IconClose sx={{ fontSize: "16px" }} />
-        </Box>
-      </FlexBox>
+      {editMode && (
+        <FlexBox alignItems="center" gap="6px" sx={{ flexShrink: 0, paddingBottom: "16px" }}>
+          {/* 장소 변경 — 디자인 :468 (스왑 시트 오픈) */}
+          <Box
+            as="button"
+            type="button"
+            onClick={() => onSwap(spot.id)}
+            sx={(theme) => ({
+              height: "30px",
+              padding: "0 11px",
+              border: "none",
+              background: theme.semantic.fill.normal,
+              borderRadius: "8px",
+              cursor: "pointer",
+              color: theme.semantic.label.neutral,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "5px",
+              fontWeight: 700,
+              fontSize: "12px",
+              lineHeight: 1,
+              whiteSpace: "nowrap",
+            })}
+          >
+            <SwapGlyph />
+            {t("swap_action")}
+          </Box>
+          <Box
+            as="button"
+            type="button"
+            aria-label="remove"
+            onClick={() => onRemove(spot.id)}
+            sx={{
+              width: "30px",
+              height: "30px",
+              border: "none",
+              background: "#FDECEC",
+              borderRadius: "8px",
+              cursor: "pointer",
+              color: "#E23B3B",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <IconClose sx={{ fontSize: "16px" }} />
+          </Box>
+        </FlexBox>
+      )}
     </FlexBox>
   );
 }
@@ -740,6 +662,7 @@ function SwapSpotSheet({
 export function AiPackagePage() {
   const { t, locale } = useI18n();
   const navigate = useNavigate();
+  const toast = useToast();
   const cruiseId = useCruiseId();
   const pkgSpotIds = usePkgSpotIds();
 
@@ -778,7 +701,6 @@ export function AiPackagePage() {
     .map((id) => allSpots.find((s) => s.id === id))
     .filter((s): s is Spot => s != null);
 
-  const available = cruise ? availableMinutes(cruise) : 0;
   const course = cruise ? buildCourse(spots, cruise) : null;
   // 실거리 slack 모델(진입leg+체류+스팟간 이동+복귀leg 누적 vs 탑승마감) — 디자인 renderVals :1537-1562와 동일.
   const slack = cruise ? courseSlack(spots, cruise) : null;
@@ -786,7 +708,6 @@ export function AiPackagePage() {
   const fitsBg = fits ? "#EAF7EE" : "#FFF4E5";
   const FitsIcon = fits ? IconCircleCheckFill : IconTriangleExclamationFill;
   const courseTime = course ? hm(course.totalMin, locale) : "";
-  const availableTime = hm(available, locale);
   const canAddMore = slack ? slack.slackMin >= 50 : true;
 
   // 스왑 후보 — 현재 항구 스팟 중 pkgSpotIds에 없는 것 (디자인 renderVals :1535 swapCandidates 이식)
@@ -852,7 +773,7 @@ export function AiPackagePage() {
               {t("package_sub")}
             </Box>
 
-            {/* 예산 배너 — 디자인 :445-448 */}
+            {/* 적합 배너 — 디자인 :447-450 (mb 18, 아래 보조 문단 없음) */}
             <FlexBox
               alignItems="center"
               gap="10px"
@@ -860,7 +781,7 @@ export function AiPackagePage() {
                 background: fitsBg,
                 borderRadius: "14px",
                 padding: "13px 16px",
-                marginBottom: "10px",
+                marginBottom: "18px",
               }}
             >
               <Box
@@ -889,16 +810,6 @@ export function AiPackagePage() {
                 </Box>
               </Box>
             </FlexBox>
-            <Box
-              as="p"
-              sx={(theme) => ({
-                margin: "0 0 18px",
-                fontSize: "12px",
-                color: theme.semantic.label.alternative,
-              })}
-            >
-              {`${t("budget_est")} ${courseTime} · ${t("budget_stay")} ${availableTime}`}
-            </Box>
 
             {/* 여행 코스 — 디자인 :450-474, 편집 토글 :452 */}
             <FlexBox
@@ -948,10 +859,6 @@ export function AiPackagePage() {
                     locale={locale}
                     t={t}
                     editMode={editMode}
-                    isFirst={i === 0}
-                    isLast={i === course.stops.length - 1}
-                    onMoveUp={(id) => sessionActions.movePkgSpot(id, -1)}
-                    onMoveDown={(id) => sessionActions.movePkgSpot(id, 1)}
                     onSwap={setSwapTargetId}
                     onRemove={sessionActions.togglePkgSpot}
                   />
@@ -971,84 +878,83 @@ export function AiPackagePage() {
               </Box>
             )}
 
-            {/* 장소 추가 — 디자인 :478-487. 편집모드+여유(slackMin>=50)면 추가 버튼, 아니면 경고 배너 */}
-            {editMode &&
-              (canAddMore ? (
+            {/* 장소 추가 — 디자인 :496-507. 편집모드와 무관하게 여유(slackMin>=50)면 추가 버튼, 아니면 경고 배너 */}
+            {canAddMore ? (
+              <Box
+                as="button"
+                type="button"
+                onClick={() => navigate({ to: "/app/theme" })}
+                sx={(theme) => ({
+                  width: "100%",
+                  marginTop: "8px",
+                  border: `1.5px dashed ${theme.semantic.line.normal.normal}`,
+                  background: theme.semantic.background.normal.normal,
+                  borderRadius: "12px",
+                  padding: "13px",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  color: theme.semantic.primary.normal,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                })}
+              >
+                <IconPlus sx={{ fontSize: "18px" }} />
+                {t("home_add")}
+              </Box>
+            ) : (
+              <FlexBox
+                alignItems="flex-start"
+                gap="9px"
+                sx={{
+                  width: "100%",
+                  marginTop: "8px",
+                  border: "1.5px dashed rgba(232,130,14,.4)",
+                  background: "#FFF7EC",
+                  borderRadius: "12px",
+                  padding: "12px 14px",
+                }}
+              >
                 <Box
-                  as="button"
-                  type="button"
-                  onClick={() => navigate({ to: "/app/theme" })}
-                  sx={(theme) => ({
-                    width: "100%",
-                    marginTop: "8px",
-                    border: `1.5px dashed ${theme.semantic.line.normal.normal}`,
-                    background: theme.semantic.background.normal.normal,
-                    borderRadius: "12px",
-                    padding: "13px",
-                    cursor: "pointer",
-                    fontWeight: 600,
-                    fontSize: "14px",
-                    color: theme.semantic.primary.normal,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "6px",
-                  })}
-                >
-                  <IconPlus sx={{ fontSize: "18px" }} />
-                  {t("spot_add_more")}
-                </Box>
-              ) : (
-                <FlexBox
-                  alignItems="flex-start"
-                  gap="9px"
+                  as="span"
                   sx={{
-                    width: "100%",
-                    marginTop: "8px",
-                    border: "1.5px dashed rgba(232,130,14,.4)",
-                    background: "#FFF7EC",
-                    borderRadius: "12px",
-                    padding: "12px 14px",
+                    display: "inline-flex",
+                    color: "#B5620A",
+                    flexShrink: 0,
+                    marginTop: "1px",
                   }}
                 >
+                  <IconTriangleExclamationFill sx={{ fontSize: "18px" }} />
+                </Box>
+                <Box>
                   <Box
                     as="span"
-                    sx={{
-                      display: "inline-flex",
-                      color: "#B5620A",
-                      flexShrink: 0,
-                      marginTop: "1px",
-                    }}
+                    sx={(theme) => ({
+                      display: "block",
+                      fontWeight: 700,
+                      fontSize: "13px",
+                      color: theme.semantic.label.normal,
+                    })}
                   >
-                    <IconTriangleExclamationFill sx={{ fontSize: "18px" }} />
+                    {t("add_full")}
                   </Box>
-                  <Box>
-                    <Box
-                      as="span"
-                      sx={(theme) => ({
-                        display: "block",
-                        fontWeight: 700,
-                        fontSize: "13px",
-                        color: theme.semantic.label.normal,
-                      })}
-                    >
-                      {t("add_full")}
-                    </Box>
-                    <Box
-                      as="span"
-                      sx={(theme) => ({
-                        display: "block",
-                        fontSize: "12px",
-                        color: theme.semantic.label.alternative,
-                        marginTop: "2px",
-                        lineHeight: 1.45,
-                      })}
-                    >
-                      {t("add_full_sub")}
-                    </Box>
+                  <Box
+                    as="span"
+                    sx={(theme) => ({
+                      display: "block",
+                      fontSize: "12px",
+                      color: theme.semantic.label.alternative,
+                      marginTop: "2px",
+                      lineHeight: 1.45,
+                    })}
+                  >
+                    {t("add_full_sub")}
                   </Box>
-                </FlexBox>
-              ))}
+                </Box>
+              </FlexBox>
+            )}
           </Box>
 
           {/* CTA — 디자인 최종: 지금 확정(→교통수단) / 나중에 확정(→홈) 2버튼 */}
@@ -1075,7 +981,15 @@ export function AiPackagePage() {
             <Box
               as="button"
               type="button"
-              onClick={() => navigate({ to: "/app" })}
+              onClick={() => {
+                // 디자인 confirmRoute(false) :1309 — 확정 토스트 후 홈 복귀
+                toast({
+                  content: t("route_confirmed_toast"),
+                  variant: "positive",
+                  duration: "short",
+                });
+                navigate({ to: "/app" });
+              }}
               sx={(theme) => ({
                 width: "100%",
                 height: "48px",
