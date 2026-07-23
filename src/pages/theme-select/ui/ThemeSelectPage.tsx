@@ -148,7 +148,7 @@ export function ThemeSelectPage() {
             color: theme.semantic.label.normal,
           })}
         >
-          {t("theme_title")}
+          {t("pick_title")}
         </Box>
         <Box
           as="p"
@@ -159,7 +159,7 @@ export function ThemeSelectPage() {
             color: theme.semantic.label.alternative,
           })}
         >
-          {t("theme_sub")}
+          {t("pick_sub")}
         </Box>
       </Box>
 
