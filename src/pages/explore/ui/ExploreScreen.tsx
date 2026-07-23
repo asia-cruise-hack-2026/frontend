@@ -515,7 +515,7 @@ export function ExploreScreen() {
             color="primary"
             size="large"
             fullWidth
-            onClick={() => navigate({ to: "/app" })}
+            onClick={() => navigate({ to: "/app/package" })}
           >
             {pkgCta}
           </Button>

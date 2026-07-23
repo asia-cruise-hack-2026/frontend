@@ -88,13 +88,13 @@ export function SpotDetailScreen({ spotId }: { spotId: string }) {
   };
 
   const handleGoOnly = () => {
-    ensureInPackage();
-    navigate({ to: "/app" });
+    sessionActions.setPkgSpots([spotId]);
+    navigate({ to: "/app/package" });
   };
 
   const handleAddMore = () => {
     ensureInPackage();
-    navigate({ to: "/app/explore" });
+    navigate({ to: "/app/theme" });
   };
 
   return (
