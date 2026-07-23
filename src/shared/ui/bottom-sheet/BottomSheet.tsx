@@ -1,5 +1,4 @@
 import { Box, FlexBox } from "@wanteddev/wds";
-import { IconClose } from "@wanteddev/wds-icon";
 import {
   type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
@@ -151,7 +150,6 @@ interface BottomSheetProps {
   title?: string;
   subtitle?: string;
   /** 헤더 우측 닫기 버튼 — 기본: title 있으면 노출 */
-  showClose?: boolean;
   /** 함수형 children은 애니메이션 경유 닫기(close)를 받는다 — 내부 닫기 버튼용 */
   children: ReactNode | ((close: () => void) => ReactNode);
 }
@@ -167,7 +165,6 @@ export function BottomSheet({
   zIndex = 200,
   title,
   subtitle,
-  showClose = title != null,
   children,
 }: BottomSheetProps) {
   // 진입(슬라이드업+딤 페이드인) — 마운트 후 transform 해제
@@ -304,29 +301,6 @@ export function BottomSheet({
                   </Box>
                 )}
               </Box>
-              {showClose && (
-                <Box
-                  as="button"
-                  type="button"
-                  aria-label="close"
-                  onClick={close}
-                  sx={(theme) => ({
-                    width: "34px",
-                    height: "34px",
-                    border: "none",
-                    background: theme.semantic.fill.normal,
-                    borderRadius: "999px",
-                    cursor: "pointer",
-                    color: theme.semantic.label.neutral,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                  })}
-                >
-                  <IconClose sx={{ fontSize: "18px" }} />
-                </Box>
-              )}
             </FlexBox>
           )}
         </Box>

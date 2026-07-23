@@ -249,14 +249,14 @@ export function Splash({ onDone }: { onDone: () => void }) {
         }}
       >
         <svg
-          viewBox="0 0 780 120"
+          viewBox="0 0 2340 120"
           preserveAspectRatio="none"
           className="sp-anim"
           style={{
             position: "absolute",
             top: -16,
             left: 0,
-            width: 780,
+            width: 2340,
             height: 32,
             fill: "rgba(6,45,120,.30)",
             animation: "sp-wave 8s linear infinite",
@@ -264,16 +264,18 @@ export function Splash({ onDone }: { onDone: () => void }) {
           aria-hidden="true"
         >
           <path d={WAVE_PATH_FILL} />
+          <path d={WAVE_PATH_FILL} transform="translate(780 0)" />
+          <path d={WAVE_PATH_FILL} transform="translate(1560 0)" />
         </svg>
         <svg
-          viewBox="0 0 780 120"
+          viewBox="0 0 2340 120"
           preserveAspectRatio="none"
           className="sp-anim"
           style={{
             position: "absolute",
             top: -16,
             left: 0,
-            width: 780,
+            width: 2340,
             height: 32,
             fill: "none",
             stroke: "rgba(255,255,255,.5)",
@@ -283,16 +285,18 @@ export function Splash({ onDone }: { onDone: () => void }) {
           aria-hidden="true"
         >
           <path d={WAVE_PATH_LINE} />
+          <path d={WAVE_PATH_LINE} transform="translate(780 0)" />
+          <path d={WAVE_PATH_LINE} transform="translate(1560 0)" />
         </svg>
         <svg
-          viewBox="0 0 780 120"
+          viewBox="0 0 2340 120"
           preserveAspectRatio="none"
           className="sp-anim"
           style={{
             position: "absolute",
             top: -10,
             left: 0,
-            width: 780,
+            width: 2340,
             height: 32,
             fill: "none",
             stroke: "rgba(255,255,255,.22)",
@@ -302,6 +306,8 @@ export function Splash({ onDone }: { onDone: () => void }) {
           aria-hidden="true"
         >
           <path d={WAVE_PATH_LINE} />
+          <path d={WAVE_PATH_LINE} transform="translate(780 0)" />
+          <path d={WAVE_PATH_LINE} transform="translate(1560 0)" />
         </svg>
         {WATER_BUBBLES.map((b) => (
           <span

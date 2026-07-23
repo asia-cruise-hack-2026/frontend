@@ -5,31 +5,10 @@ import { IconArrowLeft, IconCheck, IconLocation, IconPlus } from "@wanteddev/wds
 import { useState } from "react";
 
 import { getCruise } from "@/entities/cruise";
-import { categoryTint, listReachableSpots, pctProjector } from "@/entities/spot";
+import { categoryTint, listReachableSpots } from "@/entities/spot";
 import { useI18n } from "@/shared/i18n";
 import { sessionActions, useCruiseId, usePkgSpotIds } from "@/shared/store";
-
-// 디자인 :240 원본 선박 SVG(항구 마커 배지) — WDS 대응 아이콘 없어 코드로 직접(D2).
-function ShipGlyph() {
-  return (
-    <svg
-      width="11"
-      height="11"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M2 20a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1" />
-      <path d="M4 18l-1 -5h18l-2 4" />
-      <path d="M5 13v-6h8l4 6" />
-      <path d="M7 7v-4h-1" />
-    </svg>
-  );
-}
+import { PortMap } from "@/widgets/port-map";
 
 /** 탐방(지도) — 프로토타입 "Explore"(:229-281) 구조에 실 DB 스팟·카테고리·썸네일 적용. */
 export function ExploreScreen() {
@@ -44,7 +23,6 @@ export function ExploreScreen() {
     queryFn: () => getCruise(cruiseId ?? "", locale),
     enabled: !!cruiseId,
   });
-  const portKey = cruise?.portKey ?? "jeju";
   // 실 DB 스팟 — 패키지/홈/테마와 동일 소스·캐시 키
   const { data: spots = [] } = useQuery({
     queryKey: ["reachable-spots", cruiseId, locale, 30],
@@ -67,15 +45,9 @@ export function ExploreScreen() {
     ];
   })();
 
-  // 디자인 renderVals :1695 — 항구(제주/강정)에 따라 땅 위치가 다름(장식)
-  const landTop = portKey === "jeju" ? "34%" : "-30%";
   const portLabel = cruise?.portName ?? "";
-
-  // 양식화 지도 유지 — 실좌표를 x/y%로 투영(항구 + 지도 노출 스팟 상위 8곳)
   const portPt = { lat: cruise?.portLat ?? 33.523, lng: cruise?.portLng ?? 126.537 };
-  const mapSpots = spots.slice(0, 8);
-  const project = pctProjector([portPt, ...mapSpots]);
-  const portXY = project(portPt);
+  const mapSpots = spots.slice(0, 10);
 
   // 디자인 renderVals :1713 — pkgCta 문구 이식
   const pkgCta =
@@ -151,106 +123,15 @@ export function ExploreScreen() {
         )}
       </Box>
 
-      {/* 스타일 지도 — 디자인 :237-248, 마커는 실좌표 투영 */}
-      <Box
-        sx={{
-          position: "relative",
-          height: "250px",
-          background: "linear-gradient(180deg,#CFE4F2 0%,#BFDCF0 100%)",
-          overflow: "hidden",
-        }}
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            left: "-8%",
-            top: landTop,
-            width: "116%",
-            height: "70%",
-            background: "linear-gradient(160deg,#DDEBCF,#E9F2E0)",
-            borderRadius: "48% 52% 46% 54%/60% 56% 44% 40%",
-            boxShadow: "inset 0 0 0 2px rgba(255,255,255,.5)",
-          }}
+      {/* 실지도 — 정박항·스팟 pill 마커(PortMap), 마커 탭 = 스팟 상세 */}
+      <Box sx={{ position: "relative", height: "250px" }}>
+        <PortMap
+          port={portPt}
+          portName={portLabel}
+          spots={mapSpots}
+          interactive
+          onSpotClick={(s) => navigate({ to: "/app/spot/$spotId", params: { spotId: s.id } })}
         />
-        <FlexBox
-          flexDirection="column"
-          alignItems="center"
-          gap="3px"
-          sx={{
-            position: "absolute",
-            left: `${portXY.x}%`,
-            top: `${portXY.y}%`,
-            transform: "translate(-50%,-50%)",
-            zIndex: 5,
-          }}
-        >
-          <FlexBox
-            as="span"
-            alignItems="center"
-            gap="3px"
-            sx={(theme) => ({
-              background: theme.semantic.label.normal,
-              color: theme.semantic.static.white,
-              borderRadius: "999px",
-              padding: "3px 9px",
-              fontSize: "10px",
-              fontWeight: 700,
-            })}
-          >
-            <ShipGlyph />
-            {portLabel}
-          </FlexBox>
-        </FlexBox>
-        {mapSpots.map((spot) => {
-          const inPkg = pkgSpotIds.includes(spot.id);
-          const xy = project(spot);
-          return (
-            <Box
-              key={spot.id}
-              as="button"
-              type="button"
-              onClick={() => navigate({ to: "/app/spot/$spotId", params: { spotId: spot.id } })}
-              sx={{
-                position: "absolute",
-                left: `${xy.x}%`,
-                top: `${xy.y}%`,
-                transform: "translate(-50%,-100%)",
-                border: "none",
-                background: "none",
-                cursor: "pointer",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                zIndex: 4,
-                padding: 0,
-              }}
-            >
-              <Box
-                as="span"
-                sx={(theme) => ({
-                  background: inPkg ? "#8B3FF0" : theme.semantic.primary.normal,
-                  color: theme.semantic.static.white,
-                  fontWeight: 600,
-                  fontSize: "11px",
-                  whiteSpace: "nowrap",
-                  borderRadius: "999px",
-                  padding: "4px 10px",
-                  boxShadow: "0 3px 10px rgba(0,0,0,.22)",
-                })}
-              >
-                {spot.name}
-              </Box>
-              <Box
-                as="span"
-                sx={(theme) => ({
-                  width: "2px",
-                  height: "9px",
-                  background: inPkg ? "#8B3FF0" : theme.semantic.primary.normal,
-                })}
-              />
-            </Box>
-          );
-        })}
       </Box>
 
       {/* 섹션 타이틀 — 디자인 :249-252 */}
@@ -474,7 +355,7 @@ export function ExploreScreen() {
             color="primary"
             size="large"
             fullWidth
-            onClick={() => navigate({ to: "/app/package" })}
+            onClick={() => navigate({ to: "/app/package", search: { from: "picker" } })}
           >
             {pkgCta}
           </Button>

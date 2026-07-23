@@ -78,6 +78,25 @@ export function portPin(name: string): PinIcon {
   return { url: svgUrl(svg) };
 }
 
+/** 경로 순번 마커 — 번호 원(24px) + 스템. 최종 경로 실지도용 */
+export function numberedPin(no: number): PinIcon {
+  const d = 24;
+  const stem = 8;
+  const w = d + MARGIN * 2;
+  const h = MARGIN + d + stem;
+  const cx = w / 2;
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">${SHADOW}` +
+    `<g filter="url(#s)">` +
+    `<circle cx="${cx}" cy="${MARGIN + d / 2}" r="${d / 2}" fill="${PIN_BRAND}"/>` +
+    `<rect x="${cx - 1}" y="${MARGIN + d}" width="2" height="${stem}" fill="${PIN_BRAND}"/>` +
+    `</g>` +
+    `<circle cx="${cx}" cy="${MARGIN + d / 2}" r="${d / 2 - 1}" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.5"/>` +
+    `<text x="${cx}" y="${MARGIN + d / 2 + 0.5}" dominant-baseline="central" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#fff">${no}</text>` +
+    `</svg>`;
+  return { url: svgUrl(svg) };
+}
+
 /** 내 위치 — 파란 점 + 흰 링 + 옅은 헤일로. 점 중심이 지점에 오도록 하단을 헤일로 반지름으로 마감. */
 export function myDot(): PinIcon {
   // 기본 anchor(하단 중앙) 특성상 원 중심을 정확히 지점에 둘 수 없어, 캔버스 바닥=원 하단으로 두면 반지름(9px)만큼 위로 뜬다.

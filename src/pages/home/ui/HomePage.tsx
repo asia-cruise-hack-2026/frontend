@@ -114,18 +114,6 @@ export function HomePage() {
     enabled: !!cruiseId,
   });
 
-  // 내 위치 — 이동 탭과 동일 패턴(거부/실패 시 항구 중심 유지)
-  const [myPos, setMyPos] = useState<{ lat: number; lng: number } | null>(null);
-  useEffect(() => {
-    if (!("geolocation" in navigator)) return;
-    const id = navigator.geolocation.watchPosition(
-      (pos) => setMyPos({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => {},
-      { enableHighAccuracy: true, maximumAge: 10_000 },
-    );
-    return () => navigator.geolocation.clearWatch(id);
-  }, []);
-
   const unitH =
     locale === "ko" ? "시간" : locale === "zh" ? "小时" : locale === "ja" ? "時間" : "h";
   const unitM = locale === "ko" ? "분" : locale === "zh" ? "分" : locale === "ja" ? "分" : "m";
@@ -472,11 +460,10 @@ export function HomePage() {
             overflow: "hidden",
           })}
         >
-          {/* 홈 지도 — 내 위치 중심(원거리 시 항구 폴백)·정박항/스팟 마커, 탭=풀맵 확대 전환 */}
+          {/* 홈 지도 — 내 위치 중심(PortMap 내장)·정박항/스팟 마커, 탭=풀맵 확대 전환 */}
           <HomeMap
             port={{ lat: cruise?.portLat ?? 33.523, lng: cruise?.portLng ?? 126.537 }}
             portName={cruise?.portName ?? ""}
-            myPos={myPos}
             spots={allSpots.slice(0, 10)}
             onExpand={() => navigate({ to: "/app/map", viewTransition: true })}
           />
@@ -576,7 +563,7 @@ export function HomePage() {
                   <Box
                     as="button"
                     type="button"
-                    onClick={() => navigate({ to: "/app/package" })}
+                    onClick={() => navigate({ to: "/app/package", search: { from: "home" } })}
                     sx={(theme) => ({
                       border: "none",
                       background: "none",
@@ -750,7 +737,7 @@ export function HomePage() {
                   <Box
                     as="button"
                     type="button"
-                    onClick={() => navigate({ to: "/app/package" })}
+                    onClick={() => navigate({ to: "/app/package", search: { from: "home" } })}
                     sx={(theme) => ({
                       width: "100%",
                       marginTop: "14px",

@@ -496,7 +496,7 @@ export function ThemeSelectPage() {
           size="large"
           fullWidth
           disabled={pkgSpotIds.length === 0}
-          onClick={() => navigate({ to: "/app/package" })}
+          onClick={() => navigate({ to: "/app/package", search: { from: "picker" } })}
         >
           {confirmCta}
         </Button>

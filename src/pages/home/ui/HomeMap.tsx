@@ -22,23 +22,21 @@ function ExpandGlyph() {
   );
 }
 
-/** 홈 지도 카드 — 정박항·스팟·내위치 마커(PortMap). 지도 전체가 탭 영역 = 풀맵(/app/map) 확대 전환. */
+/** 홈 지도 카드 — 정박항·스팟·내위치 마커(PortMap, 내위치는 위젯 내장). 지도 전체가 탭 영역 = 풀맵(/app/map) 확대 전환. */
 export function HomeMap({
   port,
   portName,
-  myPos,
   spots,
   onExpand,
 }: {
   port: { lat: number; lng: number };
   portName: string;
-  myPos: { lat: number; lng: number } | null;
   spots: ReachableSpot[];
   onExpand: () => void;
 }) {
   return (
     <Box sx={{ position: "relative", height: "270px", viewTransitionName: "home-map" }}>
-      <PortMap port={port} portName={portName} myPos={myPos} spots={spots} />
+      <PortMap port={port} portName={portName} spots={spots} />
       {/* 디자인 :170 — 카드에선 팬 대신 탭(풀맵으로), 팬은 풀맵에서 */}
       <Box
         as="button"

@@ -2,8 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Box } from "@wanteddev/wds";
 import { IconClose } from "@wanteddev/wds-icon";
-import { useEffect, useState } from "react";
-
 import { getCruise } from "@/entities/cruise";
 import { listReachableSpots } from "@/entities/spot";
 import { useI18n } from "@/shared/i18n";
@@ -27,18 +25,6 @@ export function MapFullPage() {
     enabled: !!cruiseId,
   });
 
-  // 내 위치 — 이동 탭과 동일 패턴(거부/실패 시 마커 생략)
-  const [myPos, setMyPos] = useState<{ lat: number; lng: number } | null>(null);
-  useEffect(() => {
-    if (!("geolocation" in navigator)) return;
-    const id = navigator.geolocation.watchPosition(
-      (pos) => setMyPos({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => {},
-      { enableHighAccuracy: true, maximumAge: 10_000 },
-    );
-    return () => navigator.geolocation.clearWatch(id);
-  }, []);
-
   return (
     <Box
       sx={{
@@ -51,7 +37,6 @@ export function MapFullPage() {
       <PortMap
         port={{ lat: cruise?.portLat ?? 33.523, lng: cruise?.portLng ?? 126.537 }}
         portName={cruise?.portName ?? ""}
-        myPos={myPos}
         spots={spots}
         zoom={13}
         interactive

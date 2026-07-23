@@ -1,13 +1,45 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { APIProvider, Map as GoogleMap, Marker, useMap } from "@vis.gl/react-google-maps";
 import { Box, Button, FlexBox } from "@wanteddev/wds";
 import { IconArrowLeft } from "@wanteddev/wds-icon";
+import { useEffect } from "react";
 
 import { getCruise } from "@/entities/cruise";
-import { buildCourse, listReachableSpots, pctProjector, type ReachableSpot } from "@/entities/spot";
+import { buildCourse, listReachableSpots, type ReachableSpot } from "@/entities/spot";
 import { GLOBAL_CARS, taxiFare, taxiMinutes, vanFare } from "@/entities/transport";
 import { useI18n } from "@/shared/i18n";
 import { useCruiseId, usePkgSpotIds, useTransportMode } from "@/shared/store";
+import { numberedPin, portPin } from "@/widgets/port-map";
+
+const MAPS_KEY: string | undefined = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
+// 항구→스팟 순서→항구 점선 경로 — 디자인 finalPolyline(:1606)을 실지도 위 구글 Polyline으로
+function RoutePolyline({ path }: { path: { lat: number; lng: number }[] }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!map || path.length < 2 || typeof google === "undefined") return;
+    const line = new google.maps.Polyline({
+      map,
+      path,
+      strokeOpacity: 0,
+      icons: [
+        {
+          icon: {
+            path: "M 0,-1 0,1",
+            strokeOpacity: 0.9,
+            strokeWeight: 2.5,
+            strokeColor: "#2563EB",
+          },
+          offset: "0",
+          repeat: "12px",
+        },
+      ],
+    });
+    return () => line.setMap(null);
+  }, [map, path]);
+  return null;
+}
 
 // 시각 포맷 HH:MM — AiPackagePage.tsx/HomePage.tsx의 fmt와 동일 패턴(엔티티에 미노출이라 로컬 복제).
 function fmt(min: number): string {
@@ -44,8 +76,7 @@ function SummaryCard({ label, value }: { label: string; value: string }) {
 
 /**
  * 최종 경로 안내 — 프로토타입 "FINAL ROUTE"(:594-638) 이식.
- * 지도는 ExploreScreen.tsx와 동일한 스타일 지도 방식(실 Google Maps 아님, 스팟 x/y% 좌표) +
- * 항구~스팟을 잇는 SVG 폴리라인(디자인 finalPolyline :1606).
+ * 지도는 실 Google Maps(정박항 pill + 순번 마커 + 점선 경로) — 양식화 지도에서 전환.
  */
 export function FinalRoutePage() {
   const { t, locale, money } = useI18n();
@@ -59,7 +90,6 @@ export function FinalRoutePage() {
     queryFn: () => getCruise(cruiseId ?? "", locale),
     enabled: !!cruiseId,
   });
-  const portKey = cruise?.portKey ?? "jeju";
   // 실 DB 스팟 — 패키지/홈과 동일 소스·캐시 키
   const { data: allSpots = [] } = useQuery({
     queryKey: ["reachable-spots", cruiseId, locale, 30],
@@ -75,20 +105,16 @@ export function FinalRoutePage() {
   const course = cruise ? buildCourse(spots, cruise) : null;
   const totalKm = spots.reduce((sum, s) => sum + s.km, 0);
 
-  // 디자인 renderVals :1695 — 항구(제주/강정)에 따라 땅 위치가 다름(장식)
-  const landTop = portKey === "jeju" ? "34%" : "-30%";
   const portLabel = cruise?.portName ?? "";
-
-  // 양식화 지도 유지 — 실좌표(lat/lng)를 x/y%로 투영(mock x/y% 대체)
   const portPt = { lat: cruise?.portLat ?? 33.523, lng: cruise?.portLng ?? 126.537 };
-  const project = pctProjector([portPt, ...spots]);
-  const portXY = project(portPt);
-  const spotXYs = spots.map((s) => project(s));
-
-  // 디자인 renderVals :1606 — 항구에서 시작해 pkg 스팟을 순서대로 잇는 경로선
-  const polylinePoints = [`${portXY.x},${portXY.y}`, ...spotXYs.map((p) => `${p.x},${p.y}`)].join(
-    " ",
-  );
+  // 실지도 중심 — 항구+스팟 경계 박스 중앙
+  const pts = [portPt, ...spots.map((s) => ({ lat: s.lat, lng: s.lng }))];
+  const center = {
+    lat: (Math.min(...pts.map((p) => p.lat)) + Math.max(...pts.map((p) => p.lat))) / 2,
+    lng: (Math.min(...pts.map((p) => p.lng)) + Math.max(...pts.map((p) => p.lng))) / 2,
+  };
+  // 항구 → 스팟 순서 → 항구 복귀
+  const routePath = [portPt, ...spots.map((s) => ({ lat: s.lat, lng: s.lng })), portPt];
 
   const finalTimeText = mode === "gtaxi" ? t("gt_dayfull") : `${taxiMinutes(totalKm)}${t("min")}`;
   const finalCostText =
@@ -141,88 +167,45 @@ export function FinalRoutePage() {
           </Box>
         </Box>
 
-        {/* 스타일 지도 — 디자인 :604-615. ExploreScreen.tsx 방식 참고(좌표 x/y%, 실 Google Maps 아님) */}
+        {/* 실지도 — 정박항 pill + 순번 마커 + 점선 경로(항구→스팟들→항구) */}
         <Box
           sx={{
             position: "relative",
             height: "220px",
             margin: "0 20px",
             borderRadius: "18px",
-            background: "linear-gradient(180deg,#CFE4F2 0%,#BFDCF0 100%)",
+            background: "#CFE4F2",
             overflow: "hidden",
           }}
         >
-          <Box
-            sx={{
-              position: "absolute",
-              left: "-8%",
-              top: landTop,
-              width: "116%",
-              height: "70%",
-              background: "linear-gradient(160deg,#DDEBCF,#E9F2E0)",
-              borderRadius: "48% 52% 46% 54%/60% 56% 44% 40%",
-              boxShadow: "inset 0 0 0 2px rgba(255,255,255,.5)",
-            }}
-          />
-          <svg
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-          >
-            <polyline
-              points={polylinePoints}
-              fill="none"
-              stroke="var(--primary-normal-4)"
-              strokeWidth={0.8}
-              strokeDasharray="2.4 2"
-              vectorEffect="non-scaling-stroke"
-            />
-          </svg>
-          <Box
-            as="span"
-            sx={(theme) => ({
-              position: "absolute",
-              left: `${portXY.x}%`,
-              top: `${portXY.y}%`,
-              transform: "translate(-50%,-50%)",
-              zIndex: 3,
-              background: theme.semantic.label.normal,
-              color: theme.semantic.static.white,
-              borderRadius: "999px",
-              padding: "3px 9px",
-              fontSize: "10px",
-              fontWeight: 700,
-            })}
-          >
-            {portLabel}
-          </Box>
-          {spots.map((spot, i) => (
-            <Box
-              key={spot.id}
-              as="span"
-              sx={(theme) => ({
-                position: "absolute",
-                left: `${spotXYs[i]?.x ?? 50}%`,
-                top: `${spotXYs[i]?.y ?? 50}%`,
-                transform: "translate(-50%,-100%)",
-                zIndex: 4,
-                width: "22px",
-                height: "22px",
-                borderRadius: "999px",
-                background: theme.semantic.primary.normal,
-                color: theme.semantic.static.white,
-                fontWeight: 700,
-                fontSize: "11px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 3px 8px rgba(0,0,0,.25)",
-              })}
-            >
-              {i + 1}
-            </Box>
-          ))}
+          {MAPS_KEY && (
+            <APIProvider apiKey={MAPS_KEY}>
+              <GoogleMap
+                key={spots.map((s) => s.id).join(",")}
+                defaultCenter={center}
+                defaultZoom={13}
+                disableDefaultUI
+                gestureHandling="none"
+                style={{ width: "100%", height: "100%" }}
+              >
+                <Marker
+                  position={portPt}
+                  icon={portPin(portLabel)}
+                  title={portLabel}
+                  zIndex={2_000_000}
+                />
+                {spots.map((spot, i) => (
+                  <Marker
+                    key={spot.id}
+                    position={{ lat: spot.lat, lng: spot.lng }}
+                    icon={numberedPin(i + 1)}
+                    title={spot.name}
+                  />
+                ))}
+                <RoutePolyline path={routePath} />
+              </GoogleMap>
+            </APIProvider>
+          )}
         </Box>
 
         {cruise && course && (

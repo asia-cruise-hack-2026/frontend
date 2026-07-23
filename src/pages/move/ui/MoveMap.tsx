@@ -45,8 +45,9 @@ export function MoveMap({
           gestureHandling="greedy"
           style={{ width: "100%", height: "100%" }}
         >
-          {/* 시안 마커 — 후보=브랜드색 pill(목적지 선택 시 딤), 목적지=바이올렛 pill(디자인 선택색 :1707) */}
-          {myPos && <Marker position={myPos} icon={myDot()} title="현재 위치" zIndex={4} />}
+          {/* 시안 마커 — 후보=브랜드색 pill(목적지 선택 시 딤), 목적지=바이올렛 pill(디자인 선택색 :1707).
+              구글 기본 zIndex(화면 y 기반 큰 값)를 확실히 넘도록 대형 값 사용 */}
+          {myPos && <Marker position={myPos} icon={myDot()} title="현재 위치" zIndex={1_999_999} />}
           {spots
             .filter((s) => s.id !== dest?.id)
             .map((s) => (
@@ -64,7 +65,7 @@ export function MoveMap({
               position={{ lat: dest.lat, lng: dest.lng }}
               icon={spotPin(dest.name, PIN_SELECTED)}
               title={dest.name}
-              zIndex={3}
+              zIndex={2_000_000}
             />
           )}
         </GoogleMap>

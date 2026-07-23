@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { Box, Button, FlexBox, useToast } from "@wanteddev/wds";
 import {
   IconArrowLeft,
@@ -32,6 +32,8 @@ const AI_STEP_KEYS = [
   "ai_step4",
 ] as const satisfies readonly StringKey[];
 const AI_STEP_INTERVAL_MS = 850; // 디자인 startAi :1140-1141
+
+const routeApi = getRouteApi("/app/package");
 
 const AI_LOADING_KEYFRAMES =
   "@keyframes aip-pulse{0%{transform:scale(.5);opacity:.65}100%{transform:scale(2.6);opacity:0}}" +
@@ -629,13 +631,19 @@ export function AiPackagePage() {
   const cruiseId = useCruiseId();
   const pkgSpotIds = usePkgSpotIds();
 
-  const [aiStep, setAiStep] = useState(0);
+  // 진입 출처(디자인 pkgBack) — 홈 재방문·수동 선택 진입은 AI 로딩 생략, 홈 재방문은 헤드도 숨김
+  const { from } = routeApi.useSearch();
+  const skipAi = from === "home" || from === "picker";
+  const showHead = from !== "home";
+
+  const [aiStep, setAiStep] = useState(skipAi ? AI_STEP_KEYS.length : 0);
   const ready = aiStep >= AI_STEP_KEYS.length;
   const [editMode, setEditMode] = useState(false);
   const [swapTargetId, setSwapTargetId] = useState<string | null>(null);
 
-  // 마운트 시 항상 로딩 1회 재생 — 데모 연출 (디자인 startAi :1140-1141)
+  // AI 생성 진입만 로딩 1회 재생 — 데모 연출 (디자인 startAi :1140-1141)
   useEffect(() => {
+    if (skipAi) return;
     const id = setInterval(() => {
       setAiStep((prev) => {
         const next = prev + 1;
@@ -647,7 +655,7 @@ export function AiPackagePage() {
       });
     }, AI_STEP_INTERVAL_MS);
     return () => clearInterval(id);
-  }, []);
+  }, [skipAi]);
 
   const { data: cruise } = useQuery({
     queryKey: ["cruise", cruiseId, locale],
@@ -712,30 +720,34 @@ export function AiPackagePage() {
       {ready && cruise && course && (
         <>
           <Box sx={{ flex: 1, overflowY: "auto", padding: "0 20px 20px" }}>
-            {/* 타이틀 — 디자인 :442-443 */}
-            <Box
-              as="h1"
-              sx={(theme) => ({
-                margin: "12px 0 4px",
-                fontWeight: 700,
-                fontSize: "23px",
-                letterSpacing: "-0.02em",
-                color: theme.semantic.label.normal,
-              })}
-            >
-              {t("package_ready")}
-            </Box>
-            <Box
-              as="p"
-              sx={(theme) => ({
-                margin: "0 0 16px",
-                fontSize: "14px",
-                lineHeight: 1.5,
-                color: theme.semantic.label.alternative,
-              })}
-            >
-              {t("package_sub")}
-            </Box>
+            {/* 타이틀 — 디자인 :442-443, 홈 재방문(pkgShowHead=false)이면 숨김 */}
+            {showHead && (
+              <>
+                <Box
+                  as="h1"
+                  sx={(theme) => ({
+                    margin: "12px 0 4px",
+                    fontWeight: 700,
+                    fontSize: "23px",
+                    letterSpacing: "-0.02em",
+                    color: theme.semantic.label.normal,
+                  })}
+                >
+                  {t("package_ready")}
+                </Box>
+                <Box
+                  as="p"
+                  sx={(theme) => ({
+                    margin: "0 0 16px",
+                    fontSize: "14px",
+                    lineHeight: 1.5,
+                    color: theme.semantic.label.alternative,
+                  })}
+                >
+                  {t("package_sub")}
+                </Box>
+              </>
+            )}
 
             {/* 적합 배너 — 디자인 :447-450 (mb 18, 아래 보조 문단 없음) */}
             <FlexBox
