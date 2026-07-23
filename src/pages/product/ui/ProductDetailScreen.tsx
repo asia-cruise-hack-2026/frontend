@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Box, Button, ContentBadge, FlexBox, addOpacity, useToast } from "@wanteddev/wds";
 import {
   IconArrowLeft,
+  IconArrowUpRight,
   IconCircleCheckFill,
   IconCircleClose,
   IconCircleCloseFill,
@@ -10,9 +11,11 @@ import {
   IconCoffee,
   IconCoins,
   IconHeart,
+  IconLocation,
   IconPassportFill,
   IconSparkleFill,
   IconSun,
+  IconTag,
   IconTemplate,
   IconTriangleExclamationFill,
 } from "@wanteddev/wds-icon";
@@ -69,10 +72,10 @@ function LineNoteIcon() {
 }
 
 type DeliveryOption = "ship" | "pickup" | "stay";
+// 디자인 최종: 배송 옵션 2개(현위치 배송 제거)
 const DELIVERY_OPTIONS: { key: DeliveryOption; labelKey: StringKey }[] = [
   { key: "ship", labelKey: "d_ship" },
   { key: "pickup", labelKey: "d_pickup" },
-  { key: "stay", labelKey: "d_stay" },
 ];
 
 /** 상품 상세 — 프로토타입 "PRODUCT DETAIL"(:678-722) 이식. */
@@ -170,6 +173,76 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
             })}
           >
             {money(product.price)}
+          </Box>
+        </Box>
+
+        {/* 탐나오 상세 링크 — 디자인 최종 추가 */}
+        <Box
+          as="a"
+          href="https://www.tamnao.com/web/goods/jeju.do"
+          target="_blank"
+          rel="noopener"
+          sx={(theme) => ({
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            margin: "14px 20px 0",
+            padding: "14px 16px",
+            borderRadius: "14px",
+            background: addOpacity(theme.semantic.primary.normal, theme.opacity[8]),
+            boxShadow: `inset 0 0 0 1px ${theme.semantic.primary.normal}`,
+            textDecoration: "none",
+          })}
+        >
+          <Box
+            as="span"
+            sx={(theme) => ({
+              width: "38px",
+              height: "38px",
+              borderRadius: "10px",
+              background: theme.semantic.primary.normal,
+              color: theme.semantic.static.white,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            })}
+          >
+            <IconTag sx={{ fontSize: "20px" }} />
+          </Box>
+          <Box as="span" sx={{ flex: 1, minWidth: 0 }}>
+            <Box
+              as="span"
+              sx={(theme) => ({
+                display: "block",
+                fontWeight: 700,
+                fontSize: "14px",
+                color: theme.semantic.primary.normal,
+              })}
+            >
+              {t("tamnao_view")}
+            </Box>
+            <Box
+              as="span"
+              sx={(theme) => ({
+                display: "block",
+                fontSize: "12px",
+                color: theme.semantic.label.alternative,
+                marginTop: "2px",
+              })}
+            >
+              {t("tamnao_sub")}
+            </Box>
+          </Box>
+          <Box
+            as="span"
+            sx={(theme) => ({
+              display: "inline-flex",
+              color: theme.semantic.primary.normal,
+              flexShrink: 0,
+            })}
+          >
+            <IconArrowUpRight sx={{ fontSize: "20px" }} />
           </Box>
         </Box>
 
@@ -355,6 +428,102 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
             );
           })}
         </FlexBox>
+
+        {/* 픽업 지점 안내 — 디자인 최종: 픽업 선택 시 노출 */}
+        {delivery === "pickup" && (
+          <Box
+            sx={(theme) => ({
+              margin: "12px 20px 0",
+              borderRadius: "14px",
+              background: addOpacity(theme.semantic.primary.normal, theme.opacity[8]),
+              boxShadow: `inset 0 0 0 1px ${theme.semantic.primary.normal}`,
+              padding: "16px",
+            })}
+          >
+            <FlexBox
+              alignItems="center"
+              gap="8px"
+              sx={(theme) => ({
+                fontWeight: 700,
+                fontSize: "14px",
+                color: theme.semantic.primary.normal,
+                marginBottom: "12px",
+              })}
+            >
+              <Box as="span" sx={{ display: "inline-flex" }}>
+                <IconLocation sx={{ fontSize: "18px" }} />
+              </Box>
+              {t("pickup_info_t")}
+            </FlexBox>
+            <FlexBox flexDirection="column" gap="11px">
+              {(
+                [
+                  ["pickup_where", "pickup_desk", true],
+                  ["pickup_hours", "pickup_hours_v", true],
+                  ["pickup_how", "pickup_how_v", false],
+                ] as const
+              ).map(([labelKey, valueKey, bold]) => (
+                <FlexBox key={labelKey} gap="12px">
+                  <Box
+                    as="span"
+                    sx={(theme) => ({
+                      flex: "0 0 74px",
+                      fontSize: "12.5px",
+                      fontWeight: 600,
+                      color: theme.semantic.label.alternative,
+                    })}
+                  >
+                    {t(labelKey)}
+                  </Box>
+                  <Box
+                    as="span"
+                    sx={(theme) => ({
+                      flex: 1,
+                      fontSize: "13px",
+                      fontWeight: bold ? 600 : 400,
+                      lineHeight: 1.5,
+                      color: theme.semantic.label.normal,
+                    })}
+                  >
+                    {t(valueKey)}
+                  </Box>
+                </FlexBox>
+              ))}
+            </FlexBox>
+            <FlexBox
+              alignItems="flex-start"
+              gap="8px"
+              sx={(theme) => ({
+                marginTop: "13px",
+                paddingTop: "13px",
+                borderTop: `1px solid ${theme.semantic.primary.normal}`,
+              })}
+            >
+              <Box
+                as="span"
+                sx={(theme) => ({
+                  display: "inline-flex",
+                  color: theme.semantic.primary.normal,
+                  flexShrink: 0,
+                  marginTop: "1px",
+                })}
+              >
+                <IconPassportFill sx={{ fontSize: "16px" }} />
+              </Box>
+              <Box
+                as="span"
+                sx={(theme) => ({
+                  fontSize: "12.5px",
+                  lineHeight: 1.5,
+                  fontWeight: 600,
+                  color: theme.semantic.label.neutral,
+                })}
+              >
+                {t("pickup_note")}
+              </Box>
+            </FlexBox>
+          </Box>
+        )}
 
         <Box sx={{ height: "120px" }} />
       </Box>

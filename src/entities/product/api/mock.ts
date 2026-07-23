@@ -238,8 +238,8 @@ const PRODUCTS: Product[] = [
     cat: "souvenir",
     price: 32000,
     status: "allowed",
-    color: "#E7F1FF",
-    iconColor: "#0066FF",
+    color: "var(--primary-normal-8)",
+    iconColor: "var(--primary-normal-4)",
     icon: "template",
     name: {
       ko: "제주 오름 디퓨저",

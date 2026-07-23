@@ -12,7 +12,6 @@ import {
   IconLocation,
   IconPencil,
   IconPlus,
-  IconSparkleFill,
   IconSun,
   IconTriangleExclamationFill,
   IconUmbrella,
@@ -43,7 +42,8 @@ const AI_STEP_INTERVAL_MS = 850; // 디자인 startAi :1140-1141
 const AI_LOADING_KEYFRAMES =
   "@keyframes aip-pulse{0%{transform:scale(.5);opacity:.65}100%{transform:scale(2.6);opacity:0}}" +
   "@keyframes aip-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}" +
-  "@keyframes aip-spin{to{transform:rotate(360deg)}}";
+  "@keyframes aip-spin{to{transform:rotate(360deg)}}" +
+  "@keyframes aip-blink{0%,100%{opacity:.35}50%{opacity:1}}";
 
 // 시각 포맷 HH:MM — HomePage.tsx의 fmt와 동일 패턴.
 function fmt(min: number): string {
@@ -70,45 +70,180 @@ function AiLoadingView({ aiStep, t }: { aiStep: number; t: (key: StringKey) => s
       sx={{ flex: 1, padding: "0 32px", textAlign: "center" }}
     >
       <style>{AI_LOADING_KEYFRAMES}</style>
+      {/* AI 로딩 — 디자인 최종: 블루 레이더/글로브 */}
       <Box
         sx={{
           position: "relative",
-          width: "88px",
-          height: "88px",
+          width: "190px",
+          height: "190px",
+          marginBottom: "26px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          marginBottom: "26px",
         }}
       >
+        {[0, 1].map((r) => (
+          <Box
+            key={r}
+            as="span"
+            sx={{
+              position: "absolute",
+              width: "150px",
+              height: "150px",
+              borderRadius: "999px",
+              boxShadow: "inset 0 0 0 1.5px rgba(37,99,235,.32)",
+              animation: `aip-pulse 2.8s ease-out infinite ${r === 1 ? "1.4s" : ""}`,
+              "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+            }}
+          />
+        ))}
         <Box
-          as="span"
           sx={{
-            position: "absolute",
-            inset: 0,
+            position: "relative",
+            width: "150px",
+            height: "150px",
             borderRadius: "999px",
-            background: "#8B3FF0",
-            opacity: 0.18,
-            animation: "aip-pulse 1.6s ease-out infinite",
-            "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+            overflow: "hidden",
+            background: "radial-gradient(120% 120% at 30% 25%,#F1F6FF 0%,#D3E1FF 55%,#AFCCFF 100%)",
+            boxShadow: "inset 0 0 0 1px rgba(37,99,235,.14),inset 0 10px 28px rgba(37,99,235,.16)",
           }}
-        />
+        >
+          <Box
+            as="span"
+            sx={{
+              position: "absolute",
+              inset: "26px",
+              borderRadius: "999px",
+              border: "1px solid rgba(37,99,235,.13)",
+            }}
+          />
+          <Box
+            as="span"
+            sx={{
+              position: "absolute",
+              inset: "52px",
+              borderRadius: "999px",
+              border: "1px solid rgba(37,99,235,.13)",
+            }}
+          />
+          <Box
+            as="span"
+            sx={{
+              position: "absolute",
+              left: "50%",
+              top: 0,
+              bottom: 0,
+              width: "1px",
+              background: "rgba(37,99,235,.1)",
+            }}
+          />
+          <Box
+            as="span"
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: 0,
+              right: 0,
+              height: "1px",
+              background: "rgba(37,99,235,.1)",
+            }}
+          />
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: "999px",
+              background:
+                "conic-gradient(from 0deg,rgba(37,99,235,0) 0deg,rgba(37,99,235,0) 290deg,rgba(37,99,235,.4) 360deg)",
+              animation: "aip-spin 2.4s linear infinite",
+              "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+            }}
+          />
+          {[
+            {
+              left: "33%",
+              top: "37%",
+              s: "10px",
+              bg: "var(--primary-normal-4)",
+              ring: "rgba(37,99,235,.16)",
+              d: "",
+            },
+            {
+              left: "63%",
+              top: "31%",
+              s: "10px",
+              bg: "#8B3FF0",
+              ring: "rgba(139,63,240,.16)",
+              d: ".5s",
+            },
+            {
+              left: "60%",
+              top: "63%",
+              s: "10px",
+              bg: "#E8820E",
+              ring: "rgba(232,130,14,.16)",
+              d: "1s",
+            },
+            {
+              left: "31%",
+              top: "61%",
+              s: "9px",
+              bg: "#12A150",
+              ring: "rgba(18,161,80,.16)",
+              d: "1.4s",
+            },
+          ].map((dot) => (
+            <Box
+              key={dot.left + dot.top}
+              as="span"
+              sx={{
+                position: "absolute",
+                left: dot.left,
+                top: dot.top,
+                width: dot.s,
+                height: dot.s,
+                borderRadius: "999px",
+                background: dot.bg,
+                boxShadow: `0 0 0 4px ${dot.ring}`,
+                animation: `aip-blink 1.8s ease-in-out infinite ${dot.d}`,
+                "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+              }}
+            />
+          ))}
+        </Box>
         <Box
           as="span"
-          sx={{
-            width: "72px",
-            height: "72px",
-            borderRadius: "22px",
-            background: "linear-gradient(135deg,#9747FF,#6A5CFF)",
+          sx={(theme) => ({
+            position: "absolute",
+            width: "52px",
+            height: "52px",
+            borderRadius: "999px",
+            background: "#fff",
+            boxShadow: "0 6px 18px rgba(37,99,235,.28)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#fff",
-            animation: "aip-float 2.4s ease-in-out infinite",
+            color: theme.semantic.primary.normal,
+            animation: "aip-float 3s ease-in-out infinite",
             "@media (prefers-reduced-motion: reduce)": { animation: "none" },
-          }}
+          })}
         >
-          <IconSparkleFill sx={{ fontSize: "34px" }} />
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M2 20a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1" />
+            <path d="M4 18l-1 -5h18l-2 4" />
+            <path d="M5 13v-6h8l4 6" />
+            <path d="M7 7v-4h-1" />
+          </svg>
         </Box>
       </Box>
       <Box
@@ -138,23 +273,30 @@ function AiLoadingView({ aiStep, t }: { aiStep: number; t: (key: StringKey) => s
               sx={{ opacity: done || active ? 1 : 0.45, transition: "opacity .3s" }}
             >
               {done && (
-                <Box as="span" sx={{ display: "inline-flex", color: "#8B3FF0", flexShrink: 0 }}>
+                <Box
+                  as="span"
+                  sx={(theme) => ({
+                    display: "inline-flex",
+                    color: theme.semantic.primary.normal,
+                    flexShrink: 0,
+                  })}
+                >
                   <IconCircleCheckFill sx={{ fontSize: "22px" }} />
                 </Box>
               )}
               {active && (
                 <Box
                   as="span"
-                  sx={{
+                  sx={(theme) => ({
                     width: "22px",
                     height: "22px",
                     borderRadius: "999px",
-                    border: "2.5px solid #E4D5FA",
-                    borderTopColor: "#8B3FF0",
+                    border: "2.5px solid #93C5FD",
+                    borderTopColor: theme.semantic.primary.normal,
                     animation: "aip-spin .7s linear infinite",
                     flexShrink: 0,
                     "@media (prefers-reduced-motion: reduce)": { animation: "none" },
-                  }}
+                  })}
                 />
               )}
               {!done && !active && (
@@ -175,7 +317,7 @@ function AiLoadingView({ aiStep, t }: { aiStep: number; t: (key: StringKey) => s
                   fontSize: "15px",
                   fontWeight: active || done ? 700 : 500,
                   color: done
-                    ? "#8B3FF0"
+                    ? theme.semantic.primary.normal
                     : active
                       ? theme.semantic.label.normal
                       : theme.semantic.label.alternative,
@@ -1005,12 +1147,15 @@ export function AiPackagePage() {
               ))}
           </Box>
 
-          {/* CTA — 디자인 :496-497. S4 transport 미구현이라 /app으로 임시 이동 */}
+          {/* CTA — 디자인 최종: 지금 확정(→교통수단) / 나중에 확정(→홈) 2버튼 */}
           <Box
             sx={(theme) => ({
               padding: "12px 20px 18px",
               borderTop: `1px solid ${theme.semantic.line.normal.neutral}`,
               flexShrink: 0,
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
             })}
           >
             <Button
@@ -1019,10 +1164,28 @@ export function AiPackagePage() {
               size="large"
               fullWidth
               disabled={course.stops.length === 0}
-              onClick={() => navigate({ to: "/app" })}
+              onClick={() => navigate({ to: "/app/transport" })}
             >
-              {t("transport_cta")}
+              {t("confirm_now")}
             </Button>
+            <Box
+              as="button"
+              type="button"
+              onClick={() => navigate({ to: "/app" })}
+              sx={(theme) => ({
+                width: "100%",
+                height: "48px",
+                borderRadius: "12px",
+                border: `1.5px solid ${theme.semantic.line.normal.normal}`,
+                background: theme.semantic.background.normal.normal,
+                cursor: "pointer",
+                fontWeight: 700,
+                fontSize: "15px",
+                color: theme.semantic.label.normal,
+              })}
+            >
+              {t("confirm_later")}
+            </Box>
           </Box>
         </>
       )}

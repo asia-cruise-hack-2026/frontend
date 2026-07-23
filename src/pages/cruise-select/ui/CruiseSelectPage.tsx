@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Box, Button, FlexBox, Option, Select } from "@wanteddev/wds";
-import { IconClockFill, IconLocationFill, IconVerifiedCheckFill } from "@wanteddev/wds-icon";
+import { IconClockFill, IconLocationFill } from "@wanteddev/wds-icon";
 import { useState } from "react";
 
 import { listCruises } from "@/entities/cruise";
@@ -57,30 +57,6 @@ export function CruiseSelectPage() {
       flexDirection="column"
       sx={{ minHeight: "100dvh", padding: "20px 24px 24px", overflowY: "auto" }}
     >
-      {/* 공식 배지 */}
-      <FlexBox
-        alignItems="center"
-        gap="6px"
-        sx={(theme) => ({
-          alignSelf: "flex-start",
-          background: theme.semantic.fill.normal,
-          borderRadius: "999px",
-          padding: "5px 12px",
-          fontSize: "12px",
-          fontWeight: 600,
-          color: theme.semantic.label.neutral,
-          marginBottom: "18px",
-        })}
-      >
-        <Box
-          as="span"
-          sx={(theme) => ({ display: "inline-flex", color: theme.semantic.status.positive })}
-        >
-          <IconVerifiedCheckFill sx={{ fontSize: "15px" }} />
-        </Box>
-        {t("official_badge")}
-      </FlexBox>
-
       <Box
         as="h1"
         sx={(theme) => ({

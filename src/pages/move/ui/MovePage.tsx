@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import {
   addOpacity,
   Box,
@@ -7,6 +8,7 @@ import {
   SearchField,
   SegmentedControl,
   SegmentedControlItem,
+  useToast,
 } from "@wanteddev/wds";
 import {
   IconArrowLeft,
@@ -41,6 +43,8 @@ const CALL_SIM_MS = 2400; // 디자인 callTaxi 타이밍(:1169) 이식.
 type Step = "dest" | "pickup" | "car" | "confirm";
 type CallStatus = "idle" | "finding" | "assigned";
 type Service = "normal" | "global";
+// 디자인 최종: 배정 이후 라이드 시뮬레이션 단계(탑승→이동→관광→복귀→완료)
+type RideStage = "coming" | "onboard" | "touring" | "returning" | "done";
 
 // 디자인 taxiStepBack 매핑(:1110) 이식.
 const PREV_STEP: Record<Step, Step> = {
@@ -69,6 +73,8 @@ function stepTitleKey(step: Step): "pickup_title" | "select_vehicle" | "confirm_
  */
 export function MovePage() {
   const { t, locale, money } = useI18n();
+  const navigate = useNavigate();
+  const toast = useToast();
   const cruiseId = useCruiseId();
 
   const { data: cruise } = useQuery({
@@ -91,6 +97,7 @@ export function MovePage() {
   const [service, setService] = useState<Service>("normal");
   const [vehicleType, setVehicleType] = useState<VehicleType>("normal");
   const [globalCarKey, setGlobalCarKey] = useState<GlobalCarKey>("basic");
+  const [rideStage, setRideStage] = useState<RideStage>("coming");
 
   // 기사 찾는 중 → 배정 시뮬레이션 (디자인 callTaxi :1169 이식).
   useEffect(() => {
@@ -136,8 +143,22 @@ export function MovePage() {
   const changeDest = () => setStep("dest");
   const goBack = () => setStep(PREV_STEP[step]);
   const goConfirm = () => setStep("confirm");
-  const callTaxi = () => setCallStatus("finding");
-  const cancelTaxi = () => setCallStatus("idle");
+  const callTaxi = () => {
+    setRideStage("coming");
+    setCallStatus("finding");
+  };
+  const cancelTaxi = () => {
+    setCallStatus("idle");
+    setRideStage("coming");
+  };
+  // 라이드 단계 진행 (디자인 최종: 탑승→이동→관광→복귀→완료)
+  const finishRide = () => {
+    setCallStatus("idle");
+    setRideStage("coming");
+    setStep("dest");
+    setDestId(null);
+    navigate({ to: "/app" });
+  };
 
   return (
     <Box
@@ -202,14 +223,25 @@ export function MovePage() {
       )}
 
       {callStatus === "assigned" && (
-        <AssignedView
+        <RideView
+          rideStage={rideStage}
           driverName={TAXI_DRIVER.name[locale]}
           driverCar={TAXI_DRIVER.car[locale]}
           plate={TAXI_DRIVER.plate}
           rating={TAXI_DRIVER.rating}
           etaLabel={`${TAXI_DRIVER.eta}${t("min")}`}
           vehicleType={vehicleType}
+          destLabel={destLabel}
+          portLabel={portLabel}
           onCancel={cancelTaxi}
+          onBoard={() => setRideStage("onboard")}
+          onArrive={() => setRideStage("touring")}
+          onReturn={() => setRideStage("returning")}
+          onExtend={() =>
+            toast({ content: t("tour_extended"), variant: "positive", duration: "short" })
+          }
+          onArrivePort={() => setRideStage("done")}
+          onFinish={finishRide}
         />
       )}
     </Box>
@@ -891,140 +923,430 @@ function FindingView({
   );
 }
 
-function AssignedView({
+function RideView({
+  rideStage,
   driverName,
   driverCar,
   plate,
   rating,
   etaLabel,
   vehicleType,
+  destLabel,
+  portLabel,
   onCancel,
+  onBoard,
+  onArrive,
+  onReturn,
+  onExtend,
+  onArrivePort,
+  onFinish,
 }: {
+  rideStage: RideStage;
   driverName: string;
   driverCar: string;
   plate: string;
   rating: number;
   etaLabel: string;
   vehicleType: VehicleType;
+  destLabel: string;
+  portLabel: string;
   onCancel: () => void;
+  onBoard: () => void;
+  onArrive: () => void;
+  onReturn: () => void;
+  onExtend: () => void;
+  onArrivePort: () => void;
+  onFinish: () => void;
 }) {
-  const { t } = useI18n();
-  return (
-    <Box sx={{ padding: "14px 20px 20px" }}>
-      <FlexBox alignItems="center" gap="8px" sx={{ marginBottom: "12px" }}>
-        <Box
-          as="span"
-          sx={(theme) => ({ display: "inline-flex", color: theme.semantic.primary.normal })}
-        >
-          <IconCircleCheckFill sx={{ fontSize: "20px" }} />
-        </Box>
+  const { t, locale } = useI18n();
+  const L = (ko: string, en: string, zh: string, ja: string) =>
+    locale === "ko" ? ko : locale === "zh" ? zh : locale === "ja" ? ja : en;
+
+  const avatar = (
+    <Box
+      as="span"
+      sx={(theme) => ({
+        width: "44px",
+        height: "44px",
+        borderRadius: "999px",
+        background: theme.semantic.fill.normal,
+        flexShrink: 0,
+        overflow: "hidden",
+        display: "flex",
+      })}
+    >
+      <img
+        src={VEHICLES[vehicleType].img}
+        alt=""
+        aria-hidden="true"
+        style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+      />
+    </Box>
+  );
+
+  // 이동/관광/복귀 단계 공용 기사 카드(전화 버튼)
+  const driverCardCompact = (
+    <FlexBox
+      alignItems="center"
+      gap="12px"
+      sx={(theme) => ({
+        background: theme.semantic.background.normal.normal,
+        borderRadius: "16px",
+        boxShadow: `inset 0 0 0 1px ${theme.semantic.line.normal.neutral}`,
+        padding: "14px 16px",
+      })}
+    >
+      {avatar}
+      <Box sx={{ flex: 1, minWidth: 0 }}>
         <Box
           as="span"
           sx={(theme) => ({
+            display: "block",
             fontWeight: 700,
-            fontSize: "16px",
+            fontSize: "15px",
             color: theme.semantic.label.normal,
           })}
         >
-          {t("driver_assigned")}
+          {driverName}
         </Box>
         <Box
           as="span"
           sx={(theme) => ({
-            marginLeft: "auto",
-            fontWeight: 700,
-            fontSize: "15px",
-            color: theme.semantic.primary.normal,
+            display: "block",
+            fontSize: "12px",
+            color: theme.semantic.label.alternative,
           })}
         >
-          {etaLabel}
+          {`${driverCar} · ${plate}`}
         </Box>
-      </FlexBox>
+      </Box>
       <Box
+        as="button"
+        type="button"
+        aria-label={t("call")}
         sx={(theme) => ({
-          background: theme.semantic.background.normal.normal,
-          borderRadius: "16px",
-          boxShadow: `inset 0 0 0 1px ${theme.semantic.primary.normal}`,
-          padding: "16px",
+          width: "40px",
+          height: "40px",
+          borderRadius: "10px",
+          border: "none",
+          cursor: "pointer",
+          background: addOpacity(theme.semantic.primary.normal, theme.opacity[8]),
+          color: theme.semantic.primary.normal,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
         })}
       >
-        <FlexBox alignItems="center" gap="12px">
-          <Box
-            as="span"
-            sx={(theme) => ({
-              width: "48px",
-              height: "48px",
-              borderRadius: "999px",
-              background: theme.semantic.fill.normal,
-              color: theme.semantic.label.neutral,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              overflow: "hidden",
-            })}
-          >
-            <img
-              src={VEHICLES[vehicleType].img}
-              alt=""
-              aria-hidden="true"
-              style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
-            />
-          </Box>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
+        <IconPhone sx={{ fontSize: "18px" }} />
+      </Box>
+    </FlexBox>
+  );
+
+  const stageIconPrimary = (icon: ReactNode) => (
+    <Box
+      as="span"
+      sx={(theme) => ({
+        width: "32px",
+        height: "32px",
+        borderRadius: "9px",
+        background: addOpacity(theme.semantic.primary.normal, theme.opacity[8]),
+        color: theme.semantic.primary.normal,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+      })}
+    >
+      {icon}
+    </Box>
+  );
+
+  const stageTitle = (label: string) => (
+    <Box sx={{ flex: 1, minWidth: 0 }}>
+      <Box
+        as="span"
+        sx={(theme) => ({ fontWeight: 700, fontSize: "16px", color: theme.semantic.label.normal })}
+      >
+        {label}
+      </Box>
+    </Box>
+  );
+
+  const stageEta = (eta: string) => (
+    <Box
+      as="span"
+      sx={(theme) => ({ fontWeight: 700, fontSize: "14px", color: theme.semantic.primary.normal })}
+    >
+      {eta}
+    </Box>
+  );
+
+  if (rideStage === "done") {
+    return (
+      <Box sx={{ padding: "40px 24px 28px", textAlign: "center" }}>
+        <Box
+          as="span"
+          sx={{
+            width: "72px",
+            height: "72px",
+            borderRadius: "999px",
+            background: "#EAF7EE",
+            color: "#12A150",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: "16px",
+          }}
+        >
+          <IconCircleCheckFill sx={{ fontSize: "40px" }} />
+        </Box>
+        <Box
+          sx={(theme) => ({
+            fontWeight: 700,
+            fontSize: "20px",
+            color: theme.semantic.label.normal,
+            letterSpacing: "-0.01em",
+          })}
+        >
+          {L("오늘 여정을 마쳤어요", "Your day is complete", "今日行程已结束", "本日の旅程が終了")}
+        </Box>
+        <Box
+          sx={(theme) => ({
+            fontSize: "14px",
+            color: theme.semantic.label.alternative,
+            marginTop: "6px",
+            lineHeight: 1.5,
+          })}
+        >
+          {L(
+            "안전하게 배로 복귀했어요",
+            "You're safely back at the ship",
+            "已安全返回邮轮",
+            "無事に船へ戻りました",
+          )}
+        </Box>
+        <Box sx={{ marginTop: "22px" }}>
+          <Button variant="solid" color="primary" size="large" fullWidth onClick={onFinish}>
+            {L("홈으로", "Back to home", "返回首页", "ホームへ")}
+          </Button>
+        </Box>
+      </Box>
+    );
+  }
+
+  return (
+    <FlexBox flexDirection="column" gap="12px" sx={{ padding: "14px 20px 20px" }}>
+      {rideStage === "coming" && (
+        <>
+          <FlexBox alignItems="center" gap="8px">
+            <Box
+              as="span"
+              sx={(theme) => ({ display: "inline-flex", color: theme.semantic.primary.normal })}
+            >
+              <IconCircleCheckFill sx={{ fontSize: "20px" }} />
+            </Box>
             <Box
               as="span"
               sx={(theme) => ({
-                display: "block",
                 fontWeight: 700,
                 fontSize: "16px",
                 color: theme.semantic.label.normal,
               })}
             >
-              {driverName}
+              {t("driver_assigned")}
             </Box>
             <Box
               as="span"
               sx={(theme) => ({
-                display: "block",
-                fontSize: "12px",
-                color: theme.semantic.label.alternative,
+                marginLeft: "auto",
+                fontWeight: 700,
+                fontSize: "15px",
+                color: theme.semantic.primary.normal,
               })}
             >
-              {`${driverCar} · ${t("plate")} ${plate}`}
+              {etaLabel}
             </Box>
-          </Box>
-          <FlexBox
-            alignItems="center"
-            gap="3px"
+          </FlexBox>
+          <Box
             sx={(theme) => ({
-              fontWeight: 700,
-              fontSize: "14px",
-              color: theme.semantic.label.normal,
+              background: theme.semantic.background.normal.normal,
+              borderRadius: "16px",
+              boxShadow: `inset 0 0 0 1px ${theme.semantic.primary.normal}`,
+              padding: "16px",
             })}
           >
-            <Box as="span" sx={{ display: "inline-flex", color: "#FFB020" }}>
-              <IconStarFill sx={{ fontSize: "14px" }} />
-            </Box>
-            {rating}
+            <FlexBox alignItems="center" gap="12px">
+              {avatar}
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Box
+                  as="span"
+                  sx={(theme) => ({
+                    display: "block",
+                    fontWeight: 700,
+                    fontSize: "16px",
+                    color: theme.semantic.label.normal,
+                  })}
+                >
+                  {driverName}
+                </Box>
+                <Box
+                  as="span"
+                  sx={(theme) => ({
+                    display: "block",
+                    fontSize: "12px",
+                    color: theme.semantic.label.alternative,
+                  })}
+                >
+                  {`${driverCar} · ${t("plate")} ${plate}`}
+                </Box>
+              </Box>
+              <FlexBox
+                alignItems="center"
+                gap="3px"
+                sx={(theme) => ({
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  color: theme.semantic.label.normal,
+                })}
+              >
+                <Box as="span" sx={{ display: "inline-flex", color: "#FFB020" }}>
+                  <IconStarFill sx={{ fontSize: "14px" }} />
+                </Box>
+                {rating}
+              </FlexBox>
+            </FlexBox>
+            <FlexBox alignItems="center" gap="10px" sx={{ marginTop: "14px" }}>
+              <Button
+                variant="outlined"
+                color="assistive"
+                size="medium"
+                fullWidth
+                onClick={onCancel}
+              >
+                {t("cancel")}
+              </Button>
+              <Button
+                variant="solid"
+                color="primary"
+                size="medium"
+                fullWidth
+                leadingContent={<IconPhone sx={{ fontSize: "16px" }} />}
+              >
+                {t("call")}
+              </Button>
+            </FlexBox>
+          </Box>
+          <Button variant="solid" color="primary" size="large" fullWidth onClick={onBoard}>
+            {L("탑승했어요", "I've boarded", "已上车", "乗車しました")}
+          </Button>
+        </>
+      )}
+
+      {rideStage === "onboard" && (
+        <>
+          <FlexBox alignItems="center" gap="10px">
+            {stageIconPrimary(<CarGlyph size={19} />)}
+            {stageTitle(
+              L(
+                `${destLabel}(으)로 이동 중`,
+                `On the way to ${destLabel}`,
+                `前往${destLabel}`,
+                `${destLabel}へ移動中`,
+              ),
+            )}
+            {stageEta(L("약 12분", "About 12 min", "约12分", "約12分"))}
           </FlexBox>
-        </FlexBox>
-        <FlexBox alignItems="center" gap="10px" sx={{ marginTop: "14px" }}>
-          <Button variant="outlined" color="assistive" size="medium" fullWidth onClick={onCancel}>
-            {t("cancel")}
+          {driverCardCompact}
+          <Button variant="solid" color="primary" size="large" fullWidth onClick={onArrive}>
+            {L("관광지에 도착했어요", "Arrived at the spot", "已到达景点", "観光地に到着")}
           </Button>
-          <Button
-            variant="solid"
-            color="primary"
-            size="medium"
-            fullWidth
-            leadingContent={<IconPhone sx={{ fontSize: "16px" }} />}
+        </>
+      )}
+
+      {rideStage === "touring" && (
+        <>
+          <FlexBox alignItems="center" gap="10px">
+            <Box
+              as="span"
+              sx={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "9px",
+                background: "#EAF7EE",
+                color: "#12A150",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconLocationFill sx={{ fontSize: "19px" }} />
+            </Box>
+            {stageTitle(
+              L(
+                `${destLabel} 관광 중`,
+                `Exploring ${destLabel}`,
+                `正在游览${destLabel}`,
+                `${destLabel}を観光中`,
+              ),
+            )}
+          </FlexBox>
+          <FlexBox
+            alignItems="center"
+            gap="8px"
+            sx={{ background: "#EAF7EE", borderRadius: "12px", padding: "12px 14px" }}
           >
-            {t("call")}
+            <Box
+              as="span"
+              sx={{
+                width: "8px",
+                height: "8px",
+                borderRadius: "999px",
+                background: "#12A150",
+                flexShrink: 0,
+              }}
+            />
+            <Box as="span" sx={{ fontSize: "13px", fontWeight: 600, color: "#0E7C3F" }}>
+              {L(
+                "기사님이 대기하고 있어요",
+                "Your driver is waiting",
+                "司机正在等候",
+                "ドライバーが待機中",
+              )}
+            </Box>
+          </FlexBox>
+          {driverCardCompact}
+          <Button variant="solid" color="primary" size="large" fullWidth onClick={onReturn}>
+            {L("항구로 복귀", "Return to port", "返回港口", "港へ戻る")}
           </Button>
-        </FlexBox>
-      </Box>
-    </Box>
+          <Button variant="outlined" color="assistive" size="medium" fullWidth onClick={onExtend}>
+            {L("관광 시간 연장", "Extend stay", "延长游览", "滞在を延長")}
+          </Button>
+        </>
+      )}
+
+      {rideStage === "returning" && (
+        <>
+          <FlexBox alignItems="center" gap="10px">
+            {stageIconPrimary(<CarGlyph size={19} />)}
+            {stageTitle(
+              L(
+                `${portLabel}(으)로 복귀 중`,
+                `Returning to ${portLabel}`,
+                `返回${portLabel}`,
+                `${portLabel}へ戻り中`,
+              ),
+            )}
+            {stageEta(L("약 20분", "About 20 min", "约20分", "約20分"))}
+          </FlexBox>
+          {driverCardCompact}
+          <Button variant="solid" color="primary" size="large" fullWidth onClick={onArrivePort}>
+            {L("복귀 완료", "Arrived at port", "已返回港口", "帰港完了")}
+          </Button>
+        </>
+      )}
+    </FlexBox>
   );
 }
 

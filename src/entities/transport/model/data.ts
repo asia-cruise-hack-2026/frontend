@@ -94,7 +94,7 @@ export const GLOBAL_CARS: GlobalCar[] = [
     day: 330000,
     over: 40000,
     van: true,
-    ibg: "#E7F1FF",
+    ibg: "var(--primary-normal-8)",
     ifg: "var(--primary-normal-4)",
   },
   {

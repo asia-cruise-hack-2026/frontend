@@ -8,16 +8,16 @@ import { buildCourse, listSpots, type Spot } from "@/entities/spot";
 import { useI18n } from "@/shared/i18n";
 import { useCruiseId, usePkgSpotIds } from "@/shared/store";
 
-// 포트 배지 선박 아이콘 — 디자인 :135
-function ShipMini() {
+// 포트 배지 · 카운트다운 슬라이더 선박 아이콘 — 디자인 :135 / 최종 슬라이더
+function ShipMini({ size = 14 }: { size?: number }) {
   return (
     <svg
-      width="14"
-      height="14"
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth={size >= 18 ? 1.7 : 2}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
@@ -26,6 +26,26 @@ function ShipMini() {
       <path d="M4 18l-1 -5h18l-2 4" />
       <path d="M5 13v-6h8l4 6" />
       <path d="M7 7v-4h-1" />
+    </svg>
+  );
+}
+
+// 카운트다운 board_by 칩 시계 아이콘 — 디자인 최종
+function ClockMini() {
+  return (
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
     </svg>
   );
 }
@@ -76,16 +96,17 @@ export function HomePage() {
   // 스팟간 실거리 기반 이동 분 — entities/spot/lib/course.ts의 private legMin과 동일 공식(디자인 :1538)
   const legMin = (km: number) => Math.max(8, Math.round(km * 2.2));
 
-  // 디자인 renderVals :1479-1486 (now = 도착 90분 후로 시뮬레이션)
+  // 디자인 최종 renderVals (now = 도착 90분 후, 마감 = 출항 60분 전)
   const derived = cruise
     ? (() => {
         const nowM = cruise.arrM + 90;
-        const remM = Math.max(0, cruise.depM - nowM);
+        const deadM = cruise.depM - 60;
+        const remM = Math.max(0, deadM - nowM);
         return {
           remH: Math.floor(remM / 60),
           remMin: remM % 60,
-          boardBy: fmt(cruise.depM - 30),
-          stayPct: Math.round(((nowM - cruise.arrM) / (cruise.depM - cruise.arrM)) * 100),
+          boardBy: fmt(deadM),
+          stayPct: Math.round(((nowM - cruise.arrM) / (deadM - cruise.arrM)) * 100),
         };
       })()
     : null;
@@ -150,83 +171,247 @@ export function HomePage() {
             </FlexBox>
           </FlexBox>
 
+          {/* 카운트다운 카드 — 디자인 최종 리디자인(그라데이션·물결·배 슬라이더) */}
           <Box
             sx={(theme) => ({
               marginTop: "14px",
-              background: `linear-gradient(135deg, ${theme.semantic.primary.normal}, #2E7BFF)`,
-              borderRadius: "16px",
-              padding: "16px 18px",
+              position: "relative",
+              overflow: "hidden",
+              background: `linear-gradient(135deg, var(--primary-strong) 0%, ${theme.semantic.primary.normal} 55%, #60A5FA 100%)`,
+              borderRadius: "18px",
+              padding: "16px 18px 18px",
               color: theme.semantic.static.white,
+              boxShadow: "0 10px 26px rgba(37,99,235,.28)",
             })}
           >
-            <FlexBox alignItems="baseline" justifyContent="space-between" gap="10px">
-              <Box sx={{ fontSize: "14px", opacity: 0.92, fontWeight: 600 }}>
-                {t("until_departure")}
-              </Box>
-              <FlexBox alignItems="baseline" gap="3px">
-                <Box
-                  as="span"
-                  sx={{
-                    fontWeight: 800,
-                    fontSize: "28px",
-                    lineHeight: 1,
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  {derived.remH}
-                </Box>
-                <Box
-                  as="span"
-                  sx={{ fontSize: "13px", fontWeight: 600, opacity: 0.9, marginRight: "5px" }}
-                >
-                  {unitH}
-                </Box>
-                <Box
-                  as="span"
-                  sx={{
-                    fontWeight: 800,
-                    fontSize: "28px",
-                    lineHeight: 1,
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  {derived.remMin}
-                </Box>
-                <Box as="span" sx={{ fontSize: "13px", fontWeight: 600, opacity: 0.9 }}>
-                  {unitM}
-                </Box>
-              </FlexBox>
-            </FlexBox>
+            <Box
+              as="span"
+              sx={{
+                position: "absolute",
+                top: "-44px",
+                right: "-30px",
+                width: "170px",
+                height: "170px",
+                borderRadius: "999px",
+                background: "radial-gradient(closest-side,rgba(255,255,255,.22),transparent 70%)",
+                pointerEvents: "none",
+              }}
+            />
             <Box
               sx={{
-                marginTop: "14px",
-                height: "7px",
-                borderRadius: "999px",
-                background: "rgba(255,255,255,.28)",
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: "46px",
                 overflow: "hidden",
+                pointerEvents: "none",
+                opacity: 0.5,
               }}
             >
-              <Box
-                sx={{
-                  width: `${derived.stayPct}%`,
-                  height: "100%",
-                  borderRadius: "999px",
-                  background: "#fff",
+              <svg
+                viewBox="0 0 390 40"
+                preserveAspectRatio="none"
+                style={{
+                  position: "absolute",
+                  bottom: "-6px",
+                  left: 0,
+                  width: "100%",
+                  height: "40px",
+                  fill: "rgba(255,255,255,.18)",
                 }}
-              />
+                aria-hidden="true"
+              >
+                <path d="M0,20 C48,34 97,34 146,20 S243,6 292,20 S390,34 439,20 L439,40 L0,40 Z" />
+              </svg>
             </Box>
             <FlexBox
+              alignItems="flex-end"
               justifyContent="space-between"
-              sx={{ marginTop: "8px", fontSize: "11px", opacity: 0.9, fontWeight: 600 }}
+              gap="10px"
+              sx={{ position: "relative" }}
             >
-              <Box as="span">{`${t("arrive_label")} ${cruise.arr}`}</Box>
-              <Box as="span">{`${t("board_by")} ${derived.boardBy}`}</Box>
+              <Box>
+                <FlexBox
+                  as="span"
+                  alignItems="center"
+                  gap="6px"
+                  sx={{ fontSize: "12px", fontWeight: 600, opacity: 0.94 }}
+                >
+                  <Box
+                    as="span"
+                    sx={{
+                      width: "6px",
+                      height: "6px",
+                      borderRadius: "999px",
+                      background: "#7FFFB0",
+                      boxShadow: "0 0 0 3px rgba(127,255,176,.25)",
+                    }}
+                  />
+                  {t("board_countdown")}
+                </FlexBox>
+                <FlexBox alignItems="baseline" gap="3px" sx={{ marginTop: "7px" }}>
+                  <Box
+                    as="span"
+                    sx={{
+                      fontFamily: "var(--font-brand)",
+                      fontWeight: 800,
+                      fontSize: "34px",
+                      lineHeight: 1,
+                      letterSpacing: "-0.03em",
+                    }}
+                  >
+                    {derived.remH}
+                  </Box>
+                  <Box
+                    as="span"
+                    sx={{ fontSize: "14px", fontWeight: 600, opacity: 0.9, marginRight: "6px" }}
+                  >
+                    {unitH}
+                  </Box>
+                  <Box
+                    as="span"
+                    sx={{
+                      fontFamily: "var(--font-brand)",
+                      fontWeight: 800,
+                      fontSize: "34px",
+                      lineHeight: 1,
+                      letterSpacing: "-0.03em",
+                    }}
+                  >
+                    {derived.remMin}
+                  </Box>
+                  <Box as="span" sx={{ fontSize: "14px", fontWeight: 600, opacity: 0.9 }}>
+                    {unitM}
+                  </Box>
+                </FlexBox>
+              </Box>
+              <FlexBox
+                as="span"
+                alignItems="center"
+                gap="5px"
+                sx={{
+                  flexShrink: 0,
+                  background: "rgba(255,255,255,.16)",
+                  boxShadow: "inset 0 0 0 1px rgba(255,255,255,.3)",
+                  borderRadius: "999px",
+                  padding: "7px 12px",
+                  fontSize: "11.5px",
+                  fontWeight: 700,
+                }}
+              >
+                <ClockMini />
+                {`${t("board_by")} ${derived.boardBy}`}
+              </FlexBox>
+            </FlexBox>
+            <FlexBox
+              alignItems="center"
+              gap="14px"
+              sx={{ marginTop: "18px", position: "relative" }}
+            >
+              <Box sx={{ position: "relative", flex: 1, height: "30px" }}>
+                <Box
+                  sx={{
+                    position: "absolute",
+                    left: "2px",
+                    right: "2px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    height: "6px",
+                    borderRadius: "999px",
+                    background: "rgba(255,255,255,.25)",
+                    overflow: "hidden",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: `${derived.stayPct}%`,
+                      height: "100%",
+                      borderRadius: "999px",
+                      background: "linear-gradient(90deg,rgba(255,255,255,.65),#fff)",
+                    }}
+                  />
+                </Box>
+                <Box
+                  as="span"
+                  sx={{
+                    position: "absolute",
+                    left: 0,
+                    top: "50%",
+                    transform: "translate(-1px,-50%)",
+                    width: "11px",
+                    height: "11px",
+                    borderRadius: "999px",
+                    background: "#fff",
+                    boxShadow: "0 0 0 3px rgba(255,255,255,.18)",
+                  }}
+                />
+                <Box
+                  as="span"
+                  sx={(theme) => ({
+                    position: "absolute",
+                    left: `${derived.stayPct}%`,
+                    top: "50%",
+                    transform: "translate(-50%,-50%)",
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "999px",
+                    background: "#fff",
+                    color: theme.semantic.primary.normal,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 5px 14px rgba(0,0,0,.24)",
+                  })}
+                >
+                  <ShipMini size={19} />
+                </Box>
+              </Box>
+              <FlexBox
+                alignItems="baseline"
+                gap="5px"
+                sx={{ flexShrink: 0, fontSize: "12px", fontWeight: 600 }}
+              >
+                <Box as="span" sx={{ opacity: 0.72 }}>
+                  {t("depart_label")}
+                </Box>
+                <Box as="span" sx={{ fontWeight: 800, fontSize: "14px", letterSpacing: "-0.01em" }}>
+                  {cruise.dep}
+                </Box>
+              </FlexBox>
             </FlexBox>
           </Box>
         </Box>
       )}
 
       <Box sx={{ padding: "16px 20px 4px" }}>
+        {/* 홈 인트로 — 디자인 최종 추가 */}
+        <Box sx={{ marginBottom: "14px" }}>
+          <Box
+            as="h1"
+            sx={(theme) => ({
+              margin: 0,
+              fontWeight: 700,
+              fontSize: "19px",
+              lineHeight: 1.35,
+              letterSpacing: "-0.01em",
+              color: theme.semantic.label.normal,
+            })}
+          >
+            {t("home_intro_t")}
+          </Box>
+          <Box
+            sx={(theme) => ({
+              fontSize: "13px",
+              lineHeight: 1.5,
+              color: theme.semantic.label.alternative,
+              marginTop: "5px",
+              textWrap: "pretty",
+            })}
+          >
+            {t("home_intro_s")}
+          </Box>
+        </Box>
         <Box
           sx={(theme) => ({
             background: theme.semantic.background.normal.normal,
@@ -236,28 +421,7 @@ export function HomePage() {
           })}
         >
           {/* 지도 placeholder — S2에서 Google Maps(client-only)로 교체 */}
-          <Box sx={{ position: "relative", height: "270px", background: "#CFE4F2" }}>
-            {cruise && (
-              <FlexBox
-                as="span"
-                alignItems="center"
-                gap="5px"
-                sx={(theme) => ({
-                  position: "absolute",
-                  top: "10px",
-                  left: "12px",
-                  background: "rgba(255,255,255,.92)",
-                  borderRadius: "999px",
-                  padding: "5px 11px",
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  color: theme.semantic.label.normal,
-                })}
-              >
-                {cruise.portName[locale]}
-              </FlexBox>
-            )}
-          </Box>
+          <Box sx={{ position: "relative", height: "270px", background: "#CFE4F2" }} />
           <Box
             sx={(theme) => ({ height: "1px", background: theme.semantic.line.normal.neutral })}
           />
@@ -551,7 +715,7 @@ export function HomePage() {
                   </Box>
                 )}
 
-                {/* 택시 부르기 CTA — 디자인 :202-204 */}
+                {/* 다음 단계 CTA — 디자인 최종: next_step → 교통수단 선택 */}
                 <Box sx={{ marginTop: "10px" }}>
                   <Button
                     variant="solid"
@@ -560,7 +724,7 @@ export function HomePage() {
                     fullWidth
                     onClick={() => navigate({ to: "/app/transport" })}
                   >
-                    {t("call_taxi_home")}
+                    {t("next_step")}
                   </Button>
                 </Box>
               </>

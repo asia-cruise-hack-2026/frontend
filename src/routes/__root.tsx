@@ -3,6 +3,8 @@ import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-r
 import { AppProviders } from "@/app/providers";
 
 import "@wanteddev/wds/global.css";
+// Montage 기본 테마 뒤에 브랜드 오버라이드(#2563EB · Wanted Sans) 적용 — import 순서 유지
+import "@/app/brand.css";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -16,6 +18,11 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: "preconnect", href: "https://cdn.jsdelivr.net" },
+      {
+        // 브랜드 폰트 — Wanted Sans (디자인 최종: 타이틀 --font-brand)
+        rel: "stylesheet",
+        href: "https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.min.css",
+      },
       {
         rel: "stylesheet",
         href: "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-jp-dynamic-subset.min.css",

@@ -7,7 +7,7 @@ export const THEME_TINT: Record<
   attraction: { fg: "#12A150", bg: "#EAF7EE" },
   food: { fg: "#E8820E", bg: "#FFF1E6" },
   cafe: { fg: "#8B3FF0", bg: "#F3ECFF" },
-  package: { fg: "#0066FF", bg: "#E7F1FF" },
+  package: { fg: "var(--primary-normal-4)", bg: "var(--primary-normal-8)" },
 };
 
 export type SpotIconKind = "food" | "attraction" | "other";

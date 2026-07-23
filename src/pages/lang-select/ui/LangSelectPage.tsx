@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Box, Button, FlexBox, addOpacity } from "@wanteddev/wds";
-import { IconCircleCheckFill, IconVerifiedCheckFill } from "@wanteddev/wds-icon";
+import { IconCircleCheckFill } from "@wanteddev/wds-icon";
 import { useState } from "react";
 
 import { LOCALE_META, LOCALES, type Locale, useI18n } from "@/shared/i18n";
@@ -22,31 +22,7 @@ export function LangSelectPage() {
       sx={{ minHeight: "100dvh", padding: "16px 24px 28px", overflowY: "auto" }}
     >
       <FlexBox flexDirection="column" sx={{ flex: 1, justifyContent: "center" }}>
-        {/* 공식 배지 */}
-        <FlexBox
-          alignItems="center"
-          gap="6px"
-          sx={(theme) => ({
-            alignSelf: "flex-start",
-            background: theme.semantic.fill.normal,
-            borderRadius: "999px",
-            padding: "5px 12px",
-            fontSize: "12px",
-            fontWeight: 600,
-            color: theme.semantic.label.neutral,
-            marginBottom: "18px",
-          })}
-        >
-          <Box
-            as="span"
-            sx={(theme) => ({ display: "inline-flex", color: theme.semantic.status.positive })}
-          >
-            <IconVerifiedCheckFill sx={{ fontSize: "15px" }} />
-          </Box>
-          {t("official_badge")}
-        </FlexBox>
-
-        {/* 브랜드 워드마크 — 디자인 :59 omong.svg (아이콘 스퀘어+텍스트 대체) */}
+        {/* 브랜드 워드마크 — 디자인 최종: omong.svg (좌측 정렬) */}
         <img
           src="/brand/omong.svg"
           alt="OMONG"

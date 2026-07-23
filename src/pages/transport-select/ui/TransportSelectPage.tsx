@@ -85,7 +85,10 @@ function TransportCard({
           width: "48px",
           height: "48px",
           borderRadius: "13px",
-          background: mode === "taxi" ? "#EAF7EE" : "#E7F1FF",
+          background:
+            mode === "taxi"
+              ? "#EAF7EE"
+              : addOpacity(theme.semantic.primary.normal, theme.opacity[8]),
           color: mode === "taxi" ? theme.semantic.status.positive : theme.semantic.primary.normal,
           display: "flex",
           alignItems: "center",

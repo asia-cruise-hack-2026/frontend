@@ -59,8 +59,8 @@ type ConceptKey = "highlights" | "nature" | "food" | "photo";
 const CONCEPT_DEF: { key: ConceptKey; bg: string; fg: string; icon: ReactNode }[] = [
   {
     key: "highlights",
-    bg: "#E7F1FF",
-    fg: "#0066FF",
+    bg: "var(--primary-normal-8)",
+    fg: "var(--primary-normal-4)",
     icon: <IconStarFill sx={{ fontSize: "24px" }} />,
   },
   { key: "nature", bg: "#EAF7EE", fg: "#12A150", icon: <LeafGlyph /> },
@@ -238,31 +238,6 @@ export function AiConceptPage() {
             </Box>
           ))}
         </Box>
-
-        <FlexBox
-          alignItems="center"
-          gap="8px"
-          sx={(theme) => ({
-            marginTop: "16px",
-            background: theme.semantic.background.normal.alternative,
-            borderRadius: "12px",
-            padding: "12px 14px",
-          })}
-        >
-          <Box as="span" sx={{ display: "inline-flex", color: "#8B3FF0", flexShrink: 0 }}>
-            <IconSparkleFill sx={{ fontSize: "16px" }} />
-          </Box>
-          <Box
-            as="span"
-            sx={(theme) => ({
-              fontSize: "12px",
-              color: theme.semantic.label.neutral,
-              lineHeight: 1.45,
-            })}
-          >
-            {t("concept_go")}
-          </Box>
-        </FlexBox>
       </Box>
     </Box>
   );

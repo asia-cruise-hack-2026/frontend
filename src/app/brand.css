@@ -1,0 +1,26 @@
+/*
+ * 브랜드 오버라이드 — 디자인 "최종"(Jeju Cruise App(최종)) 반영
+ * - 프라이머리: Montage 기본 #0066FF(오션블루) → 디자인 #2563EB
+ * - 디자인 토큰 별칭(--primary-normal-4/-8, --primary-strong): mock 데이터·SVG stroke에서 사용
+ * - 브랜드 폰트(--font-brand = Wanted Sans): 화면 타이틀(h1)에 적용
+ * @wanteddev/wds/global.css 다음에 import 되어 동일 특정도에서 이후 규칙으로 우선한다.
+ */
+:root {
+  --semantic-primary-normal: #2563eb;
+  --primary-normal-4: var(--semantic-primary-normal);
+  --primary-normal-8: #eff6ff;
+  --primary-strong: #1d4ed8;
+  --font-brand:
+    "Wanted Sans Variable", "Wanted Sans", "Pretendard JP Variable", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+html[data-theme="dark"] {
+  --semantic-primary-normal: #3b82f6;
+  --primary-normal-8: rgba(37, 99, 235, 0.16);
+}
+
+/* 디자인 최종: 화면 타이틀은 브랜드 폰트(Wanted Sans) */
+h1 {
+  font-family: var(--font-brand);
+}

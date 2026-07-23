@@ -230,12 +230,12 @@ export function MyPage() {
       </Box>
 
       <Box
-        sx={{
+        sx={(theme) => ({
           margin: "16px 20px 0",
-          background: "#EAF3FF",
+          background: addOpacity(theme.semantic.primary.normal, theme.opacity[8]),
           borderRadius: "16px",
           padding: "16px",
-        }}
+        })}
       >
         <FlexBox
           alignItems="center"
