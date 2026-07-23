@@ -918,6 +918,48 @@ export const strings = {
     zh: "OMONG与由济州道及济州观光协会运营的公共旅游平台Tamnao合作，仅为您连接经济州官方核验的信息、商品与司机。",
     ja: "OMONGは済州道と済州観光協会が運営する公共旅行プラットフォーム「Tamnao」と提携。営利企業ではなく済州が検証した情報·商品·ドライバーのみをご案内します。",
   },
+  cruise_fallback_notice: {
+    ko: "오늘 운항 크루즈가 없어 다음 기항일({date}) 크루즈를 보여드려요.",
+    en: "No cruises remaining today — showing the next call date ({date}).",
+    zh: "今日已无邮轮，为您显示下一个停靠日（{date}）的邮轮。",
+    ja: "本日の運航はないため、次の寄港日（{date}）のクルーズを表示します。",
+  },
+  cruise_empty: {
+    ko: "예정된 크루즈가 없습니다.",
+    en: "No upcoming cruises.",
+    zh: "暂无预定邮轮。",
+    ja: "予定されているクルーズはありません。",
+  },
+  cruise_departed_feedback: {
+    ko: "이미 출항한 크루즈예요. 다른 크루즈를 선택해 주세요.",
+    en: "This cruise has already departed. Please choose another.",
+    zh: "该邮轮已出航，请选择其他邮轮。",
+    ja: "このクルーズはすでに出航しました。他のクルーズをお選びください。",
+  },
+  cruise_closed_badge: {
+    ko: "탑승 마감",
+    en: "Boarding closed",
+    zh: "登船已截止",
+    ja: "乗船締切",
+  },
+  cruise_closed_desc: {
+    ko: "출항 1시간 전에 탑승이 마감돼 지금은 시작할 수 없어요.",
+    en: "Boarding closes 1 hour before departure, so this cruise can't be started now.",
+    zh: "登船于出航前1小时截止，现在无法开始。",
+    ja: "乗船は出航1時間前に締め切られるため、現在は開始できません。",
+  },
+  cruise_imminent_warn: {
+    ko: "탑승 마감({time})까지 {min}분 남았어요. 일정을 짧게 잡고 서둘러 주세요!",
+    en: "Only {min} min until boarding closes ({time}). Keep plans short and hurry!",
+    zh: "距登船截止（{time}）仅剩{min}分钟，请安排短行程并抓紧时间！",
+    ja: "乗船締切（{time}）まで残り{min}分。短めの予定でお急ぎください！",
+  },
+  my_delete_cruise: {
+    ko: "크루즈 선택 삭제",
+    en: "Remove cruise",
+    zh: "删除邮轮选择",
+    ja: "クルーズ選択を削除",
+  },
 } as const;
 
 export type StringKey = keyof typeof strings;

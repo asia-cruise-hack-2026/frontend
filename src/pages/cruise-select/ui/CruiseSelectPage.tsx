@@ -1,10 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { Box, Button, FlexBox, Option, Select } from "@wanteddev/wds";
+import { addOpacity, Box, Button, FlexBox, Option, Select } from "@wanteddev/wds";
 import { IconClockFill, IconLocationFill } from "@wanteddev/wds-icon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { listCruises, localDateStr } from "@/entities/cruise";
+import {
+  BOARD_CLOSE_MIN,
+  cruiseStatus,
+  fmtHM,
+  listCruisesForSelect,
+  localDateStr,
+  minutesToDeparture,
+} from "@/entities/cruise";
 import { useI18n } from "@/shared/i18n";
 import { sessionActions } from "@/shared/store";
 
@@ -30,17 +37,36 @@ function ShipGlyph() {
   );
 }
 
-/** 크루즈 선택 — 프로토타입 "Cruise select"(:82-122) 이식 */
+/** 크루즈 선택 — 오늘 크루즈(없으면 다음 기항일 폴백) + 출항/마감/임박 시간 규칙 */
 export function CruiseSelectPage() {
   const { t, locale } = useI18n();
   const navigate = useNavigate();
   const today = localDateStr(new Date());
-  const { data: cruises = [] } = useQuery({
-    queryKey: ["cruises", today, locale],
-    queryFn: () => listCruises({ date: today, lang: locale }),
+  const { data, refetch } = useQuery({
+    queryKey: ["cruises", "select", today, locale],
+    queryFn: () => listCruisesForSelect(today, locale),
   });
   const [cruiseId, setCruiseId] = useState("");
-  const selected = cruises.find((c) => c.id === cruiseId);
+  const [startError, setStartError] = useState(false);
+
+  // 시간 규칙 실시간 재평가(30초) — 목록 필터·배너·버튼 상태가 시각에 따라 변함
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 30_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const nowMs = now.getTime();
+  // 출항 지난 크루즈는 노출 제외 (마감된 크루즈는 노출하되 시작 차단)
+  const visible = (data?.items ?? []).filter((c) => minutesToDeparture(c, nowMs) > 0);
+  const selected = visible.find((c) => c.id === cruiseId);
+  const status = selected ? cruiseStatus(selected, nowMs) : null;
+  const isEmpty = !!data && visible.length === 0;
+
+  // 오늘 목록이 화면에 떠 있는 동안 모두 출항해 버리면 폴백 재조회
+  useEffect(() => {
+    if (data && !data.isFallback && data.items.length > 0 && visible.length === 0) void refetch();
+  }, [data, visible.length, refetch]);
 
   const stayLabel = (arrM: number, depM: number) => {
     const h = Math.floor((depM - arrM) / 60);
@@ -50,9 +76,41 @@ export function CruiseSelectPage() {
     return `${h} hours`;
   };
 
+  const dateLabel = (iso: string) => {
+    const [, m, d] = iso.split("-").map(Number);
+    if (locale === "en") {
+      const mon = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ][m - 1];
+      return `${mon} ${d}`;
+    }
+    if (locale === "ko") return `${m}월 ${d}일`;
+    return `${m}月${d}日`;
+  };
+
   const start = () => {
-    if (!cruiseId) return;
-    sessionActions.setCruiseId(cruiseId);
+    if (!selected) return;
+    // 클릭 시점 재검증 — 화면이 오래 떠 있던(stale) 경우 방어
+    const s = cruiseStatus(selected, Date.now());
+    if (s === "departed") {
+      setStartError(true);
+      setCruiseId("");
+      void refetch();
+      return;
+    }
+    if (s === "closed") return;
+    sessionActions.setCruiseId(selected.id);
     navigate({ to: "/app" });
   };
 
@@ -86,18 +144,54 @@ export function CruiseSelectPage() {
         {t("cruise_q_sub")}
       </Box>
 
-      <Select
-        value={cruiseId}
-        onChange={(v) => setCruiseId(v)}
-        placeholder={t("select_cruise")}
-        width="100%"
-      >
-        {cruises.map((c) => (
-          <Option key={c.id} value={c.id}>
-            {`${c.ship} · ${c.arr}–${c.dep}`}
-          </Option>
-        ))}
-      </Select>
+      {/* 다음 기항일 폴백 안내 */}
+      {data?.isFallback && visible.length > 0 && (
+        <Box
+          sx={(theme) => ({
+            marginBottom: "14px",
+            padding: "12px 14px",
+            borderRadius: "12px",
+            background: theme.semantic.fill.normal,
+            fontSize: "13px",
+            lineHeight: 1.5,
+            color: theme.semantic.label.neutral,
+          })}
+        >
+          {t("cruise_fallback_notice").replace("{date}", dateLabel(data.date))}
+        </Box>
+      )}
+
+      {isEmpty ? (
+        <Box
+          sx={(theme) => ({
+            padding: "48px 0",
+            textAlign: "center",
+            fontSize: "15px",
+            color: theme.semantic.label.alternative,
+          })}
+        >
+          {t("cruise_empty")}
+        </Box>
+      ) : (
+        <Select
+          value={cruiseId}
+          onChange={(v) => {
+            setCruiseId(v);
+            setStartError(false);
+          }}
+          placeholder={t("select_cruise")}
+          width="100%"
+        >
+          {visible.map((c) => {
+            const closed = cruiseStatus(c, nowMs) === "closed";
+            return (
+              <Option key={c.id} value={c.id}>
+                {`${c.ship} · ${c.arr}–${c.dep}${closed ? ` · ${t("cruise_closed_badge")}` : ""}`}
+              </Option>
+            );
+          })}
+        </Select>
+      )}
 
       {/* 디자인 :93 카드 등장 페이드 */}
       <style>
@@ -131,7 +225,9 @@ export function CruiseSelectPage() {
             </Box>
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Box sx={{ fontWeight: 700, fontSize: "17px" }}>{selected.ship}</Box>
-              <Box sx={{ fontSize: "13px", opacity: 0.85 }}>{selected.berth}</Box>
+              <Box sx={{ fontSize: "13px", opacity: 0.85 }}>
+                {`${dateLabel(selected.date)} · ${selected.berth}`}
+              </Box>
             </Box>
           </FlexBox>
           <Box sx={{ padding: "6px 18px" }}>
@@ -194,11 +290,67 @@ export function CruiseSelectPage() {
                 {`${stayLabel(selected.arrM, selected.depM)} · ${selected.arr}–${selected.dep}`}
               </Box>
             </FlexBox>
+
+            {/* 임박 경고 — 탑승 마감(출항 1시간 전)까지 여유가 90분 미만 */}
+            {status === "imminent" && (
+              <Box
+                sx={{
+                  margin: "2px 0 14px",
+                  padding: "11px 13px",
+                  borderRadius: "11px",
+                  background: "rgba(181,98,10,.08)",
+                  fontSize: "13px",
+                  lineHeight: 1.5,
+                  fontWeight: 600,
+                  color: "#B5620A",
+                }}
+              >
+                {t("cruise_imminent_warn")
+                  .replace("{time}", fmtHM(selected.depM - BOARD_CLOSE_MIN))
+                  .replace("{min}", String(minutesToDeparture(selected, nowMs) - BOARD_CLOSE_MIN))}
+              </Box>
+            )}
+
+            {/* 탑승 마감 — 시작 불가 안내 */}
+            {status === "closed" && (
+              <Box
+                sx={(theme) => ({
+                  margin: "2px 0 14px",
+                  padding: "11px 13px",
+                  borderRadius: "11px",
+                  background: addOpacity(theme.semantic.status.negative, theme.opacity[8]),
+                  fontSize: "13px",
+                  lineHeight: 1.5,
+                  fontWeight: 600,
+                  color: theme.semantic.status.negative,
+                })}
+              >
+                {t("cruise_closed_desc")}
+              </Box>
+            )}
           </Box>
         </Box>
       )}
 
       <Box sx={{ flex: 1 }} />
+
+      {/* 출항 지난 크루즈를 시작하려던 경우 피드백 */}
+      {startError && (
+        <Box
+          sx={(theme) => ({
+            marginTop: "14px",
+            padding: "11px 13px",
+            borderRadius: "11px",
+            background: addOpacity(theme.semantic.status.negative, theme.opacity[8]),
+            fontSize: "13px",
+            lineHeight: 1.5,
+            fontWeight: 600,
+            color: theme.semantic.status.negative,
+          })}
+        >
+          {t("cruise_departed_feedback")}
+        </Box>
+      )}
 
       <Box sx={{ marginTop: "22px" }}>
         <Button
@@ -206,7 +358,7 @@ export function CruiseSelectPage() {
           color="primary"
           size="large"
           fullWidth
-          disabled={!cruiseId}
+          disabled={!selected || status === "closed"}
           onClick={start}
         >
           {t("get_started")}
