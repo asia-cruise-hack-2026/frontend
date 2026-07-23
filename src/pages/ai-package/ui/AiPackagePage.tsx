@@ -3,18 +3,27 @@ import { useNavigate } from "@tanstack/react-router";
 import { Box, Button, FlexBox } from "@wanteddev/wds";
 import {
   IconArrowLeft,
+  IconChevronDown,
+  IconChevronRight,
+  IconChevronUp,
   IconCircleCheckFill,
   IconClose,
+  IconCoffee,
+  IconLocation,
+  IconPencil,
   IconSparkleFill,
+  IconSun,
   IconTriangleExclamationFill,
+  IconUmbrella,
 } from "@wanteddev/wds-icon";
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 
 import { getCruise } from "@/entities/cruise";
 import {
   availableMinutes,
   buildCourse,
   listSpots,
+  spotIconKind,
   type CourseStop,
   type Spot,
 } from "@/entities/spot";
@@ -180,18 +189,30 @@ function AiLoadingView({ aiStep, t }: { aiStep: number; t: (key: StringKey) => s
   );
 }
 
-// 여행 코스 타임라인 한 줄 — 디자인 :456-474. 편집은 제거 버튼만(순서변경/스왑 없음).
+// 여행 코스 타임라인 한 줄 — 디자인 :456-474. 편집모드면 순서변경(▲▼)·스왑·제거, 아니면 제거만(기존 유지).
 function CourseStopRow({
   stop,
   spot,
   locale,
   t,
+  editMode,
+  isFirst,
+  isLast,
+  onMoveUp,
+  onMoveDown,
+  onSwap,
   onRemove,
 }: {
   stop: CourseStop;
   spot: Spot;
   locale: Locale;
   t: (key: StringKey) => string;
+  editMode: boolean;
+  isFirst: boolean;
+  isLast: boolean;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
+  onSwap: (id: string) => void;
   onRemove: (id: string) => void;
 }) {
   return (
@@ -271,7 +292,80 @@ function CourseStopRow({
           {`${spot.cat[locale]} · ${fmt(stop.startMin)} · ${stop.stayMin}${t("min")}`}
         </Box>
       </Box>
-      <Box sx={{ flexShrink: 0, paddingBottom: "16px" }}>
+      <FlexBox alignItems="center" gap="6px" sx={{ flexShrink: 0, paddingBottom: "16px" }}>
+        {editMode && (
+          <>
+            {/* 순서변경 — 디자인 renderVals :1529-1530 up/down·canUp/canDown·upOp/downOp(.28) 이식. 템플릿(:465-503)엔 버튼 미노출이나 로직 존재. */}
+            <Box
+              as="button"
+              type="button"
+              aria-label="move up"
+              disabled={isFirst}
+              onClick={() => onMoveUp(spot.id)}
+              sx={(theme) => ({
+                width: "30px",
+                height: "30px",
+                border: "none",
+                background: theme.semantic.fill.normal,
+                borderRadius: "8px",
+                cursor: isFirst ? "default" : "pointer",
+                opacity: isFirst ? 0.28 : 1,
+                color: theme.semantic.label.neutral,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              })}
+            >
+              <IconChevronUp sx={{ fontSize: "16px" }} />
+            </Box>
+            <Box
+              as="button"
+              type="button"
+              aria-label="move down"
+              disabled={isLast}
+              onClick={() => onMoveDown(spot.id)}
+              sx={(theme) => ({
+                width: "30px",
+                height: "30px",
+                border: "none",
+                background: theme.semantic.fill.normal,
+                borderRadius: "8px",
+                cursor: isLast ? "default" : "pointer",
+                opacity: isLast ? 0.28 : 1,
+                color: theme.semantic.label.neutral,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              })}
+            >
+              <IconChevronDown sx={{ fontSize: "16px" }} />
+            </Box>
+            {/* 장소 변경 — 디자인 :468 이식(스왑 시트 오픈) */}
+            <Box
+              as="button"
+              type="button"
+              onClick={() => onSwap(spot.id)}
+              sx={(theme) => ({
+                height: "30px",
+                padding: "0 11px",
+                border: "none",
+                background: theme.semantic.fill.normal,
+                borderRadius: "8px",
+                cursor: "pointer",
+                color: theme.semantic.label.neutral,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "5px",
+                fontWeight: 700,
+                fontSize: "12px",
+                whiteSpace: "nowrap",
+              })}
+            >
+              <SwapGlyph />
+              {t("swap_action")}
+            </Box>
+          </>
+        )}
         <Box
           as="button"
           type="button"
@@ -292,8 +386,301 @@ function CourseStopRow({
         >
           <IconClose sx={{ fontSize: "16px" }} />
         </Box>
-      </Box>
+      </FlexBox>
     </FlexBox>
+  );
+}
+
+// 장소 변경(스왑) 액션 아이콘 — 디자인 :468 인라인 svg 이식. WDS 대응 아이콘(swap/exchange) 없어 코드로 직접(D2).
+function SwapGlyph() {
+  return (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M4 8h13l-3 -3" />
+      <path d="M20 16h-13l3 3" />
+    </svg>
+  );
+}
+
+// 스왑 후보 카드 아이콘 — ExploreScreen.tsx/ThemeSelectPage.tsx와 동일 산출물(로컬 복제, entities/spot엔 아이콘 export 없음).
+// 디자인 SWAP SPOT SHEET :1046 sp.iconIsFood/iconIsAttr/iconIsOther 분기 이식.
+function FoodGlyph() {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 3c1.918 0 3.52 1.35 3.91 3.151a4 4 0 0 1 2.09 7.723l0 7.126h-12v-7.126a4 4 0 1 1 2.092 -7.723a4 4 0 0 1 3.908 -3.151" />
+      <path d="M6.161 17.009l11.839 -.009" />
+    </svg>
+  );
+}
+
+function MountainGlyph() {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M3 20h18l-6.921 -14.612a2.3 2.3 0 0 0 -4.158 0l-6.921 14.612" />
+      <path d="M7.5 11l2 2.5l2.5 -2.5l2 3l2.5 -2" />
+    </svg>
+  );
+}
+
+// spotIconKind==="other"일 때 spot.icon 이름 → WDS 아이콘 매핑(mock 데이터 기준). ExploreScreen.tsx/ThemeSelectPage.tsx와 동일.
+const OTHER_SPOT_ICONS: Record<string, ReactNode> = {
+  coffee: <IconCoffee sx={{ fontSize: "24px" }} />,
+  location: <IconLocation sx={{ fontSize: "24px" }} />,
+  sun: <IconSun sx={{ fontSize: "24px" }} />,
+  umbrella: <IconUmbrella sx={{ fontSize: "24px" }} />,
+};
+
+// 스왑 후보 스팟 카드 한 줄 — 디자인 SWAP SPOT SHEET :1045-1052 이식.
+function SwapCandidateCard({
+  spot,
+  locale,
+  t,
+  onPick,
+}: {
+  spot: Spot;
+  locale: Locale;
+  t: (key: StringKey) => string;
+  onPick: (id: string) => void;
+}) {
+  const iconKind = spotIconKind(spot.themes);
+  let iconNode: ReactNode;
+  if (iconKind === "food") iconNode = <FoodGlyph />;
+  else if (iconKind === "attraction") iconNode = <MountainGlyph />;
+  else iconNode = OTHER_SPOT_ICONS[spot.icon] ?? null;
+
+  return (
+    <Box
+      as="button"
+      type="button"
+      onClick={() => onPick(spot.id)}
+      sx={(theme) => ({
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        gap: "13px",
+        textAlign: "left",
+        border: "none",
+        cursor: "pointer",
+        background: theme.semantic.background.normal.alternative,
+        borderRadius: "14px",
+        padding: "12px 14px",
+      })}
+    >
+      <Box
+        sx={{
+          width: "46px",
+          height: "46px",
+          borderRadius: "12px",
+          background: spot.color,
+          color: spot.iconColor,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        {iconNode}
+      </Box>
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Box
+          as="span"
+          sx={(theme) => ({
+            display: "block",
+            fontWeight: 600,
+            fontSize: "15px",
+            color: theme.semantic.label.normal,
+          })}
+        >
+          {spot.name[locale]}
+        </Box>
+        <Box
+          as="span"
+          sx={(theme) => ({
+            display: "block",
+            fontSize: "12px",
+            color: theme.semantic.label.alternative,
+            marginTop: "2px",
+          })}
+        >
+          {`${spot.cat[locale]} · ${spot.km}km · ${t("approx")} ${spot.min}${t("min")}`}
+        </Box>
+      </Box>
+      <Box
+        as="span"
+        sx={(theme) => ({
+          display: "inline-flex",
+          color: theme.semantic.label.assistive,
+          flexShrink: 0,
+        })}
+      >
+        <IconChevronRight sx={{ fontSize: "18px" }} />
+      </Box>
+    </Box>
+  );
+}
+
+// 스왑 바텀시트 — 디자인 SWAP SPOT SHEET :1029-1060 이식. 오버레이+시트는 코드로 직접(fixed, 딤 배경) —
+// 디자인은 absolute(프리뷰 프레임이 relative 컨테이너)지만 이 페이지 루트엔 그런 컨테이너가 없어 fixed로 전체 뷰포트를 덮는다.
+function SwapSpotSheet({
+  candidates,
+  locale,
+  t,
+  onPick,
+  onClose,
+}: {
+  candidates: Spot[];
+  locale: Locale;
+  t: (key: StringKey) => string;
+  onPick: (id: string) => void;
+  onClose: () => void;
+}) {
+  // 슬라이드업 진입 — PaymentSheet.tsx(checkout)와 동일 패턴(shown 지연 + translateY transition)
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    setShown(true);
+  }, []);
+
+  return (
+    <Box
+      sx={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 20,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-end",
+      }}
+    >
+      <Box
+        onClick={onClose}
+        sx={{ position: "absolute", inset: 0, background: "rgba(0,0,0,.32)" }}
+      />
+      <Box
+        sx={(theme) => ({
+          position: "relative",
+          background: theme.semantic.background.normal.normal,
+          borderRadius: "24px 24px 0 0",
+          maxHeight: "74%",
+          display: "flex",
+          flexDirection: "column",
+          boxShadow: "0 -8px 30px rgba(0,0,0,.16)",
+          transform: shown ? "translateY(0)" : "translateY(100%)",
+          transition: "transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)",
+          "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+        })}
+      >
+        <Box sx={{ padding: "16px 22px 10px", flexShrink: 0 }}>
+          <Box
+            sx={(theme) => ({
+              width: "38px",
+              height: "4px",
+              borderRadius: "999px",
+              background: theme.semantic.line.normal.normal,
+              margin: "0 auto 14px",
+            })}
+          />
+          <FlexBox alignItems="flex-start" justifyContent="space-between" gap="10px">
+            <Box sx={{ minWidth: 0 }}>
+              <Box
+                as="span"
+                sx={(theme) => ({
+                  display: "block",
+                  fontWeight: 700,
+                  fontSize: "18px",
+                  color: theme.semantic.label.normal,
+                })}
+              >
+                {t("swap_title")}
+              </Box>
+              <Box
+                as="span"
+                sx={(theme) => ({
+                  display: "block",
+                  fontSize: "13px",
+                  color: theme.semantic.label.alternative,
+                  marginTop: "3px",
+                  lineHeight: 1.45,
+                })}
+              >
+                {t("swap_sub")}
+              </Box>
+            </Box>
+            <Box
+              as="button"
+              type="button"
+              aria-label="close"
+              onClick={onClose}
+              sx={(theme) => ({
+                width: "34px",
+                height: "34px",
+                border: "none",
+                background: theme.semantic.fill.normal,
+                borderRadius: "999px",
+                cursor: "pointer",
+                color: theme.semantic.label.neutral,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              })}
+            >
+              <IconClose sx={{ fontSize: "18px" }} />
+            </Box>
+          </FlexBox>
+        </Box>
+        <FlexBox
+          flexDirection="column"
+          gap="10px"
+          sx={{ flex: 1, overflowY: "auto", padding: "6px 22px 26px" }}
+        >
+          {candidates.map((spot) => (
+            <SwapCandidateCard key={spot.id} spot={spot} locale={locale} t={t} onPick={onPick} />
+          ))}
+          {candidates.length === 0 && (
+            <Box
+              as="p"
+              sx={(theme) => ({
+                textAlign: "center",
+                fontSize: "13px",
+                color: theme.semantic.label.assistive,
+                padding: "22px 0",
+              })}
+            >
+              {t("swap_empty")}
+            </Box>
+          )}
+        </FlexBox>
+      </Box>
+    </Box>
   );
 }
 
@@ -309,6 +696,8 @@ export function AiPackagePage() {
 
   const [aiStep, setAiStep] = useState(0);
   const ready = aiStep >= AI_STEP_KEYS.length;
+  const [editMode, setEditMode] = useState(false);
+  const [swapTargetId, setSwapTargetId] = useState<string | null>(null);
 
   // 마운트 시 항상 로딩 1회 재생 — 데모 연출 (디자인 startAi :1140-1141)
   useEffect(() => {
@@ -347,6 +736,14 @@ export function AiPackagePage() {
   const FitsIcon = fits ? IconCircleCheckFill : IconTriangleExclamationFill;
   const courseTime = course ? hm(course.totalMin, locale) : "";
   const availableTime = hm(available, locale);
+
+  // 스왑 후보 — 현재 항구 스팟 중 pkgSpotIds에 없는 것 (디자인 renderVals :1535 swapCandidates 이식)
+  const swapCandidates = allSpots.filter((s) => !pkgSpotIds.includes(s.id));
+  const handleSwapPick = (newId: string) => {
+    if (!swapTargetId) return;
+    sessionActions.swapPkgSpot(swapTargetId, newId);
+    setSwapTargetId(null);
+  };
 
   return (
     <FlexBox flexDirection="column" sx={{ minHeight: "100dvh" }}>
@@ -451,8 +848,12 @@ export function AiPackagePage() {
               {`${t("budget_est")} ${courseTime} · ${t("budget_stay")} ${availableTime}`}
             </Box>
 
-            {/* 여행 코스 — 디자인 :450-474 */}
-            <Box sx={{ marginBottom: "8px" }}>
+            {/* 여행 코스 — 디자인 :450-474, 편집 토글 :452 */}
+            <FlexBox
+              alignItems="center"
+              justifyContent="space-between"
+              sx={{ marginBottom: "8px" }}
+            >
               <Box
                 as="span"
                 sx={(theme) => ({
@@ -463,7 +864,27 @@ export function AiPackagePage() {
               >
                 {t("route_stops")}
               </Box>
-            </Box>
+              <Box
+                as="button"
+                type="button"
+                onClick={() => setEditMode((prev) => !prev)}
+                sx={(theme) => ({
+                  border: "none",
+                  background: "none",
+                  cursor: "pointer",
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  color: theme.semantic.primary.normal,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "4px",
+                })}
+              >
+                <IconPencil sx={{ fontSize: "15px" }} />
+                {editMode ? t("done_edit") : t("edit")}
+              </Box>
+            </FlexBox>
 
             {course.stops.length > 0 ? (
               <FlexBox flexDirection="column">
@@ -474,6 +895,12 @@ export function AiPackagePage() {
                     spot={spots[i]}
                     locale={locale}
                     t={t}
+                    editMode={editMode}
+                    isFirst={i === 0}
+                    isLast={i === course.stops.length - 1}
+                    onMoveUp={(id) => sessionActions.movePkgSpot(id, -1)}
+                    onMoveDown={(id) => sessionActions.movePkgSpot(id, 1)}
+                    onSwap={setSwapTargetId}
                     onRemove={sessionActions.togglePkgSpot}
                   />
                 ))}
@@ -513,6 +940,16 @@ export function AiPackagePage() {
             </Button>
           </Box>
         </>
+      )}
+
+      {swapTargetId && (
+        <SwapSpotSheet
+          candidates={swapCandidates}
+          locale={locale}
+          t={t}
+          onPick={handleSwapPick}
+          onClose={() => setSwapTargetId(null)}
+        />
       )}
     </FlexBox>
   );
