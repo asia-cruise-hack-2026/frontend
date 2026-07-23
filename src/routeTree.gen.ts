@@ -19,6 +19,7 @@ import { Route as AppExploreRouteImport } from './routes/app/explore'
 import { Route as AppMoveRouteImport } from './routes/app/move'
 import { Route as AppMyRouteImport } from './routes/app/my'
 import { Route as AppShopRouteImport } from './routes/app/shop'
+import { Route as AppSpotSpotIdRouteImport } from './routes/app/spot.$spotId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,6 +71,11 @@ const AppShopRoute = AppShopRouteImport.update({
   path: '/shop',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSpotSpotIdRoute = AppSpotSpotIdRouteImport.update({
+  id: '/spot/$spotId',
+  path: '/spot/$spotId',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/app/my': typeof AppMyRoute
   '/app/shop': typeof AppShopRoute
   '/app/': typeof AppIndexRoute
+  '/app/spot/$spotId': typeof AppSpotSpotIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/app/my': typeof AppMyRoute
   '/app/shop': typeof AppShopRoute
   '/app': typeof AppIndexRoute
+  '/app/spot/$spotId': typeof AppSpotSpotIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/app/my': typeof AppMyRoute
   '/app/shop': typeof AppShopRoute
   '/app/': typeof AppIndexRoute
+  '/app/spot/$spotId': typeof AppSpotSpotIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/app/my'
     | '/app/shop'
     | '/app/'
+    | '/app/spot/$spotId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/app/my'
     | '/app/shop'
     | '/app'
+    | '/app/spot/$spotId'
   id:
     | '__root__'
     | '/'
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/app/my'
     | '/app/shop'
     | '/app/'
+    | '/app/spot/$spotId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -225,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppShopRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/spot/$spotId': {
+      id: '/app/spot/$spotId'
+      path: '/spot/$spotId'
+      fullPath: '/app/spot/$spotId'
+      preLoaderRoute: typeof AppSpotSpotIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -234,6 +253,7 @@ interface AppRouteChildren {
   AppMyRoute: typeof AppMyRoute
   AppShopRoute: typeof AppShopRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppSpotSpotIdRoute: typeof AppSpotSpotIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -242,6 +262,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppMyRoute: AppMyRoute,
   AppShopRoute: AppShopRoute,
   AppIndexRoute: AppIndexRoute,
+  AppSpotSpotIdRoute: AppSpotSpotIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
