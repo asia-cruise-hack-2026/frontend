@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import { cruiseDepartureMs, getCruise, minutesToDeparture } from "@/entities/cruise";
 import { buildCourse, listReachableSpots, type ReachableSpot } from "@/entities/spot";
-import { TAXI_DRIVER } from "@/entities/transport";
+import { TAXI_DRIVER, VEHICLES } from "@/entities/transport";
 import { ApiError } from "@/shared/api";
 import { useI18n } from "@/shared/i18n";
 import {
@@ -855,7 +855,18 @@ export function HomePage() {
                     flexShrink: 0,
                   })}
                 >
-                  <TaxiGlyph size={22} />
+                  {/* 차량 렌더 에셋 — 호출확인 시트와 동일(taxi-standard.png) */}
+                  <img
+                    src={VEHICLES.normal.img}
+                    alt=""
+                    aria-hidden="true"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      display: "block",
+                    }}
+                  />
                 </Box>
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                   <Box
