@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import { Box, Button, FlexBox, useToast } from "@wanteddev/wds";
+import { addOpacity, Box, Button, FlexBox, useToast } from "@wanteddev/wds";
 import {
   IconArrowLeft,
+  IconCheck,
   IconChevronRight,
   IconCircleCheckFill,
   IconClose,
@@ -11,7 +12,7 @@ import {
   IconPlus,
   IconTriangleExclamationFill,
 } from "@wanteddev/wds-icon";
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 
 import { getCruise } from "@/entities/cruise";
 import {
@@ -22,7 +23,7 @@ import {
   type ReachableSpot,
 } from "@/entities/spot";
 import { type Locale, type StringKey, useI18n } from "@/shared/i18n";
-import { sessionActions, useCruiseId, usePkgSpotIds } from "@/shared/store";
+import { sessionActions, useCruiseId, usePkgSpotIds, useTaxiCalled } from "@/shared/store";
 import { BottomSheet } from "@/shared/ui";
 
 const AI_STEP_KEYS = [
@@ -35,11 +36,21 @@ const AI_STEP_INTERVAL_MS = 850; // 디자인 startAi :1140-1141
 
 const routeApi = getRouteApi("/app/package");
 
+// 디자인 "AI 경로 인터랙션"(design_handoff_jeju_ai) 키프레임
 const AI_LOADING_KEYFRAMES =
-  "@keyframes aip-pulse{0%{transform:scale(.5);opacity:.65}100%{transform:scale(2.6);opacity:0}}" +
-  "@keyframes aip-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}" +
+  "@keyframes aip-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}" +
+  "@keyframes aip-pulse{0%{transform:scale(.72);opacity:.9}100%{transform:scale(1.28);opacity:0}}" +
+  "@keyframes aip-orbit{to{transform:rotate(360deg)}}" +
   "@keyframes aip-spin{to{transform:rotate(360deg)}}" +
-  "@keyframes aip-blink{0%,100%{opacity:.35}50%{opacity:1}}";
+  "@keyframes aip-pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}";
+
+// 궤도 점(디자인 orbit dot) — 각도별 배치, 궤도 회전에 대해 역회전으로 수평 유지
+const ORBIT_DOTS = [
+  { deg: 0, color: "#2563EB", size: 12 },
+  { deg: 95, color: "#F2860C", size: 11 },
+  { deg: 190, color: "#2AAE48", size: 10 },
+  { deg: 275, color: "#227CFD", size: 11 },
+];
 
 // 시각 포맷 HH:MM — HomePage.tsx의 fmt와 동일 패턴.
 function fmt(min: number): string {
@@ -56,207 +67,117 @@ function hm(min: number, locale: Locale): string {
   return `${h}h ${m}m`;
 }
 
-// AI 로딩 — 디자인 :419-436. 스텝 진행은 startAi 타이밍(:1140-1141)을 상위에서 setInterval로 재생.
+// AI 로딩 — 디자인 "AI 경로 인터랙션": 마스코트+펄스+궤도, 진행 바, 4단계 스텝.
 function AiLoadingView({ aiStep, t }: { aiStep: number; t: (key: StringKey) => string }) {
+  const progressPct = Math.min(100, Math.round((aiStep / AI_STEP_KEYS.length) * 100));
   return (
     <FlexBox
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
-      sx={{ flex: 1, padding: "0 32px", textAlign: "center" }}
+      sx={{ flex: 1, padding: "0 32px 40px", textAlign: "center" }}
     >
       <style>{AI_LOADING_KEYFRAMES}</style>
-      {/* AI 로딩 — 디자인 최종: 블루 레이더/글로브 */}
-      <Box
-        sx={{
-          position: "relative",
-          width: "190px",
-          height: "190px",
-          marginBottom: "26px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <MascotStage>
         {[0, 1].map((r) => (
           <Box
             key={r}
             as="span"
             sx={{
               position: "absolute",
-              width: "150px",
-              height: "150px",
+              inset: "29px",
               borderRadius: "999px",
-              boxShadow: "inset 0 0 0 1.5px rgba(37,99,235,.32)",
+              boxShadow: "inset 0 0 0 1.5px rgba(37,99,235,0.35)",
               animation: `aip-pulse 2.8s ease-out infinite ${r === 1 ? "1.4s" : ""}`,
               "@media (prefers-reduced-motion: reduce)": { animation: "none" },
             }}
           />
         ))}
+        {/* 궤도 — 대시 링 + 색점 4개(역회전으로 수평 유지) */}
         <Box
           sx={{
-            position: "relative",
-            width: "150px",
-            height: "150px",
-            borderRadius: "999px",
-            overflow: "hidden",
-            background: "radial-gradient(120% 120% at 30% 25%,#F1F6FF 0%,#D3E1FF 55%,#AFCCFF 100%)",
-            boxShadow: "inset 0 0 0 1px rgba(37,99,235,.14),inset 0 10px 28px rgba(37,99,235,.16)",
+            position: "absolute",
+            inset: "8px",
+            animation: "aip-orbit 14s linear infinite",
+            "@media (prefers-reduced-motion: reduce)": { animation: "none" },
           }}
         >
           <Box
             as="span"
             sx={{
               position: "absolute",
-              inset: "26px",
-              borderRadius: "999px",
-              border: "1px solid rgba(37,99,235,.13)",
-            }}
-          />
-          <Box
-            as="span"
-            sx={{
-              position: "absolute",
-              inset: "52px",
-              borderRadius: "999px",
-              border: "1px solid rgba(37,99,235,.13)",
-            }}
-          />
-          <Box
-            as="span"
-            sx={{
-              position: "absolute",
-              left: "50%",
-              top: 0,
-              bottom: 0,
-              width: "1px",
-              background: "rgba(37,99,235,.1)",
-            }}
-          />
-          <Box
-            as="span"
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: 0,
-              right: 0,
-              height: "1px",
-              background: "rgba(37,99,235,.1)",
-            }}
-          />
-          <Box
-            sx={{
-              position: "absolute",
               inset: 0,
               borderRadius: "999px",
-              background:
-                "conic-gradient(from 0deg,rgba(37,99,235,0) 0deg,rgba(37,99,235,0) 290deg,rgba(37,99,235,.4) 360deg)",
-              animation: "aip-spin 2.4s linear infinite",
-              "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+              border: "1.5px dashed rgba(37,99,235,0.30)",
             }}
           />
-          {[
-            {
-              left: "33%",
-              top: "37%",
-              s: "10px",
-              bg: "var(--primary-normal-4)",
-              ring: "rgba(37,99,235,.16)",
-              d: "",
-            },
-            {
-              left: "63%",
-              top: "31%",
-              s: "10px",
-              bg: "#8B3FF0",
-              ring: "rgba(139,63,240,.16)",
-              d: ".5s",
-            },
-            {
-              left: "60%",
-              top: "63%",
-              s: "10px",
-              bg: "#E8820E",
-              ring: "rgba(232,130,14,.16)",
-              d: "1s",
-            },
-            {
-              left: "31%",
-              top: "61%",
-              s: "9px",
-              bg: "#12A150",
-              ring: "rgba(18,161,80,.16)",
-              d: "1.4s",
-            },
-          ].map((dot) => (
+          {ORBIT_DOTS.map((d) => (
             <Box
-              key={dot.left + dot.top}
+              key={d.deg}
               as="span"
               sx={{
                 position: "absolute",
-                left: dot.left,
-                top: dot.top,
-                width: dot.s,
-                height: dot.s,
+                left: "50%",
+                top: "50%",
+                width: `${d.size}px`,
+                height: `${d.size}px`,
+                margin: `${-d.size / 2}px`,
                 borderRadius: "999px",
-                background: dot.bg,
-                boxShadow: `0 0 0 4px ${dot.ring}`,
-                animation: `aip-blink 1.8s ease-in-out infinite ${dot.d}`,
-                "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+                background: d.color,
+                boxShadow: `0 0 0 4px ${d.color}29, 0 2px 6px rgba(26,26,26,0.12)`,
+                transform: `rotate(${d.deg}deg) translateY(-107px) rotate(${-d.deg}deg)`,
               }}
             />
           ))}
         </Box>
-        <Box
-          as="span"
-          sx={(theme) => ({
-            position: "absolute",
-            width: "52px",
-            height: "52px",
-            borderRadius: "999px",
-            background: "#fff",
-            boxShadow: "0 6px 18px rgba(37,99,235,.28)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: theme.semantic.primary.normal,
-            animation: "aip-float 3s ease-in-out infinite",
-            "@media (prefers-reduced-motion: reduce)": { animation: "none" },
-          })}
-        >
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.7"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M2 20a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1" />
-            <path d="M4 18l-1 -5h18l-2 4" />
-            <path d="M5 13v-6h8l4 6" />
-            <path d="M7 7v-4h-1" />
-          </svg>
-        </Box>
-      </Box>
+      </MascotStage>
       <Box
         as="h1"
         sx={(theme) => ({
           margin: 0,
           fontWeight: 700,
-          fontSize: "19px",
+          fontSize: "20px",
+          letterSpacing: "-0.02em",
           color: theme.semantic.label.normal,
         })}
       >
         {t("ai_making")}
       </Box>
+      <Box
+        as="p"
+        sx={(theme) => ({
+          margin: "8px 0 0",
+          fontSize: "13px",
+          color: theme.semantic.label.alternative,
+        })}
+      >
+        {t("ai_making_sub")}
+      </Box>
+      {/* 진행 바 */}
+      <Box
+        sx={{
+          width: "100%",
+          height: "8px",
+          borderRadius: "999px",
+          background: "rgba(37,99,235,0.10)",
+          marginTop: "22px",
+          overflow: "hidden",
+        }}
+      >
+        <Box
+          sx={{
+            height: "100%",
+            borderRadius: "999px",
+            background: "linear-gradient(90deg,#2563EB,#83C3FE)",
+            width: `${progressPct}%`,
+            transition: "width .8s cubic-bezier(0.4,0,0.2,1)",
+          }}
+        />
+      </Box>
       <FlexBox
         flexDirection="column"
-        gap="14px"
-        sx={{ width: "100%", marginTop: "24px", textAlign: "left" }}
+        gap="13px"
+        sx={{ width: "100%", marginTop: "22px", textAlign: "left" }}
       >
         {AI_STEP_KEYS.map((key, i) => {
           const done = aiStep > i;
@@ -287,10 +208,11 @@ function AiLoadingView({ aiStep, t }: { aiStep: number; t: (key: StringKey) => s
                     width: "22px",
                     height: "22px",
                     borderRadius: "999px",
-                    border: "2.5px solid #93C5FD",
+                    border: "2.5px solid #BAD8FE",
                     borderTopColor: theme.semantic.primary.normal,
                     animation: "aip-spin .7s linear infinite",
                     flexShrink: 0,
+                    boxSizing: "border-box",
                     "@media (prefers-reduced-motion: reduce)": { animation: "none" },
                   })}
                 />
@@ -324,6 +246,155 @@ function AiLoadingView({ aiStep, t }: { aiStep: number; t: (key: StringKey) => s
             </FlexBox>
           );
         })}
+      </FlexBox>
+    </FlexBox>
+  );
+}
+
+// 마스코트 원판(230px 스테이지 + 172px 원 + 떠 있는 마스코트) — 로딩·완성 공용
+function MascotStage({ children }: { children?: ReactNode }) {
+  return (
+    <Box
+      sx={{
+        position: "relative",
+        width: "230px",
+        height: "230px",
+        marginBottom: "28px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {children}
+      <Box
+        sx={{
+          position: "relative",
+          width: "172px",
+          height: "172px",
+          borderRadius: "999px",
+          background:
+            "radial-gradient(120% 120% at 32% 26%, #F3F8FF 0%, #DCEAFF 60%, #BAD8FE 100%)",
+          boxShadow: "inset 0 0 0 1px rgba(37,99,235,0.14), inset 0 12px 30px rgba(37,99,235,0.16)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <img
+          src="/images/mascot.svg"
+          alt=""
+          aria-hidden="true"
+          style={{
+            width: "108px",
+            height: "112px",
+            display: "block",
+            marginTop: "6px",
+            animation: "aip-float 3s ease-in-out infinite",
+          }}
+        />
+      </Box>
+    </Box>
+  );
+}
+
+// 완성 화면 — 디자인 "AI 경로 인터랙션" ready 상태: pop + 체크 배지 + 다시 만들기/경로 보기
+function AiDoneView({
+  t,
+  onRemake,
+  onView,
+}: {
+  t: (key: StringKey) => string;
+  onRemake: () => void;
+  onView: () => void;
+}) {
+  return (
+    <FlexBox
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      sx={{
+        flex: 1,
+        padding: "0 32px 40px",
+        textAlign: "center",
+        animation: "aip-pop .45s cubic-bezier(0.34,1.4,0.64,1) both",
+        "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+      }}
+    >
+      <style>{AI_LOADING_KEYFRAMES}</style>
+      <Box sx={{ position: "relative" }}>
+        <MascotStage />
+        <Box
+          as="span"
+          sx={(theme) => ({
+            position: "absolute",
+            right: "24px",
+            top: "26px",
+            width: "44px",
+            height: "44px",
+            borderRadius: "999px",
+            background: theme.semantic.primary.normal,
+            color: theme.semantic.static.white,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 8px 20px rgba(37,99,235,0.35)",
+          })}
+        >
+          <IconCheck sx={{ fontSize: "24px" }} />
+        </Box>
+      </Box>
+      <Box
+        as="h1"
+        sx={(theme) => ({
+          margin: 0,
+          fontWeight: 700,
+          fontSize: "22px",
+          letterSpacing: "-0.02em",
+          color: theme.semantic.label.normal,
+        })}
+      >
+        {t("package_ready")}
+      </Box>
+      <Box
+        as="p"
+        sx={(theme) => ({
+          margin: "8px 0 0",
+          fontSize: "14px",
+          lineHeight: 1.5,
+          color: theme.semantic.label.alternative,
+        })}
+      >
+        {t("package_sub")}
+      </Box>
+      <FlexBox gap="10px" sx={{ marginTop: "26px", alignSelf: "stretch" }}>
+        {/* 다시 만들기 — AI 핸드오프 1b(그라데이션 헤어라인) 스타일 */}
+        <Box
+          as="button"
+          type="button"
+          onClick={onRemake}
+          sx={(theme) => ({
+            flex: "0 0 auto",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "48px",
+            padding: "0 20px",
+            border: "1px solid transparent",
+            borderRadius: "12px",
+            background: `linear-gradient(${theme.semantic.background.normal.normal},${theme.semantic.background.normal.normal}) padding-box, linear-gradient(96deg,${theme.semantic.primary.normal},#83C3FE) border-box`,
+            fontWeight: 600,
+            fontSize: "16px",
+            color: theme.semantic.primary.normal,
+            cursor: "pointer",
+          })}
+        >
+          {t("ai_remake")}
+        </Box>
+        <Box sx={{ flex: 1 }}>
+          <Button variant="solid" color="primary" size="large" fullWidth onClick={onView}>
+            {t("ai_view_route")}
+          </Button>
+        </Box>
       </FlexBox>
     </FlexBox>
   );
@@ -630,6 +701,8 @@ export function AiPackagePage() {
   const toast = useToast();
   const cruiseId = useCruiseId();
   const pkgSpotIds = usePkgSpotIds();
+  // 디자인 routeLocked — 택시 호출 후엔 경로 편집 잠금
+  const taxiCalled = useTaxiCalled();
 
   // 진입 출처(디자인 pkgBack) — 홈 재방문·수동 선택 진입은 AI 로딩 생략, 홈 재방문은 헤드도 숨김
   const { from } = routeApi.useSearch();
@@ -638,6 +711,8 @@ export function AiPackagePage() {
 
   const [aiStep, setAiStep] = useState(skipAi ? AI_STEP_KEYS.length : 0);
   const ready = aiStep >= AI_STEP_KEYS.length;
+  // 디자인 "AI 경로 인터랙션" — 로딩 완료 후 완성 화면을 거쳐 [경로 보기]로 리스트 진입
+  const [routeViewed, setRouteViewed] = useState(skipAi);
   const [editMode, setEditMode] = useState(false);
   const [swapTargetId, setSwapTargetId] = useState<string | null>(null);
 
@@ -668,6 +743,11 @@ export function AiPackagePage() {
     queryFn: () => listReachableSpots(cruiseId ?? "", locale, 30),
     enabled: !!cruiseId,
   });
+
+  // 실 목록에 없는 잔여 id(과거 mock 등) 정리
+  useEffect(() => {
+    if (allSpots.length > 0) sessionActions.prunePkgSpots(allSpots.map((s) => s.id));
+  }, [allSpots]);
 
   const spots = pkgSpotIds
     .map((id) => allSpots.find((s) => s.id === id))
@@ -717,7 +797,15 @@ export function AiPackagePage() {
 
       {!ready && <AiLoadingView aiStep={aiStep} t={t} />}
 
-      {ready && cruise && course && (
+      {ready && !routeViewed && (
+        <AiDoneView
+          t={t}
+          onRemake={() => navigate({ to: "/app/concept" })}
+          onView={() => setRouteViewed(true)}
+        />
+      )}
+
+      {ready && routeViewed && cruise && course && (
         <>
           <Box sx={{ flex: 1, overflowY: "auto", padding: "0 20px 20px" }}>
             {/* 타이틀 — 디자인 :442-443, 홈 재방문(pkgShowHead=false)이면 숨김 */}
@@ -803,26 +891,42 @@ export function AiPackagePage() {
               >
                 {t("route_stops")}
               </Box>
-              <Box
-                as="button"
-                type="button"
-                onClick={() => setEditMode((prev) => !prev)}
-                sx={(theme) => ({
-                  border: "none",
-                  background: "none",
-                  cursor: "pointer",
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  color: theme.semantic.primary.normal,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  padding: "4px",
-                })}
-              >
-                <IconPencil sx={{ fontSize: "15px" }} />
-                {editMode ? t("done_edit") : t("edit")}
-              </Box>
+              {taxiCalled ? (
+                <FlexBox
+                  as="span"
+                  alignItems="center"
+                  gap="5px"
+                  sx={(theme) => ({
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    color: theme.semantic.status.positive,
+                  })}
+                >
+                  <IconCircleCheckFill sx={{ fontSize: "14px" }} />
+                  {t("status_called")}
+                </FlexBox>
+              ) : (
+                <Box
+                  as="button"
+                  type="button"
+                  onClick={() => setEditMode((prev) => !prev)}
+                  sx={(theme) => ({
+                    border: "none",
+                    background: "none",
+                    cursor: "pointer",
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    color: theme.semantic.primary.normal,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    padding: "4px",
+                  })}
+                >
+                  <IconPencil sx={{ fontSize: "15px" }} />
+                  {editMode ? t("done_edit") : t("edit")}
+                </Box>
+              )}
             </FlexBox>
 
             {course.stops.length > 0 ? (
@@ -833,7 +937,7 @@ export function AiPackagePage() {
                     stop={stop}
                     spot={spots[i]}
                     t={t}
-                    editMode={editMode}
+                    editMode={editMode && !taxiCalled}
                     onSwap={setSwapTargetId}
                     onRemove={sessionActions.togglePkgSpot}
                   />
@@ -853,55 +957,29 @@ export function AiPackagePage() {
               </Box>
             )}
 
-            {/* 장소 추가 — 디자인 :496-507. 편집모드와 무관하게 여유(slackMin>=50)면 추가 버튼, 아니면 경고 배너 */}
-            {canAddMore ? (
-              <Box
-                as="button"
-                type="button"
-                onClick={() => navigate({ to: "/app/theme" })}
-                sx={(theme) => ({
-                  width: "100%",
-                  marginTop: "8px",
-                  border: `1.5px dashed ${theme.semantic.line.normal.normal}`,
-                  background: theme.semantic.background.normal.normal,
-                  borderRadius: "12px",
-                  padding: "13px",
-                  cursor: "pointer",
-                  fontWeight: 600,
-                  fontSize: "14px",
-                  color: theme.semantic.primary.normal,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "6px",
-                })}
-              >
-                <IconPlus sx={{ fontSize: "18px" }} />
-                {t("home_add")}
-              </Box>
-            ) : (
+            {/* 잠금 배너 — 디자인 :509-513 (택시 호출 후) */}
+            {taxiCalled && (
               <FlexBox
                 alignItems="flex-start"
                 gap="9px"
-                sx={{
+                sx={(theme) => ({
                   width: "100%",
                   marginTop: "8px",
-                  border: "1.5px dashed rgba(232,130,14,.4)",
-                  background: "#FFF7EC",
                   borderRadius: "12px",
+                  background: addOpacity(theme.semantic.primary.normal, theme.opacity[8]),
                   padding: "12px 14px",
-                }}
+                })}
               >
                 <Box
                   as="span"
-                  sx={{
+                  sx={(theme) => ({
                     display: "inline-flex",
-                    color: "#B5620A",
+                    color: theme.semantic.primary.normal,
                     flexShrink: 0,
                     marginTop: "1px",
-                  }}
+                  })}
                 >
-                  <IconTriangleExclamationFill sx={{ fontSize: "18px" }} />
+                  <IconCircleCheckFill sx={{ fontSize: "18px" }} />
                 </Box>
                 <Box>
                   <Box
@@ -913,7 +991,7 @@ export function AiPackagePage() {
                       color: theme.semantic.label.normal,
                     })}
                   >
-                    {t("add_full")}
+                    {t("status_called")}
                   </Box>
                   <Box
                     as="span"
@@ -925,11 +1003,90 @@ export function AiPackagePage() {
                       lineHeight: 1.45,
                     })}
                   >
-                    {t("add_full_sub")}
+                    {t("route_locked")}
                   </Box>
                 </Box>
               </FlexBox>
             )}
+
+            {/* 장소 추가 — 디자인 :496-507. 잠금 전엔 편집모드와 무관하게 여유(slackMin>=50)면 추가, 아니면 경고 */}
+            {!taxiCalled &&
+              (canAddMore ? (
+                <Box
+                  as="button"
+                  type="button"
+                  onClick={() => navigate({ to: "/app/theme" })}
+                  sx={(theme) => ({
+                    width: "100%",
+                    marginTop: "8px",
+                    border: `1.5px dashed ${theme.semantic.line.normal.normal}`,
+                    background: theme.semantic.background.normal.normal,
+                    borderRadius: "12px",
+                    padding: "13px",
+                    cursor: "pointer",
+                    fontWeight: 600,
+                    fontSize: "14px",
+                    color: theme.semantic.primary.normal,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "6px",
+                  })}
+                >
+                  <IconPlus sx={{ fontSize: "18px" }} />
+                  {t("home_add")}
+                </Box>
+              ) : (
+                <FlexBox
+                  alignItems="flex-start"
+                  gap="9px"
+                  sx={{
+                    width: "100%",
+                    marginTop: "8px",
+                    border: "1.5px dashed rgba(232,130,14,.4)",
+                    background: "#FFF7EC",
+                    borderRadius: "12px",
+                    padding: "12px 14px",
+                  }}
+                >
+                  <Box
+                    as="span"
+                    sx={{
+                      display: "inline-flex",
+                      color: "#B5620A",
+                      flexShrink: 0,
+                      marginTop: "1px",
+                    }}
+                  >
+                    <IconTriangleExclamationFill sx={{ fontSize: "18px" }} />
+                  </Box>
+                  <Box>
+                    <Box
+                      as="span"
+                      sx={(theme) => ({
+                        display: "block",
+                        fontWeight: 700,
+                        fontSize: "13px",
+                        color: theme.semantic.label.normal,
+                      })}
+                    >
+                      {t("add_full")}
+                    </Box>
+                    <Box
+                      as="span"
+                      sx={(theme) => ({
+                        display: "block",
+                        fontSize: "12px",
+                        color: theme.semantic.label.alternative,
+                        marginTop: "2px",
+                        lineHeight: 1.45,
+                      })}
+                    >
+                      {t("add_full_sub")}
+                    </Box>
+                  </Box>
+                </FlexBox>
+              ))}
           </Box>
 
           {/* CTA — 디자인 최종: 지금 확정(→교통수단) / 나중에 확정(→홈) 2버튼 */}
@@ -943,46 +1100,69 @@ export function AiPackagePage() {
               gap: "10px",
             })}
           >
-            <Button
-              variant="solid"
-              color="primary"
-              size="large"
-              fullWidth
-              disabled={course.stops.length === 0}
-              onClick={() => {
-                sessionActions.setRouteConfirmed(true);
-                navigate({ to: "/app/transport" });
-              }}
-            >
-              {t("confirm_now")}
-            </Button>
-            <Box
-              as="button"
-              type="button"
-              onClick={() => {
-                // 디자인 confirmRoute(false) :1309 — 확정 후 토스트, 홈 복귀
-                sessionActions.setRouteConfirmed(true);
-                toast({
-                  content: t("route_confirmed_toast"),
-                  variant: "positive",
-                  duration: "short",
-                });
-                navigate({ to: "/app" });
-              }}
-              sx={(theme) => ({
-                width: "100%",
-                height: "48px",
-                borderRadius: "12px",
-                border: `1.5px solid ${theme.semantic.line.normal.normal}`,
-                background: theme.semantic.background.normal.normal,
-                cursor: "pointer",
-                fontWeight: 700,
-                fontSize: "15px",
-                color: theme.semantic.label.normal,
-              })}
-            >
-              {t("confirm_later")}
-            </Box>
+            {taxiCalled ? (
+              <Box
+                as="button"
+                type="button"
+                onClick={() => navigate({ to: "/app" })}
+                sx={(theme) => ({
+                  width: "100%",
+                  height: "48px",
+                  borderRadius: "12px",
+                  border: `1.5px solid ${theme.semantic.line.normal.normal}`,
+                  background: theme.semantic.background.normal.normal,
+                  cursor: "pointer",
+                  fontWeight: 700,
+                  fontSize: "15px",
+                  color: theme.semantic.label.normal,
+                })}
+              >
+                {t("final_cta")}
+              </Box>
+            ) : (
+              <>
+                <Button
+                  variant="solid"
+                  color="primary"
+                  size="large"
+                  fullWidth
+                  disabled={course.stops.length === 0}
+                  onClick={() => {
+                    sessionActions.setRouteConfirmed(true);
+                    navigate({ to: "/app/transport" });
+                  }}
+                >
+                  {t("confirm_now")}
+                </Button>
+                <Box
+                  as="button"
+                  type="button"
+                  onClick={() => {
+                    // 디자인 confirmRoute(false) :1309 — 확정 후 토스트, 홈 복귀
+                    sessionActions.setRouteConfirmed(true);
+                    toast({
+                      content: t("route_confirmed_toast"),
+                      variant: "positive",
+                      duration: "short",
+                    });
+                    navigate({ to: "/app" });
+                  }}
+                  sx={(theme) => ({
+                    width: "100%",
+                    height: "48px",
+                    borderRadius: "12px",
+                    border: `1.5px solid ${theme.semantic.line.normal.normal}`,
+                    background: theme.semantic.background.normal.normal,
+                    cursor: "pointer",
+                    fontWeight: 700,
+                    fontSize: "15px",
+                    color: theme.semantic.label.normal,
+                  })}
+                >
+                  {t("confirm_later")}
+                </Box>
+              </>
+            )}
           </Box>
         </>
       )}

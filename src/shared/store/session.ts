@@ -7,6 +7,8 @@ interface SessionState {
   pkgSpotIds: string[];
   // 디자인 state routeConfirmed — 패키지에서 확정해야 홈에 "현재 경로"로 노출(미확정 초안은 숨김)
   routeConfirmed: boolean;
+  // 디자인 state taxiCalled — 기사 매칭 완료 후 경로 잠금·홈 택시 플로팅 노출
+  taxiCalled: boolean;
   transportMode: TransportMode | null;
   cart: string[];
 }
@@ -15,6 +17,7 @@ const EMPTY: SessionState = {
   cruiseId: null,
   pkgSpotIds: [],
   routeConfirmed: false,
+  taxiCalled: false,
   transportMode: null,
   cart: [],
 };
@@ -36,6 +39,7 @@ const load = (): SessionState => {
         ? s.pkgSpotIds.filter((x): x is string => typeof x === "string")
         : [],
       routeConfirmed: s.routeConfirmed === true,
+      taxiCalled: s.taxiCalled === true,
       transportMode:
         s.transportMode === "taxi" || s.transportMode === "van" || s.transportMode === "gtaxi"
           ? s.transportMode
@@ -64,6 +68,7 @@ export const getSessionCruiseId = (): string | null => store.state.cruiseId;
 export const useCruiseId = () => useStore(store, (s) => s.cruiseId);
 export const usePkgSpotIds = () => useStore(store, (s) => s.pkgSpotIds);
 export const useRouteConfirmed = () => useStore(store, (s) => s.routeConfirmed);
+export const useTaxiCalled = () => useStore(store, (s) => s.taxiCalled);
 export const useTransportMode = () => useStore(store, (s) => s.transportMode);
 export const useCart = () => useStore(store, (s) => s.cart);
 
@@ -78,6 +83,13 @@ export const sessionActions = {
     })),
   setPkgSpots: (ids: string[]) => store.setState((s) => ({ ...s, pkgSpotIds: ids })),
   setRouteConfirmed: (v: boolean) => store.setState((s) => ({ ...s, routeConfirmed: v })),
+  setTaxiCalled: (v: boolean) => store.setState((s) => ({ ...s, taxiCalled: v })),
+  // 실 스팟 목록에 없는 잔여 id(과거 mock 등) 제거 — 픽커/패키지 카운트 오염 방지
+  prunePkgSpots: (validIds: string[]) =>
+    store.setState((s) => {
+      const pruned = s.pkgSpotIds.filter((id) => validIds.includes(id));
+      return pruned.length === s.pkgSpotIds.length ? s : { ...s, pkgSpotIds: pruned };
+    }),
   movePkgSpot: (id: string, dir: -1 | 1) =>
     store.setState((s) => {
       const a = [...s.pkgSpotIds];

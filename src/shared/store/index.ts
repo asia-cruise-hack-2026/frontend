@@ -5,6 +5,7 @@ export {
   useCruiseId,
   usePkgSpotIds,
   useRouteConfirmed,
+  useTaxiCalled,
   useTransportMode,
 } from "./session";
 export type { TransportMode } from "./session";

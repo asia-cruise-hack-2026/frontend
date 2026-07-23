@@ -13,7 +13,7 @@ import {
   IconTriangleExclamationFill,
   IconUmbrella,
 } from "@wanteddev/wds-icon";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 
 import { getCruise } from "@/entities/cruise";
 import {
@@ -106,6 +106,11 @@ export function ThemeSelectPage() {
     return [...seen.values()].sort((a, b) => b.count - a.count);
   })();
 
+  // 실 목록에 없는 잔여 id(과거 mock 등) 정리 — 빈 화면인데 카운트만 잡히는 버그 방지
+  useEffect(() => {
+    if (spots.length > 0) sessionActions.prunePkgSpots(spots.map((s) => s.id));
+  }, [spots]);
+
   const toggleCat = (key: string) =>
     setCatKeys((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
 
@@ -141,12 +146,12 @@ export function ThemeSelectPage() {
   // 디자인 renderVals :1515 spotpickCta 이식 — ExploreScreen의 pkgCta와 동일 패턴
   const confirmCta =
     locale === "ko"
-      ? `${pkgSpotIds.length}곳으로 경로 만들기`
+      ? `${pkgSpots.length}곳으로 경로 만들기`
       : locale === "zh"
-        ? `${pkgSpotIds.length}个地点·生成路线`
+        ? `${pkgSpots.length}个地点·生成路线`
         : locale === "ja"
-          ? `${pkgSpotIds.length}件でルート作成`
-          : `Build route · ${pkgSpotIds.length} to my day`;
+          ? `${pkgSpots.length}件でルート作成`
+          : `Build route · ${pkgSpots.length} to my day`;
 
   return (
     <Box
@@ -495,7 +500,7 @@ export function ThemeSelectPage() {
           color="primary"
           size="large"
           fullWidth
-          disabled={pkgSpotIds.length === 0}
+          disabled={pkgSpots.length === 0}
           onClick={() => navigate({ to: "/app/package", search: { from: "picker" } })}
         >
           {confirmCta}

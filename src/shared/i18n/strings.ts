@@ -177,6 +177,26 @@ export const strings = {
     zh: "最上镜景点",
     ja: "写真映えスポット",
   },
+  concept_cta: {
+    ko: "AI 코스 만들기",
+    en: "Build my AI course",
+    zh: "生成AI行程",
+    ja: "AIコースを作る",
+  },
+  concept_pick_first: {
+    ko: "컨셉을 골라주세요",
+    en: "Pick a concept first",
+    zh: "请先选择主题",
+    ja: "コンセプトを選んでください",
+  },
+  ai_making_sub: {
+    ko: "체류 시간에 맞춰 동선을 계산하는 중이에요",
+    en: "Calculating the best route for your time ashore",
+    zh: "正在按停留时间计算最佳动线",
+    ja: "滞在時間に合わせて動線を計算中です",
+  },
+  ai_remake: { ko: "다시 만들기", en: "Remake", zh: "重新生成", ja: "作り直す" },
+  ai_view_route: { ko: "경로 보기", en: "View route", zh: "查看路线", ja: "ルートを見る" },
   concept_go: {
     ko: "장소를 고르지 않아도 AI가 최적 코스를 만들어드려요.",
     en: "No need to pick spots — AI builds the best course.",

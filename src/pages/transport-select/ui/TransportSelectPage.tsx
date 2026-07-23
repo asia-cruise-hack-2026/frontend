@@ -7,12 +7,15 @@ import {
   FlexBox,
   SegmentedControl,
   SegmentedControlItem,
+  useToast,
 } from "@wanteddev/wds";
 import {
   IconArrowLeft,
   IconChevronDown,
   IconChevronUp,
+  IconCircleCheckFill,
   IconGlobe,
+  IconStarFill,
   IconVerifiedCheckFill,
 } from "@wanteddev/wds-icon";
 import { useEffect, useState } from "react";
@@ -20,6 +23,7 @@ import { useEffect, useState } from "react";
 import { listReachableSpots, type ReachableSpot } from "@/entities/spot";
 import {
   GLOBAL_CARS,
+  TAXI_DRIVER,
   VEHICLES,
   taxiFare,
   taxiMinutes,
@@ -415,15 +419,36 @@ function GlobalCarCard({
  * - 글로벌: 안내 배너(+요금정책 아코디언) + GLOBAL_CARS 4종 카드.
  * 선택 결과는 sessionActions.setTransportMode로 스토어에 반영한다(taxi/van/gtaxi).
  */
+const FINDING_MS = 2600; // 기사 탐색 연출
+const MATCHED_MS = 1600; // 매칭 완료 노출 후 이동
+
 export function TransportSelectPage() {
   const { t, money, locale } = useI18n();
   const navigate = useNavigate();
+  const toast = useToast();
   const cruiseId = useCruiseId();
   const pkgSpotIds = usePkgSpotIds();
   const [service, setService] = useState<Service>("normal");
   const [selected, setSelected] = useState<TransportMode>("taxi");
   const [globalCarKey, setGlobalCarKey] = useState<GlobalCarKey>("basic");
   const [policyOpen, setPolicyOpen] = useState(false);
+  // 택시 호출 매칭 연출 — 탐색 → 매칭 완료 → 최종 경로로 이동
+  const [matchPhase, setMatchPhase] = useState<"idle" | "finding" | "matched">("idle");
+
+  useEffect(() => {
+    if (matchPhase === "finding") {
+      const id = setTimeout(() => setMatchPhase("matched"), FINDING_MS);
+      return () => clearTimeout(id);
+    }
+    if (matchPhase === "matched") {
+      const id = setTimeout(() => {
+        sessionActions.setTaxiCalled(true);
+        toast({ content: t("taxi_called_toast"), variant: "positive", duration: "short" });
+        navigate({ to: "/app/final" });
+      }, MATCHED_MS);
+      return () => clearTimeout(id);
+    }
+  }, [matchPhase, navigate, t, toast]);
 
   // 진입 시 택시 프리셀렉트 — 스토어에도 즉시 반영해 CTA가 처음부터 활성 상태이게 한다.
   useEffect(() => {
@@ -617,11 +642,189 @@ export function TransportSelectPage() {
           size="large"
           fullWidth
           disabled={!selected}
-          onClick={() => navigate({ to: "/app/final" })}
+          onClick={() => setMatchPhase("finding")}
         >
           {t("transport_cta")}
         </Button>
       </Box>
+
+      {/* 기사 매칭 오버레이 — 탐색(스피너) → 매칭 완료(기사 카드) → /app/final */}
+      {matchPhase !== "idle" && (
+        <Box
+          sx={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 60,
+            background: "rgba(23,23,25,.52)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "0 28px",
+          }}
+        >
+          <Box
+            sx={(theme) => ({
+              width: "100%",
+              maxWidth: "360px",
+              background: theme.semantic.background.normal.normal,
+              borderRadius: "20px",
+              padding: "28px 22px 22px",
+              textAlign: "center",
+              boxShadow: "0 18px 50px rgba(0,0,0,.28)",
+            })}
+          >
+            {matchPhase === "finding" && (
+              <>
+                <style>{"@keyframes ts-spin{to{transform:rotate(360deg)}}"}</style>
+                <Box
+                  sx={(theme) => ({
+                    width: "44px",
+                    height: "44px",
+                    margin: "0 auto 16px",
+                    borderRadius: "999px",
+                    border: `3px solid ${theme.semantic.line.normal.neutral}`,
+                    borderTopColor: theme.semantic.primary.normal,
+                    animation: "ts-spin 0.7s linear infinite",
+                    "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+                  })}
+                />
+                <Box
+                  as="p"
+                  sx={(theme) => ({
+                    margin: 0,
+                    fontWeight: 700,
+                    fontSize: "17px",
+                    color: theme.semantic.label.normal,
+                  })}
+                >
+                  {t("finding_driver")}
+                </Box>
+                <Box
+                  as="p"
+                  sx={(theme) => ({
+                    margin: "6px 0 0",
+                    fontSize: "13px",
+                    color: theme.semantic.label.alternative,
+                  })}
+                >
+                  {`${t("approx")} ${taxiTime}${t("min")} · ${money(selected === "van" ? vanCost : taxiCost)}`}
+                </Box>
+                <Box sx={{ marginTop: "20px" }}>
+                  <Button
+                    variant="outlined"
+                    color="assistive"
+                    size="large"
+                    fullWidth
+                    onClick={() => setMatchPhase("idle")}
+                  >
+                    {t("cancel")}
+                  </Button>
+                </Box>
+              </>
+            )}
+            {matchPhase === "matched" && (
+              <>
+                <Box
+                  as="span"
+                  sx={(theme) => ({
+                    display: "inline-flex",
+                    color: theme.semantic.primary.normal,
+                    marginBottom: "10px",
+                  })}
+                >
+                  <IconCircleCheckFill sx={{ fontSize: "44px" }} />
+                </Box>
+                <Box
+                  as="p"
+                  sx={(theme) => ({
+                    margin: 0,
+                    fontWeight: 700,
+                    fontSize: "17px",
+                    color: theme.semantic.label.normal,
+                  })}
+                >
+                  {t("driver_assigned")}
+                </Box>
+                <FlexBox
+                  alignItems="center"
+                  gap="12px"
+                  sx={(theme) => ({
+                    marginTop: "16px",
+                    background: theme.semantic.background.normal.alternative,
+                    borderRadius: "14px",
+                    padding: "13px 14px",
+                    textAlign: "left",
+                  })}
+                >
+                  <Box
+                    as="span"
+                    sx={(theme) => ({
+                      width: "44px",
+                      height: "44px",
+                      borderRadius: "999px",
+                      background: theme.semantic.fill.normal,
+                      flexShrink: 0,
+                      overflow: "hidden",
+                      display: "flex",
+                    })}
+                  >
+                    <img
+                      src={VEHICLES.normal.img}
+                      alt=""
+                      aria-hidden="true"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        display: "block",
+                      }}
+                    />
+                  </Box>
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Box
+                      as="span"
+                      sx={(theme) => ({
+                        display: "block",
+                        fontWeight: 700,
+                        fontSize: "15px",
+                        color: theme.semantic.label.normal,
+                      })}
+                    >
+                      {TAXI_DRIVER.name[locale]}
+                    </Box>
+                    <Box
+                      as="span"
+                      sx={(theme) => ({
+                        display: "block",
+                        fontSize: "12px",
+                        color: theme.semantic.label.alternative,
+                        marginTop: "1px",
+                      })}
+                    >
+                      {`${TAXI_DRIVER.car[locale]} · ${TAXI_DRIVER.plate}`}
+                    </Box>
+                  </Box>
+                  <FlexBox
+                    alignItems="center"
+                    gap="3px"
+                    sx={(theme) => ({
+                      fontWeight: 700,
+                      fontSize: "13px",
+                      color: theme.semantic.label.normal,
+                      flexShrink: 0,
+                    })}
+                  >
+                    <Box as="span" sx={{ display: "inline-flex", color: "#FFB020" }}>
+                      <IconStarFill sx={{ fontSize: "13px" }} />
+                    </Box>
+                    {TAXI_DRIVER.rating}
+                  </FlexBox>
+                </FlexBox>
+              </>
+            )}
+          </Box>
+        </Box>
+      )}
     </FlexBox>
   );
 }

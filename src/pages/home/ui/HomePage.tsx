@@ -1,14 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Box, Button, FlexBox } from "@wanteddev/wds";
-import { IconChevronRight } from "@wanteddev/wds-icon";
+import { IconChevronRight, IconPhone } from "@wanteddev/wds-icon";
 import { useEffect, useState } from "react";
 
 import { cruiseDepartureMs, getCruise, minutesToDeparture } from "@/entities/cruise";
 import { buildCourse, listReachableSpots, type ReachableSpot } from "@/entities/spot";
+import { TAXI_DRIVER } from "@/entities/transport";
 import { ApiError } from "@/shared/api";
 import { useI18n } from "@/shared/i18n";
-import { sessionActions, useCruiseId, usePkgSpotIds, useRouteConfirmed } from "@/shared/store";
+import {
+  sessionActions,
+  useCruiseId,
+  usePkgSpotIds,
+  useRouteConfirmed,
+  useTaxiCalled,
+} from "@/shared/store";
 import { AiButton } from "@/shared/ui";
 
 import { HomeMap } from "./HomeMap";
@@ -55,12 +62,12 @@ function ClockMini() {
   );
 }
 
-// 이동 leg 배지 택시 아이콘 — 디자인 :187
-function TaxiGlyph() {
+// 이동 leg 배지·플로팅 카드 택시 아이콘 — 디자인 :187/:1174
+function TaxiGlyph({ size = 13 }: { size?: number }) {
   return (
     <svg
-      width="13"
-      height="13"
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -143,6 +150,7 @@ export function HomePage() {
   // 현재 경로 타임라인(hasPkg) — 디자인 :170-205 + renderVals :1567-1571.
   // 패키지에서 "확정"한 경로만 노출(routeConfirmed) — 미확정 초안·이전 세션 잔여 초안은 빈 상태로.
   const routeConfirmed = useRouteConfirmed();
+  const taxiCalled = useTaxiCalled();
   const spots = pkgSpotIds
     .map((id) => allSpots.find((s) => s.id === id))
     .filter((s): s is ReachableSpot => s != null);
@@ -755,24 +763,152 @@ export function HomePage() {
                   </Box>
                 )}
 
-                {/* 다음 단계 CTA — 디자인 최종: next_step → 교통수단 선택 */}
-                <Box sx={{ marginTop: "10px" }}>
-                  <Button
-                    variant="solid"
-                    color="primary"
-                    size="large"
-                    fullWidth
-                    onClick={() => navigate({ to: "/app/transport" })}
-                  >
-                    {t("next_step")}
-                  </Button>
-                </Box>
+                {/* 다음 단계 CTA — 디자인 homeTaxiBtn: 택시 호출 후엔 숨김 */}
+                {!taxiCalled && (
+                  <Box sx={{ marginTop: "10px" }}>
+                    <Button
+                      variant="solid"
+                      color="primary"
+                      size="large"
+                      fullWidth
+                      onClick={() => navigate({ to: "/app/transport" })}
+                    >
+                      {t("next_step")}
+                    </Button>
+                  </Box>
+                )}
               </>
             )}
           </Box>
         </Box>
       </Box>
       <Box sx={{ height: "16px" }} />
+
+      {/* 택시 호출됨 플로팅 — 디자인 homeTaxiFloat(:1166-1180), 탭바 위 고정 */}
+      {taxiCalled && (
+        <Box
+          sx={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: "92px",
+            zIndex: 9,
+            pointerEvents: "none",
+          }}
+        >
+          <Box sx={{ maxWidth: 620, margin: "0 auto", padding: "0 12px" }}>
+            <Box
+              sx={(theme) => ({
+                pointerEvents: "auto",
+                background: theme.semantic.background.normal.normal,
+                borderRadius: "16px",
+                boxShadow: `0 12px 34px rgba(15,40,80,.20), inset 0 0 0 1px ${theme.semantic.line.normal.neutral}`,
+                padding: "13px 15px",
+              })}
+            >
+              <FlexBox alignItems="center" gap="8px">
+                <Box
+                  as="span"
+                  sx={(theme) => ({
+                    width: "8px",
+                    height: "8px",
+                    borderRadius: "999px",
+                    background: theme.semantic.status.positive,
+                    boxShadow: "0 0 0 4px #EAF7EE",
+                    flexShrink: 0,
+                  })}
+                />
+                <Box
+                  as="span"
+                  sx={(theme) => ({
+                    fontWeight: 700,
+                    fontSize: "14px",
+                    color: theme.semantic.label.normal,
+                  })}
+                >
+                  {t("taxi_coming")}
+                </Box>
+                <Box
+                  as="span"
+                  sx={(theme) => ({
+                    marginLeft: "auto",
+                    fontWeight: 700,
+                    fontSize: "14px",
+                    color: theme.semantic.primary.normal,
+                  })}
+                >
+                  {`${t("approx")} ${TAXI_DRIVER.eta}${t("min")}`}
+                </Box>
+              </FlexBox>
+              <FlexBox alignItems="center" gap="11px" sx={{ marginTop: "11px" }}>
+                <Box
+                  as="span"
+                  sx={(theme) => ({
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "999px",
+                    background: theme.semantic.fill.normal,
+                    color: theme.semantic.label.neutral,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  })}
+                >
+                  <TaxiGlyph size={22} />
+                </Box>
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  <Box
+                    as="span"
+                    sx={(theme) => ({
+                      display: "block",
+                      fontWeight: 700,
+                      fontSize: "14px",
+                      color: theme.semantic.label.normal,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    })}
+                  >
+                    {`${TAXI_DRIVER.plate} · ${TAXI_DRIVER.car[locale]}`}
+                  </Box>
+                  <Box
+                    as="span"
+                    sx={(theme) => ({
+                      display: "block",
+                      fontSize: "12px",
+                      color: theme.semantic.label.alternative,
+                      marginTop: "1px",
+                    })}
+                  >
+                    {TAXI_DRIVER.name[locale]}
+                  </Box>
+                </Box>
+                <Box
+                  as="button"
+                  type="button"
+                  aria-label="call driver"
+                  sx={(theme) => ({
+                    width: "44px",
+                    height: "44px",
+                    flexShrink: 0,
+                    borderRadius: "12px",
+                    border: "none",
+                    cursor: "pointer",
+                    background: theme.semantic.primary.normal,
+                    color: theme.semantic.static.white,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  })}
+                >
+                  <IconPhone sx={{ fontSize: "20px" }} />
+                </Box>
+              </FlexBox>
+            </Box>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 }

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { addOpacity, Box, Button, FlexBox } from "@wanteddev/wds";
 import { IconArrowLeft, IconCheck, IconLocation, IconPlus } from "@wanteddev/wds-icon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { getCruise } from "@/entities/cruise";
 import { categoryTint, listReachableSpots } from "@/entities/spot";
@@ -30,6 +30,12 @@ export function ExploreScreen() {
     enabled: !!cruiseId,
   });
 
+  // 실 목록에 없는 잔여 id(과거 mock 등) 정리 — 카운트 오염 방지
+  useEffect(() => {
+    if (spots.length > 0) sessionActions.prunePkgSpots(spots.map((s) => s.id));
+  }, [spots]);
+
+  const resolvedCount = pkgSpotIds.filter((id) => spots.some((s) => s.id === id)).length;
   const filteredSpots = spots.filter((s) => activeCat === "all" || s.categoryKey === activeCat);
   // 카테고리 탭 — 로드된 스팟에서 도출(빈도순) + 전체
   const catTabs = (() => {
@@ -52,12 +58,12 @@ export function ExploreScreen() {
   // 디자인 renderVals :1713 — pkgCta 문구 이식
   const pkgCta =
     locale === "ko"
-      ? `${pkgSpotIds.length}곳으로 경로 만들기`
+      ? `${resolvedCount}곳으로 경로 만들기`
       : locale === "zh"
-        ? `${pkgSpotIds.length}个地点·生成路线`
+        ? `${resolvedCount}个地点·生成路线`
         : locale === "ja"
-          ? `${pkgSpotIds.length}件でルート作成`
-          : `Build route · ${pkgSpotIds.length} to my day`;
+          ? `${resolvedCount}件でルート作成`
+          : `Build route · ${resolvedCount} to my day`;
 
   return (
     <Box
@@ -340,7 +346,7 @@ export function ExploreScreen() {
       <Box sx={{ height: "96px" }} />
 
       {/* 하단 CTA — 디자인 :276-280 */}
-      {pkgSpotIds.length > 0 && (
+      {resolvedCount > 0 && (
         <Box
           sx={(theme) => ({
             position: "sticky",
