@@ -4,7 +4,8 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   server: {
-    port: 3000,
+    port: 8787,
+    strictPort: true, // 맵 리퍼러 등록(localhost:8787)과 어긋나지 않게 포트 드리프트 차단
     // dev에서만: /api → Cloud Run 라이브(배포에선 같은 오리진 nginx가 /api/ 프록시)
     proxy: {
       "/api": {
