@@ -14,7 +14,7 @@ function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const showTabs = TAB_ROOTS.includes(pathname);
   return (
-    <FlexBox flexDirection="column" sx={{ minHeight: "100dvh" }}>
+    <FlexBox flexDirection="column" sx={{ height: "100dvh" }}>
       <Box sx={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
         <Outlet />
       </Box>
