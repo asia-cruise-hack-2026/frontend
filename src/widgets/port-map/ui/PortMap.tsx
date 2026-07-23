@@ -3,6 +3,8 @@ import { Box } from "@wanteddev/wds";
 
 import type { ReachableSpot } from "@/entities/spot";
 
+import { myDot, portPin, spotPin } from "../lib/marker-icons";
+
 const MAPS_KEY: string | undefined = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 interface LatLng {
@@ -50,16 +52,17 @@ export function PortMap({
           gestureHandling={interactive ? "greedy" : "none"}
           style={{ width: "100%", height: "100%" }}
         >
-          <Marker position={port} label="⚓" title={portName} />
+          {/* 시안 마커 — 이름 pill+스템(스팟=브랜드색, 정박항=검정 pill+배) */}
+          <Marker position={port} icon={portPin(portName)} title={portName} zIndex={3} />
           {spots.map((s) => (
             <Marker
               key={s.id}
               position={{ lat: s.lat, lng: s.lng }}
+              icon={spotPin(s.name)}
               title={s.name}
-              opacity={0.92}
             />
           ))}
-          {myPos && <Marker position={myPos} label="●" title="현재 위치" />}
+          {myPos && <Marker position={myPos} icon={myDot()} title="현재 위치" zIndex={4} />}
         </GoogleMap>
       </APIProvider>
     </Box>

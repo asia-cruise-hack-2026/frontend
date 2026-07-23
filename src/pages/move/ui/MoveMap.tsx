@@ -2,6 +2,7 @@ import { APIProvider, Map as GoogleMap, Marker } from "@vis.gl/react-google-maps
 import { Box } from "@wanteddev/wds";
 
 import type { ReachableSpot } from "@/entities/spot";
+import { PIN_SELECTED, myDot, spotPin } from "@/widgets/port-map";
 
 const MAPS_KEY: string | undefined = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -44,19 +45,28 @@ export function MoveMap({
           gestureHandling="greedy"
           style={{ width: "100%", height: "100%" }}
         >
-          {myPos && <Marker position={myPos} label="●" title="현재 위치" />}
+          {/* 시안 마커 — 후보=브랜드색 pill(목적지 선택 시 딤), 목적지=바이올렛 pill(디자인 선택색 :1707) */}
+          {myPos && <Marker position={myPos} icon={myDot()} title="현재 위치" zIndex={4} />}
           {spots
             .filter((s) => s.id !== dest?.id)
             .map((s) => (
               <Marker
                 key={s.id}
                 position={{ lat: s.lat, lng: s.lng }}
+                icon={spotPin(s.name)}
                 title={s.name}
-                opacity={dest ? 0.55 : 0.92}
+                opacity={dest ? 0.55 : 1}
                 onClick={onSpotClick ? () => onSpotClick(s) : undefined}
               />
             ))}
-          {dest && <Marker position={{ lat: dest.lat, lng: dest.lng }} title={dest.name} />}
+          {dest && (
+            <Marker
+              position={{ lat: dest.lat, lng: dest.lng }}
+              icon={spotPin(dest.name, PIN_SELECTED)}
+              title={dest.name}
+              zIndex={3}
+            />
+          )}
         </GoogleMap>
       </APIProvider>
     </Box>
