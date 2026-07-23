@@ -10,11 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CruiseRouteImport } from './routes/cruise'
+import { Route as PayDemoRouteImport } from './routes/pay-demo'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CruiseRoute = CruiseRouteImport.update({
@@ -22,31 +29,44 @@ const CruiseRoute = CruiseRouteImport.update({
   path: '/cruise',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PayDemoRoute = PayDemoRouteImport.update({
+  id: '/pay-demo',
+  path: '/pay-demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
   '/cruise': typeof CruiseRoute
+  '/pay-demo': typeof PayDemoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
   '/cruise': typeof CruiseRoute
+  '/pay-demo': typeof PayDemoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
   '/cruise': typeof CruiseRoute
+  '/pay-demo': typeof PayDemoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cruise'
+  fullPaths: '/' | '/checkout' | '/cruise' | '/pay-demo'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cruise'
-  id: '__root__' | '/' | '/cruise'
+  to: '/' | '/checkout' | '/cruise' | '/pay-demo'
+  id: '__root__' | '/' | '/checkout' | '/cruise' | '/pay-demo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CheckoutRoute: typeof CheckoutRoute
   CruiseRoute: typeof CruiseRoute
+  PayDemoRoute: typeof PayDemoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,6 +78,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cruise': {
       id: '/cruise'
       path: '/cruise'
@@ -65,12 +92,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CruiseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pay-demo': {
+      id: '/pay-demo'
+      path: '/pay-demo'
+      fullPath: '/pay-demo'
+      preLoaderRoute: typeof PayDemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CheckoutRoute: CheckoutRoute,
   CruiseRoute: CruiseRoute,
+  PayDemoRoute: PayDemoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
