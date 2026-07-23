@@ -11,7 +11,8 @@ export default defineConfig({
     },
   },
   plugins: [
-    tanstackStart(),
+    // 정적 SPA 배포: 서버 런타임 없이 nginx 정적 서빙 → dist/client (index.html 셸 prerender)
+    tanstackStart({ spa: { enabled: true, prerender: { outputPath: "/index.html" } } }),
     // react's vite plugin must come after start's vite plugin
     viteReact(),
   ],
