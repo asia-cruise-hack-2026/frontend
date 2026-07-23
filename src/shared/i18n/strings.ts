@@ -800,10 +800,10 @@ export const strings = {
     ja: "信頼できる理由",
   },
   trust_body: {
-    ko: "탐라패스는 제주특별자치도와 제주관광협회가 운영하는 공공 여행 플랫폼 '탐나오'와 제휴합니다. 특정 영리 업체가 아닌, 제주도가 검증한 정보와 상품·기사만 연결해 드려요.",
-    en: "Tamra Pass partners with Tamnao, the public travel platform run by Jeju Province and the Jeju Tourism Association. We connect you only to Jeju-verified info, products and drivers — never a single for-profit vendor.",
-    zh: "Tamra Pass与由济州道及济州观光协会运营的公共旅游平台Tamnao合作，仅为您连接经济州官方核验的信息、商品与司机。",
-    ja: "Tamra Passは済州道と済州観光協会が運営する公共旅行プラットフォーム「Tamnao」と提携。営利企業ではなく済州が検証した情報·商品·ドライバーのみをご案内します。",
+    ko: "OMONG은 제주특별자치도와 제주관광협회가 운영하는 공공 여행 플랫폼 '탐나오'와 제휴합니다. 특정 영리 업체가 아닌, 제주도가 검증한 정보와 상품·기사만 연결해 드려요.",
+    en: "OMONG partners with Tamnao, the public travel platform run by Jeju Province and the Jeju Tourism Association. We connect you only to Jeju-verified info, products and drivers — never a single for-profit vendor.",
+    zh: "OMONG与由济州道及济州观光协会运营的公共旅游平台Tamnao合作，仅为您连接经济州官方核验的信息、商品与司机。",
+    ja: "OMONGは済州道と済州観光協会が運営する公共旅行プラットフォーム「Tamnao」と提携。営利企業ではなく済州が検証した情報·商品·ドライバーのみをご案内します。",
   },
 } as const;
 
