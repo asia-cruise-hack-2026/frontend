@@ -17,11 +17,14 @@ import { Route as PayDemoRouteImport } from './routes/pay-demo'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppConceptRouteImport } from './routes/app/concept'
 import { Route as AppExploreRouteImport } from './routes/app/explore'
+import { Route as AppFinalRouteImport } from './routes/app/final'
 import { Route as AppMoveRouteImport } from './routes/app/move'
 import { Route as AppMyRouteImport } from './routes/app/my'
 import { Route as AppPackageRouteImport } from './routes/app/package'
 import { Route as AppShopRouteImport } from './routes/app/shop'
 import { Route as AppThemeRouteImport } from './routes/app/theme'
+import { Route as AppTransportRouteImport } from './routes/app/transport'
+import { Route as AppProductProductIdRouteImport } from './routes/app/product.$productId'
 import { Route as AppSpotSpotIdRouteImport } from './routes/app/spot.$spotId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -64,6 +67,11 @@ const AppExploreRoute = AppExploreRouteImport.update({
   path: '/explore',
   getParentRoute: () => AppRoute,
 } as any)
+const AppFinalRoute = AppFinalRouteImport.update({
+  id: '/final',
+  path: '/final',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppMoveRoute = AppMoveRouteImport.update({
   id: '/move',
   path: '/move',
@@ -89,6 +97,16 @@ const AppThemeRoute = AppThemeRouteImport.update({
   path: '/theme',
   getParentRoute: () => AppRoute,
 } as any)
+const AppTransportRoute = AppTransportRouteImport.update({
+  id: '/transport',
+  path: '/transport',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProductProductIdRoute = AppProductProductIdRouteImport.update({
+  id: '/product/$productId',
+  path: '/product/$productId',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSpotSpotIdRoute = AppSpotSpotIdRouteImport.update({
   id: '/spot/$spotId',
   path: '/spot/$spotId',
@@ -103,12 +121,15 @@ export interface FileRoutesByFullPath {
   '/pay-demo': typeof PayDemoRoute
   '/app/concept': typeof AppConceptRoute
   '/app/explore': typeof AppExploreRoute
+  '/app/final': typeof AppFinalRoute
   '/app/move': typeof AppMoveRoute
   '/app/my': typeof AppMyRoute
   '/app/package': typeof AppPackageRoute
   '/app/shop': typeof AppShopRoute
   '/app/theme': typeof AppThemeRoute
+  '/app/transport': typeof AppTransportRoute
   '/app/': typeof AppIndexRoute
+  '/app/product/$productId': typeof AppProductProductIdRoute
   '/app/spot/$spotId': typeof AppSpotSpotIdRoute
 }
 export interface FileRoutesByTo {
@@ -118,12 +139,15 @@ export interface FileRoutesByTo {
   '/pay-demo': typeof PayDemoRoute
   '/app/concept': typeof AppConceptRoute
   '/app/explore': typeof AppExploreRoute
+  '/app/final': typeof AppFinalRoute
   '/app/move': typeof AppMoveRoute
   '/app/my': typeof AppMyRoute
   '/app/package': typeof AppPackageRoute
   '/app/shop': typeof AppShopRoute
   '/app/theme': typeof AppThemeRoute
+  '/app/transport': typeof AppTransportRoute
   '/app': typeof AppIndexRoute
+  '/app/product/$productId': typeof AppProductProductIdRoute
   '/app/spot/$spotId': typeof AppSpotSpotIdRoute
 }
 export interface FileRoutesById {
@@ -135,12 +159,15 @@ export interface FileRoutesById {
   '/pay-demo': typeof PayDemoRoute
   '/app/concept': typeof AppConceptRoute
   '/app/explore': typeof AppExploreRoute
+  '/app/final': typeof AppFinalRoute
   '/app/move': typeof AppMoveRoute
   '/app/my': typeof AppMyRoute
   '/app/package': typeof AppPackageRoute
   '/app/shop': typeof AppShopRoute
   '/app/theme': typeof AppThemeRoute
+  '/app/transport': typeof AppTransportRoute
   '/app/': typeof AppIndexRoute
+  '/app/product/$productId': typeof AppProductProductIdRoute
   '/app/spot/$spotId': typeof AppSpotSpotIdRoute
 }
 export interface FileRouteTypes {
@@ -153,12 +180,15 @@ export interface FileRouteTypes {
     | '/pay-demo'
     | '/app/concept'
     | '/app/explore'
+    | '/app/final'
     | '/app/move'
     | '/app/my'
     | '/app/package'
     | '/app/shop'
     | '/app/theme'
+    | '/app/transport'
     | '/app/'
+    | '/app/product/$productId'
     | '/app/spot/$spotId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -168,12 +198,15 @@ export interface FileRouteTypes {
     | '/pay-demo'
     | '/app/concept'
     | '/app/explore'
+    | '/app/final'
     | '/app/move'
     | '/app/my'
     | '/app/package'
     | '/app/shop'
     | '/app/theme'
+    | '/app/transport'
     | '/app'
+    | '/app/product/$productId'
     | '/app/spot/$spotId'
   id:
     | '__root__'
@@ -184,12 +217,15 @@ export interface FileRouteTypes {
     | '/pay-demo'
     | '/app/concept'
     | '/app/explore'
+    | '/app/final'
     | '/app/move'
     | '/app/my'
     | '/app/package'
     | '/app/shop'
     | '/app/theme'
+    | '/app/transport'
     | '/app/'
+    | '/app/product/$productId'
     | '/app/spot/$spotId'
   fileRoutesById: FileRoutesById
 }
@@ -259,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppExploreRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/final': {
+      id: '/app/final'
+      path: '/final'
+      fullPath: '/app/final'
+      preLoaderRoute: typeof AppFinalRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/move': {
       id: '/app/move'
       path: '/move'
@@ -294,6 +337,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppThemeRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/transport': {
+      id: '/app/transport'
+      path: '/transport'
+      fullPath: '/app/transport'
+      preLoaderRoute: typeof AppTransportRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/product/$productId': {
+      id: '/app/product/$productId'
+      path: '/product/$productId'
+      fullPath: '/app/product/$productId'
+      preLoaderRoute: typeof AppProductProductIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/spot/$spotId': {
       id: '/app/spot/$spotId'
       path: '/spot/$spotId'
@@ -307,24 +364,30 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppConceptRoute: typeof AppConceptRoute
   AppExploreRoute: typeof AppExploreRoute
+  AppFinalRoute: typeof AppFinalRoute
   AppMoveRoute: typeof AppMoveRoute
   AppMyRoute: typeof AppMyRoute
   AppPackageRoute: typeof AppPackageRoute
   AppShopRoute: typeof AppShopRoute
   AppThemeRoute: typeof AppThemeRoute
+  AppTransportRoute: typeof AppTransportRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppProductProductIdRoute: typeof AppProductProductIdRoute
   AppSpotSpotIdRoute: typeof AppSpotSpotIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppConceptRoute: AppConceptRoute,
   AppExploreRoute: AppExploreRoute,
+  AppFinalRoute: AppFinalRoute,
   AppMoveRoute: AppMoveRoute,
   AppMyRoute: AppMyRoute,
   AppPackageRoute: AppPackageRoute,
   AppShopRoute: AppShopRoute,
   AppThemeRoute: AppThemeRoute,
+  AppTransportRoute: AppTransportRoute,
   AppIndexRoute: AppIndexRoute,
+  AppProductProductIdRoute: AppProductProductIdRoute,
   AppSpotSpotIdRoute: AppSpotSpotIdRoute,
 }
 
