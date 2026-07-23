@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { Box, Button, FlexBox, addOpacity, useToast } from "@wanteddev/wds";
+import { Box, Button, ContentBadge, FlexBox, addOpacity, useToast } from "@wanteddev/wds";
 import {
   IconArrowLeft,
   IconCircleCheckFill,
@@ -20,6 +20,7 @@ import { type ReactNode, useState } from "react";
 
 import { getGood, type Product, IMPORT_STATUS_META } from "@/entities/product";
 import { type StringKey, useI18n } from "@/shared/i18n";
+import { sessionActions } from "@/shared/store";
 
 // product.icon(문자열) → WDS 아이콘. mock 데이터(entities/product/api/mock.ts)에 나오는 값 전부 커버,
 // 타입이 plain string이라 신규 값 대비 fallback 유지.
@@ -93,6 +94,7 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
   const statusMeta = IMPORT_STATUS_META[product.status];
 
   const handleAddCart = () => {
+    sessionActions.addToCart(product.id);
     toast({ content: t("added_cart"), variant: "positive", duration: "short" });
   };
 
@@ -137,10 +139,20 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
         </Box>
 
         <Box sx={{ padding: "18px 20px 4px" }}>
+          <Box sx={{ display: "inline-flex" }}>
+            <ContentBadge
+              size="small"
+              variant="solid"
+              color="accent"
+              accentColor="semantic.primary.normal"
+            >
+              {t(`cat_${product.cat}`)}
+            </ContentBadge>
+          </Box>
           <Box
             as="h1"
             sx={(theme) => ({
-              margin: "0 0 4px",
+              margin: "10px 0 4px",
               fontWeight: 700,
               fontSize: "22px",
               letterSpacing: "-0.02em",
@@ -158,17 +170,6 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
             })}
           >
             {money(product.price)}
-          </Box>
-          <Box
-            as="p"
-            sx={(theme) => ({
-              margin: "10px 0 0",
-              fontSize: "14px",
-              lineHeight: 1.5,
-              color: theme.semantic.label.neutral,
-            })}
-          >
-            {product.desc[locale]}
           </Box>
         </Box>
 
@@ -391,7 +392,10 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
             color="primary"
             size="large"
             fullWidth
-            onClick={() => navigate({ to: "/checkout" })}
+            onClick={() => {
+              sessionActions.addToCart(product.id);
+              navigate({ to: "/checkout" });
+            }}
           >
             {t("buy_now")}
           </Button>

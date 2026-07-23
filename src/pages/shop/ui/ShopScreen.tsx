@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Box, FlexBox } from "@wanteddev/wds";
 import {
+  IconBusinessBag,
   IconCircle,
   IconCircleCheckFill,
   IconCircleClose,
@@ -20,6 +21,7 @@ import { type ReactNode, useState } from "react";
 
 import { IMPORT_STATUS_META, listGoods, type Product } from "@/entities/product";
 import { useI18n } from "@/shared/i18n";
+import { useCart } from "@/shared/store";
 
 // 디자인 :664 상품 아이콘(mock 데이터 icon 필드) — wds-icon 이름 매핑. 없으면 IconCircle 코드 fallback.
 const PRODUCT_ICONS: Record<string, ReactNode> = {
@@ -48,6 +50,7 @@ type CatKey = "all" | Product["cat"];
 export function ShopScreen() {
   const { t, locale, money } = useI18n();
   const navigate = useNavigate();
+  const cart = useCart();
   const [activeCat, setActiveCat] = useState<CatKey>("all");
 
   const { data: products = [] } = useQuery({
@@ -80,15 +83,61 @@ export function ShopScreen() {
           zIndex: 3,
         })}
       >
-        <Box
-          sx={(theme) => ({
-            fontWeight: 700,
-            fontSize: "20px",
-            color: theme.semantic.label.normal,
-          })}
-        >
-          {t("shop_title")}
-        </Box>
+        <FlexBox alignItems="center" justifyContent="space-between" gap="10px">
+          <Box
+            sx={(theme) => ({
+              fontWeight: 700,
+              fontSize: "20px",
+              color: theme.semantic.label.normal,
+            })}
+          >
+            {t("shop_title")}
+          </Box>
+          <Box
+            as="button"
+            type="button"
+            onClick={() => navigate({ to: "/checkout" })}
+            aria-label={t("go_cart")}
+            sx={(theme) => ({
+              position: "relative",
+              width: "40px",
+              height: "40px",
+              border: "none",
+              background: "none",
+              cursor: "pointer",
+              color: theme.semantic.label.normal,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            })}
+          >
+            <IconBusinessBag sx={{ fontSize: "24px" }} />
+            {cart.length > 0 && (
+              <Box
+                as="span"
+                sx={(theme) => ({
+                  position: "absolute",
+                  top: "2px",
+                  right: "2px",
+                  minWidth: "16px",
+                  height: "16px",
+                  padding: "0 4px",
+                  boxSizing: "border-box",
+                  background: theme.semantic.primary.normal,
+                  color: theme.semantic.static.white,
+                  borderRadius: "999px",
+                  fontSize: "10px",
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                })}
+              >
+                {cart.length}
+              </Box>
+            )}
+          </Box>
+        </FlexBox>
         <FlexBox gap="8px" sx={{ overflowX: "auto", marginTop: "12px" }}>
           {catTabs.map((tab) => {
             const active = activeCat === tab.key;
@@ -104,10 +153,11 @@ export function ShopScreen() {
                   cursor: "pointer",
                   borderRadius: "999px",
                   padding: "7px 14px",
-                  fontWeight: 600,
+                  fontWeight: active ? 700 : 500,
                   fontSize: "13px",
-                  background: active ? theme.semantic.primary.normal : theme.semantic.fill.normal,
-                  color: active ? theme.semantic.static.white : theme.semantic.label.neutral,
+                  background: active ? "transparent" : theme.semantic.fill.normal,
+                  color: active ? theme.semantic.primary.normal : theme.semantic.label.neutral,
+                  boxShadow: active ? `inset 0 0 0 1.5px ${theme.semantic.primary.normal}` : "none",
                 })}
               >
                 {tab.label}

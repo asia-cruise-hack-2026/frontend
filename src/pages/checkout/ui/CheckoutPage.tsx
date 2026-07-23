@@ -1,20 +1,33 @@
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Box, Button, FlexBox } from "@wanteddev/wds";
 import { useState } from "react";
 
+import { getGood, type Product } from "@/entities/product";
 import { useI18n } from "@/shared/i18n";
+import { useCart } from "@/shared/store";
 
-import { type CartItem, cartTotal, hasRestricted, MOCK_CART } from "../model/cart";
+import { type CartItem, cartTotal, hasRestricted, productToCartItem } from "../model/cart";
 import { ct } from "../model/strings";
 import { OrderSuccess } from "./OrderSuccess";
 import { PaymentSheet } from "./PaymentSheet";
 
 export function CheckoutPage() {
-  const { locale, money } = useI18n();
+  const { locale, t, money } = useI18n();
   const navigate = useNavigate();
+  const cartIds = useCart();
 
-  const total = cartTotal(MOCK_CART);
-  const needAgree = hasRestricted(MOCK_CART);
+  const { data: items = [] } = useQuery({
+    queryKey: ["cart-goods", cartIds],
+    queryFn: async () => {
+      const goods = await Promise.all(cartIds.map((id) => getGood(id)));
+      return goods.filter((g): g is Product => g !== undefined).map(productToCartItem);
+    },
+  });
+  const isEmpty = items.length === 0;
+
+  const total = cartTotal(items);
+  const needAgree = hasRestricted(items);
 
   const [agreed, setAgreed] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -24,7 +37,7 @@ export function CheckoutPage() {
     return <OrderSuccess total={total} onDone={() => navigate({ to: "/pay-demo" })} />;
   }
 
-  const payDisabled = needAgree && !agreed;
+  const payDisabled = isEmpty || (needAgree && !agreed);
 
   return (
     <FlexBox flexDirection="column" sx={{ minHeight: "100dvh" }}>
@@ -94,14 +107,27 @@ export function CheckoutPage() {
             flexDirection="column"
             sx={(theme) => ({
               borderRadius: "16px",
-              padding: "4px 16px",
+              padding: isEmpty ? "28px 16px" : "4px 16px",
               background: theme.semantic.background.normal.normal,
               boxShadow: `inset 0 0 0 1px ${theme.semantic.line.normal.neutral}`,
             })}
           >
-            {MOCK_CART.map((item, idx) => (
-              <CartRow key={item.id} item={item} last={idx === MOCK_CART.length - 1} />
-            ))}
+            {isEmpty ? (
+              <Box
+                as="span"
+                sx={(theme) => ({
+                  textAlign: "center",
+                  fontSize: "14px",
+                  color: theme.semantic.label.alternative,
+                })}
+              >
+                {t("cart_empty")}
+              </Box>
+            ) : (
+              items.map((item, idx) => (
+                <CartRow key={item.id} item={item} last={idx === items.length - 1} />
+              ))
+            )}
           </FlexBox>
         </Box>
 
