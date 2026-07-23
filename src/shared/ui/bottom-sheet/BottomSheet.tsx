@@ -11,7 +11,7 @@ import {
 } from "react";
 
 const CLOSE_MS = 280;
-const DRAG_CLOSE_PX = 80; // 이만큼 끌어내리면 닫힘
+const DRAG_CLOSE_PX = 80; // 이만큼 끌어내리면 닫힘/이전 단계
 
 /** 시트 상단 드래그 핸들 — 인라인 시트(이동 탭 등)에서 단독 사용 가능 */
 export function SheetHandle({ margin = "0 auto 14px" }: { margin?: string }) {
@@ -25,6 +25,118 @@ export function SheetHandle({ margin = "0 auto 14px" }: { margin?: string }) {
         margin,
       })}
     />
+  );
+}
+
+interface InlineSheetProps {
+  /** 드래그로 임계값 넘게 내렸을 때 — 이전 단계 복귀 등. 시트는 내려갔다 새 콘텐츠로 다시 올라온다 */
+  onDismiss?: () => void;
+  /** 드래그 허용 (호출 진행 중 등 잠금 구간은 false) */
+  dismissible?: boolean;
+  title?: string;
+  children: ReactNode;
+}
+
+/**
+ * 인라인 바텀시트 — 지도 위에 겹치는 비모달 시트(디자인 taxi 섹션).
+ * BottomSheet와 동일한 진입 슬라이드업·핸들 드래그 동작을 공유하되, 딤·fixed 없이 레이아웃 요소로 동작한다.
+ * 부모는 overflow hidden인 세로 flex 컨테이너여야 한다(시트가 flex:1).
+ */
+export function InlineSheet({
+  onDismiss,
+  dismissible = onDismiss != null,
+  title,
+  children,
+}: InlineSheetProps) {
+  // 진입 슬라이드업
+  const [shown, setShown] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  useEffect(() => {
+    setShown(true);
+  }, []);
+
+  const [dragY, setDragY] = useState(0);
+  const dragRef = useRef({ startY: 0, dragging: false });
+  const leavingRef = useRef(false);
+
+  // 내려간 뒤 onDismiss(단계 복귀) → 새 콘텐츠로 다시 슬라이드업
+  const dismiss = useCallback(() => {
+    if (leavingRef.current || !onDismiss) return;
+    leavingRef.current = true;
+    setLeaving(true);
+    setTimeout(() => {
+      onDismiss();
+      leavingRef.current = false;
+      setLeaving(false);
+      setDragY(0);
+    }, CLOSE_MS);
+  }, [onDismiss]);
+
+  const onHeaderPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (!dismissible || leaving) return;
+    dragRef.current = { startY: e.clientY, dragging: true };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const onHeaderPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current.dragging) return;
+    setDragY(Math.max(0, e.clientY - dragRef.current.startY));
+  };
+  const endDrag = () => {
+    if (!dragRef.current.dragging) return;
+    dragRef.current.dragging = false;
+    if (dragY > DRAG_CLOSE_PX) dismiss();
+    else setDragY(0);
+  };
+
+  const translate = !shown || leaving ? "100%" : `${dragY}px`;
+
+  return (
+    <Box
+      sx={(theme) => ({
+        flex: 1,
+        minHeight: 0,
+        display: "flex",
+        flexDirection: "column",
+        background: theme.semantic.background.normal.normal,
+        borderRadius: "24px 24px 0 0",
+        marginTop: "-18px",
+        position: "relative",
+        zIndex: 2,
+        boxShadow: "0 -6px 20px rgba(0,0,0,.06)",
+        transform: `translateY(${translate})`,
+        transition: dragRef.current.dragging
+          ? "none"
+          : `transform ${CLOSE_MS}ms cubic-bezier(0.2, 0.8, 0.2, 1)`,
+        "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+      })}
+    >
+      <Box
+        onPointerDown={onHeaderPointerDown}
+        onPointerMove={onHeaderPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        sx={{
+          flexShrink: 0,
+          touchAction: "none",
+          cursor: dismissible ? "grab" : undefined,
+        }}
+      >
+        <SheetHandle margin="10px auto 2px" />
+        {title != null && (
+          <Box
+            sx={(theme) => ({
+              padding: "10px 20px 0",
+              fontWeight: 700,
+              fontSize: "19px",
+              color: theme.semantic.label.normal,
+            })}
+          >
+            {title}
+          </Box>
+        )}
+      </Box>
+      <Box sx={{ flex: 1, minHeight: 0, overflowY: "auto" }}>{children}</Box>
+    </Box>
   );
 }
 

@@ -55,6 +55,7 @@
 
 - **move 서버 검색(D) 구현 확정**: 2자 이상 + 300ms 디바운스 → `GET /spots?cruiseId&q&sort=distance&size=20`. 2자 미만은 추천 10곳 로컬 필터. 선택 스팟은 id가 아닌 **객체로 보관**(검색 결과가 추천 목록에 없어도 안전).
 - **공용 바텀시트**: 디자인 감사 결과 모달형(SWAP SPOT SHEET :1029 — 딤 .32·라운드 24·핸들 38×4·닫기 34px·슬라이드업)과 인라인형(taxi) 2종. `shared/ui/bottom-sheet/BottomSheet.tsx` 신설(+`SheetHandle`) 후 소비처 통일: PaymentSheet(기존 라운드 22·핸들 없음·딤 .46 → 공용 스펙으로 통일, `dimClosable`로 결제 진행 중 잠금 유지), AiPackage 스왑 시트(공용 대체), Move 인라인 시트(SheetHandle 공유). 디자인 최종본 `Jeju Cruise App(최종).dc.html`을 design/incoming에 추가(기존 파일은 코드 주석의 라인 참조 보존을 위해 유지).
+- **바텀시트 표준 동작(재검토 반영)**: 중복 핸들 제거(MethodSelect 자체 핸들·PayWindow 자체 라운드 삭제). BottomSheet에 딤 페이드 인/아웃·슬라이드다운 닫힘(280ms, 함수형 children으로 내부 닫기 버튼도 애니메이션 경유)·핸들 드래그 디스미스(80px 임계)·배경 스크롤 락·ESC 닫기. **`InlineSheet` 변형 추가**(비모달·지도 오버랩 레이아웃용): 동일한 슬라이드업 진입·핸들 드래그를 공유하고, 드래그로 내리면 이전 단계 복귀(`onDismiss=goBack`, 호출 진행 중 잠금) — Move 시트가 이걸 사용. 두 시트 라운드 24로 통일.
 
 ## 비범위
 

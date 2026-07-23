@@ -37,7 +37,7 @@ import {
 } from "@/entities/transport";
 import { type Locale, useI18n } from "@/shared/i18n";
 import { useCruiseId } from "@/shared/store";
-import { SheetHandle } from "@/shared/ui";
+import { InlineSheet } from "@/shared/ui";
 
 import { MoveMap } from "./MoveMap";
 
@@ -293,6 +293,7 @@ export function MovePage() {
       flexDirection="column"
       sx={(theme) => ({
         height: "100%",
+        overflow: "hidden", // 시트 슬라이드 진입/이탈이 컨테이너 밖으로 그려지지 않게
         background: theme.semantic.background.normal.alternative,
       })}
     >
@@ -333,35 +334,14 @@ export function MovePage() {
         )}
       </Box>
 
-      {/* 바텀시트 — 디자인 taxiSheetRadius/-18px 오버랩/핸들/그림자 */}
-      <Box
-        sx={(theme) => ({
-          flex: 1,
-          minHeight: 0,
-          overflowY: "auto",
-          background: theme.semantic.background.normal.normal,
-          borderRadius: "24px 24px 0 0", // 공용 BottomSheet와 동일 라운드로 통일
-          marginTop: "-18px",
-          position: "relative",
-          zIndex: 2,
-          boxShadow: "0 -6px 20px rgba(0,0,0,.06)",
-        })}
+      {/* 바텀시트 — 공용 InlineSheet(디자인 taxi 시트): 슬라이드업 진입 + 드래그로 이전 단계 */}
+      <InlineSheet
+        title={callStatus === "idle" ? t(stepTitleKey(step)) : undefined}
+        onDismiss={goBack}
+        dismissible={callStatus === "idle"}
       >
-        <SheetHandle margin="10px auto 2px" />
-        {callStatus === "idle" && (
-          <Box
-            sx={(theme) => ({
-              padding: "10px 20px 0",
-              fontWeight: 700,
-              fontSize: "19px",
-              color: theme.semantic.label.normal,
-            })}
-          >
-            {t(stepTitleKey(step))}
-          </Box>
-        )}
         {stepContent}
-      </Box>
+      </InlineSheet>
     </FlexBox>
   );
 }
