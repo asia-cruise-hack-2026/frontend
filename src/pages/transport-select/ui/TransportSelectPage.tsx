@@ -16,12 +16,13 @@ import {
   IconGlobe,
   IconVerifiedCheckFill,
 } from "@wanteddev/wds-icon";
-import { type ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { getCruise } from "@/entities/cruise";
 import { listSpots, type Spot } from "@/entities/spot";
 import {
   GLOBAL_CARS,
+  VEHICLES,
   taxiFare,
   taxiMinutes,
   vanFare,
@@ -34,53 +35,10 @@ import { sessionActions, useCruiseId, usePkgSpotIds } from "@/shared/store";
 type TransportMode = "taxi" | "van";
 type Service = "normal" | "global";
 
-// 택시 아이콘 — 디자인 :554 인라인 svg 이식. WDS 대응 아이콘 없어 코드로 직접(AiPackagePage.tsx SwapGlyph 등과 동일 패턴).
-function TaxiGlyph() {
-  return (
-    <svg
-      width="26"
-      height="26"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M5 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-      <path d="M15 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-      <path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6m-6 -6h15m-6 0v-5" />
-    </svg>
-  );
-}
-
-// 대형밴 아이콘 — 디자인 :562 인라인 svg 이식.
-function VanGlyph() {
-  return (
-    <svg
-      width="26"
-      height="26"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M3 16V8.5A1.5 1.5 0 0 1 4.5 7H14l5 5V16" />
-      <path d="M3 16h16M4.6 16v1.6M17.4 16v1.6M9 7v5M3.5 12H19" />
-      <circle cx="7" cy="16" r="1.6" />
-      <circle cx="16" cy="16" r="1.6" />
-    </svg>
-  );
-}
-
 // 이동수단 카드 — 디자인 :535-568(taxiNotGlobal 분기) 공통 구조 이식.
 function TransportCard({
   mode,
-  icon,
+  img,
   label,
   sub,
   cost,
@@ -89,7 +47,7 @@ function TransportCard({
   onClick,
 }: {
   mode: TransportMode;
-  icon: ReactNode;
+  img: string;
   label: string;
   sub: string;
   cost: string;
@@ -133,9 +91,15 @@ function TransportCard({
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
+          overflow: "hidden",
         })}
       >
-        {icon}
+        <img
+          src={img}
+          alt=""
+          aria-hidden="true"
+          style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+        />
       </Box>
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Box
@@ -377,14 +341,19 @@ function GlobalCarCard({
           height: "56px",
           borderRadius: "13px",
           background: car.ibg,
-          color: car.ifg,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
+          overflow: "hidden",
         }}
       >
-        {car.van ? <VanGlyph /> : <TaxiGlyph />}
+        <img
+          src={car.img}
+          alt=""
+          aria-hidden="true"
+          style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+        />
       </Box>
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Box
@@ -593,7 +562,7 @@ export function TransportSelectPage() {
             <FlexBox flexDirection="column" gap="12px">
               <TransportCard
                 mode="taxi"
-                icon={<TaxiGlyph />}
+                img={VEHICLES.normal.img}
                 label={t("car_normal")}
                 sub={t("car_normal_sub")}
                 cost={money(taxiCost)}
@@ -603,7 +572,7 @@ export function TransportSelectPage() {
               />
               <TransportCard
                 mode="van"
-                icon={<VanGlyph />}
+                img={VEHICLES.van.img}
                 label={t("car_van")}
                 sub={t("car_van_sub")}
                 cost={money(vanCost)}

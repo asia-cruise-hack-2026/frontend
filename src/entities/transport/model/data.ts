@@ -29,6 +29,7 @@ export interface Vehicle {
   fareMul: number;
   car: LocalizedText;
   plate: string;
+  img: string; // 차량 렌더 이미지 경로(public/)
 }
 
 // 디자인 renderVals(:1451-1454) 이식 — 차종별 요금 배율·차량 정보.
@@ -42,6 +43,7 @@ export const VEHICLES: Record<VehicleType, Vehicle> = {
       ja: "ソナタ(セダン)",
     },
     plate: "제주 80바 3517",
+    img: "/images/taxi-standard.png",
   },
   van: {
     fareMul: 1.55,
@@ -52,6 +54,7 @@ export const VEHICLES: Record<VehicleType, Vehicle> = {
       ja: "カーニバル(大型)",
     },
     plate: "제주 82아 1094",
+    img: "/images/taxi-jumbo.png",
   },
 };
 
@@ -65,14 +68,16 @@ export interface GlobalCar {
   day: number; // 1일 대여 요금(원)
   over: number; // 초과 요금(원)
   van: boolean;
-  ibg: string; // 아이콘 배경색
+  ibg: string; // 아이콘/렌더 타일 배경색
   ifg: string; // 아이콘 전경색
+  img: string; // 차량 렌더 이미지 경로(public/)
 }
 
 // 디자인 renderVals(:1597) 이식 — 글로벌택시(전세) 차종 4종.
 export const GLOBAL_CARS: GlobalCar[] = [
   {
     key: "basic",
+    img: "/images/taxi-global-basic.png",
     nameKey: "gtaxi_basic",
     cap: "4",
     day: 220000,
@@ -83,6 +88,7 @@ export const GLOBAL_CARS: GlobalCar[] = [
   },
   {
     key: "jumbo",
+    img: "/images/taxi-global-jumbo.png",
     nameKey: "gtaxi_jumbo",
     cap: "5~7",
     day: 330000,
@@ -93,6 +99,7 @@ export const GLOBAL_CARS: GlobalCar[] = [
   },
   {
     key: "premium",
+    img: "/images/taxi-global-premium.png",
     nameKey: "gtaxi_premium",
     cap: "5~6",
     day: 400000,
@@ -103,6 +110,7 @@ export const GLOBAL_CARS: GlobalCar[] = [
   },
   {
     key: "van",
+    img: "/images/taxi-global-van.png",
     nameKey: "gtaxi_van",
     cap: "7~12",
     day: 450000,

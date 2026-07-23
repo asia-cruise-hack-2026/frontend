@@ -208,6 +208,7 @@ export function MovePage() {
           plate={TAXI_DRIVER.plate}
           rating={TAXI_DRIVER.rating}
           etaLabel={`${TAXI_DRIVER.eta}${t("min")}`}
+          vehicleType={vehicleType}
           onCancel={cancelTaxi}
         />
       )}
@@ -575,7 +576,14 @@ function CarStep({
         <FlexBox gap="12px" sx={{ overflowX: "auto", paddingBottom: "6px" }}>
           <CarCard
             active={vehicleType === "normal"}
-            icon={<CarGlyph />}
+            icon={
+              <img
+                src={VEHICLES.normal.img}
+                alt=""
+                aria-hidden="true"
+                style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+              />
+            }
             label={t("car_normal")}
             sub={`${t("car_normal_sub")} · ${etaLabel}`}
             price={money(fareNormal)}
@@ -583,7 +591,14 @@ function CarStep({
           />
           <CarCard
             active={vehicleType === "van"}
-            icon={<VanGlyph />}
+            icon={
+              <img
+                src={VEHICLES.van.img}
+                alt=""
+                aria-hidden="true"
+                style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+              />
+            }
             label={t("car_van")}
             sub={`${t("car_van_sub")} · ${etaLabel}`}
             price={money(fareVan)}
@@ -882,6 +897,7 @@ function AssignedView({
   plate,
   rating,
   etaLabel,
+  vehicleType,
   onCancel,
 }: {
   driverName: string;
@@ -889,6 +905,7 @@ function AssignedView({
   plate: string;
   rating: number;
   etaLabel: string;
+  vehicleType: VehicleType;
   onCancel: () => void;
 }) {
   const { t } = useI18n();
@@ -944,9 +961,15 @@ function AssignedView({
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
+              overflow: "hidden",
             })}
           >
-            <CarGlyph size={26} />
+            <img
+              src={VEHICLES[vehicleType].img}
+              alt=""
+              aria-hidden="true"
+              style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+            />
           </Box>
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Box
@@ -1133,6 +1156,7 @@ function CarCard({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            overflow: "hidden",
             boxShadow: `inset 0 0 0 1px ${theme.semantic.line.normal.neutral}`,
           })}
         >
@@ -1227,9 +1251,15 @@ function GlobalCarRow({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          overflow: "hidden",
         }}
       >
-        {car.van ? <VanGlyph size={26} /> : <CarGlyph size={26} />}
+        <img
+          src={car.img}
+          alt=""
+          aria-hidden="true"
+          style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+        />
       </Box>
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Box
