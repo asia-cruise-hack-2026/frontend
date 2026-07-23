@@ -10,13 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CruiseRouteImport } from './routes/cruise'
 import { Route as PayDemoRouteImport } from './routes/pay-demo'
+import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppMoveRouteImport } from './routes/app/move'
+import { Route as AppMyRouteImport } from './routes/app/my'
+import { Route as AppShopRouteImport } from './routes/app/shop'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutRoute = CheckoutRouteImport.update({
@@ -34,36 +44,98 @@ const PayDemoRoute = PayDemoRouteImport.update({
   path: '/pay-demo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMoveRoute = AppMoveRouteImport.update({
+  id: '/move',
+  path: '/move',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMyRoute = AppMyRouteImport.update({
+  id: '/my',
+  path: '/my',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppShopRoute = AppShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/cruise': typeof CruiseRoute
   '/pay-demo': typeof PayDemoRoute
+  '/app/move': typeof AppMoveRoute
+  '/app/my': typeof AppMyRoute
+  '/app/shop': typeof AppShopRoute
+  '/app/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/checkout': typeof CheckoutRoute
   '/cruise': typeof CruiseRoute
   '/pay-demo': typeof PayDemoRoute
+  '/app/move': typeof AppMoveRoute
+  '/app/my': typeof AppMyRoute
+  '/app/shop': typeof AppShopRoute
+  '/app': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/cruise': typeof CruiseRoute
   '/pay-demo': typeof PayDemoRoute
+  '/app/move': typeof AppMoveRoute
+  '/app/my': typeof AppMyRoute
+  '/app/shop': typeof AppShopRoute
+  '/app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/checkout' | '/cruise' | '/pay-demo'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/checkout'
+    | '/cruise'
+    | '/pay-demo'
+    | '/app/move'
+    | '/app/my'
+    | '/app/shop'
+    | '/app/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/checkout' | '/cruise' | '/pay-demo'
-  id: '__root__' | '/' | '/checkout' | '/cruise' | '/pay-demo'
+  to:
+    | '/'
+    | '/checkout'
+    | '/cruise'
+    | '/pay-demo'
+    | '/app/move'
+    | '/app/my'
+    | '/app/shop'
+    | '/app'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/checkout'
+    | '/cruise'
+    | '/pay-demo'
+    | '/app/move'
+    | '/app/my'
+    | '/app/shop'
+    | '/app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
   CheckoutRoute: typeof CheckoutRoute
   CruiseRoute: typeof CruiseRoute
   PayDemoRoute: typeof PayDemoRoute
@@ -76,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout': {
@@ -99,11 +178,56 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PayDemoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/move': {
+      id: '/app/move'
+      path: '/move'
+      fullPath: '/app/move'
+      preLoaderRoute: typeof AppMoveRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/my': {
+      id: '/app/my'
+      path: '/my'
+      fullPath: '/app/my'
+      preLoaderRoute: typeof AppMyRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/shop': {
+      id: '/app/shop'
+      path: '/shop'
+      fullPath: '/app/shop'
+      preLoaderRoute: typeof AppShopRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppMoveRoute: typeof AppMoveRoute
+  AppMyRoute: typeof AppMyRoute
+  AppShopRoute: typeof AppShopRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppMoveRoute: AppMoveRoute,
+  AppMyRoute: AppMyRoute,
+  AppShopRoute: AppShopRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
   CheckoutRoute: CheckoutRoute,
   CruiseRoute: CruiseRoute,
   PayDemoRoute: PayDemoRoute,
