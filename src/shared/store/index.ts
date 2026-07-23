@@ -1,4 +1,5 @@
 export {
+  getSessionCruiseId,
   sessionActions,
   useCart,
   useCruiseId,

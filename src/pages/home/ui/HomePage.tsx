@@ -2,11 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Box, Button, FlexBox } from "@wanteddev/wds";
 import { IconChevronRight } from "@wanteddev/wds-icon";
+import { useEffect } from "react";
 
-import { getCruise } from "@/entities/cruise";
+import { getCruise, minutesToDeparture } from "@/entities/cruise";
 import { buildCourse, listSpots, type Spot } from "@/entities/spot";
+import { ApiError } from "@/shared/api";
 import { useI18n } from "@/shared/i18n";
-import { useCruiseId, usePkgSpotIds } from "@/shared/store";
+import { sessionActions, useCruiseId, usePkgSpotIds } from "@/shared/store";
 
 // 포트 배지 · 카운트다운 슬라이더 선박 아이콘 — 디자인 :135 / 최종 슬라이더
 function ShipMini({ size = 14 }: { size?: number }) {
@@ -77,12 +79,23 @@ export function HomePage() {
   const navigate = useNavigate();
   const cruiseId = useCruiseId();
   const pkgSpotIds = usePkgSpotIds();
-  const { data: cruise } = useQuery({
+  const { data: cruise, error: cruiseError } = useQuery({
     queryKey: ["cruise", cruiseId, locale],
     queryFn: () => getCruise(cruiseId ?? "", locale),
     enabled: !!cruiseId,
     retry: false,
   });
+
+  // 출항이 지났거나(만료) 크루즈가 사라졌으면(404) 세션 비우고 첫 화면으로
+  useEffect(() => {
+    const gone = cruiseError instanceof ApiError && cruiseError.status === 404;
+    const departed = cruise ? minutesToDeparture(cruise, Date.now()) <= 0 : false;
+    if (gone || departed) {
+      sessionActions.reset();
+      void navigate({ to: "/" });
+    }
+  }, [cruise, cruiseError, navigate]);
+
   const portKey = cruise?.portKey ?? "jeju";
   const { data: allSpots = [] } = useQuery({
     queryKey: ["spots", portKey],

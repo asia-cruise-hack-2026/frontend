@@ -1,9 +1,14 @@
-import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
 import { Box, FlexBox } from "@wanteddev/wds";
 
+import { getSessionCruiseId } from "@/shared/store";
 import { BottomTabBar } from "@/widgets/bottom-tab-bar";
 
 export const Route = createFileRoute("/app")({
+  // 탑승(크루즈 선택) 정보 없으면 첫 화면으로 — /app/* 전체 커버
+  beforeLoad: () => {
+    if (!getSessionCruiseId()) throw redirect({ to: "/" });
+  },
   component: AppLayout,
 });
 
