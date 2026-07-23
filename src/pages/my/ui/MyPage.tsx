@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { addOpacity, Box, FlexBox } from "@wanteddev/wds";
+import { useNavigate } from "@tanstack/react-router";
+import { addOpacity, Box, Button, FlexBox } from "@wanteddev/wds";
 import { IconVerifiedCheckFill } from "@wanteddev/wds-icon";
 
 import { getCruise } from "@/entities/cruise";
 import { LOCALE_META, LOCALES, useI18n } from "@/shared/i18n";
-import { useCruiseId } from "@/shared/store";
+import { sessionActions, useCruiseId } from "@/shared/store";
 
 // 내 크루즈 카드 선박 아이콘 — 디자인 :946, HomePage/CruiseSelectPage의 ShipMini/ShipGlyph와 동일 산출물
 // (entities/cruise엔 아이콘 export가 없어 로컬 복제, D2).
@@ -36,7 +37,13 @@ const fmt = (m: number) =>
 /** 마이 — 프로토타입 "MY"(:938-970) 이식 */
 export function MyPage() {
   const { t, locale, setLocale } = useI18n();
+  const navigate = useNavigate();
   const cruiseId = useCruiseId();
+
+  const removeCruise = () => {
+    sessionActions.reset();
+    void navigate({ to: "/" });
+  };
   const { data: cruise } = useQuery({
     queryKey: ["cruise", cruiseId, locale],
     queryFn: () => getCruise(cruiseId ?? "", locale),
@@ -131,7 +138,7 @@ export function MyPage() {
                 as="span"
                 sx={(theme) => ({ fontWeight: 700, color: theme.semantic.primary.normal })}
               >
-                {fmt(cruise.depM - 30)}
+                {fmt(cruise.depM - 60)}
               </Box>
             </FlexBox>
             <FlexBox
@@ -149,6 +156,17 @@ export function MyPage() {
                 {cruise.nextDest}
               </Box>
             </FlexBox>
+            <Box sx={{ padding: "2px 0 14px" }}>
+              <Button
+                variant="outlined"
+                color="primary"
+                size="medium"
+                fullWidth
+                onClick={removeCruise}
+              >
+                {t("my_delete_cruise")}
+              </Button>
+            </Box>
           </Box>
         </Box>
       )}

@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Box, Button, FlexBox } from "@wanteddev/wds";
 import { IconChevronRight } from "@wanteddev/wds-icon";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { getCruise, minutesToDeparture } from "@/entities/cruise";
+import { cruiseDepartureMs, getCruise, minutesToDeparture } from "@/entities/cruise";
 import { buildCourse, listSpots, type Spot } from "@/entities/spot";
 import { ApiError } from "@/shared/api";
 import { useI18n } from "@/shared/i18n";
@@ -79,6 +79,14 @@ export function HomePage() {
   const navigate = useNavigate();
   const cruiseId = useCruiseId();
   const pkgSpotIds = usePkgSpotIds();
+
+  // 실시각 카운트다운 (1분 tick)
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
   const { data: cruise, error: cruiseError } = useQuery({
     queryKey: ["cruise", cruiseId, locale],
     queryFn: () => getCruise(cruiseId ?? "", locale),
@@ -86,15 +94,15 @@ export function HomePage() {
     retry: false,
   });
 
-  // 출항이 지났거나(만료) 크루즈가 사라졌으면(404) 세션 비우고 첫 화면으로
+  // 출항이 지났거나(만료) 크루즈가 사라졌으면(404) 세션 비우고 첫 화면으로 — tick마다 재평가
   useEffect(() => {
     const gone = cruiseError instanceof ApiError && cruiseError.status === 404;
-    const departed = cruise ? minutesToDeparture(cruise, Date.now()) <= 0 : false;
+    const departed = cruise ? minutesToDeparture(cruise, now.getTime()) <= 0 : false;
     if (gone || departed) {
       sessionActions.reset();
       void navigate({ to: "/" });
     }
-  }, [cruise, cruiseError, navigate]);
+  }, [cruise, cruiseError, navigate, now]);
 
   const portKey = cruise?.portKey ?? "jeju";
   const { data: allSpots = [] } = useQuery({
@@ -110,17 +118,20 @@ export function HomePage() {
   // 스팟간 실거리 기반 이동 분 — entities/spot/lib/course.ts의 private legMin과 동일 공식(디자인 :1538)
   const legMin = (km: number) => Math.max(8, Math.round(km * 2.2));
 
-  // 디자인 최종 renderVals (now = 도착 90분 후, 마감 = 출항 60분 전)
+  // 실제 현재 시각 기준 (마감 = 출항 60분 전). 미래 기항일 선택(폴백) 시 pct는 0으로 클램프
   const derived = cruise
     ? (() => {
-        const nowM = cruise.arrM + 90;
-        const deadM = cruise.depM - 60;
-        const remM = Math.max(0, deadM - nowM);
+        const depMs = cruiseDepartureMs(cruise);
+        const deadMs = depMs - 60 * 60_000;
+        const arrMs = depMs - (cruise.depM - cruise.arrM) * 60_000;
+        const remM = Math.max(0, Math.floor((deadMs - now.getTime()) / 60_000));
         return {
           remH: Math.floor(remM / 60),
           remMin: remM % 60,
-          boardBy: fmt(deadM),
-          stayPct: Math.round(((nowM - cruise.arrM) / (deadM - cruise.arrM)) * 100),
+          boardBy: fmt(cruise.depM - 60),
+          stayPct: Math.round(
+            Math.min(100, Math.max(0, ((now.getTime() - arrMs) / (deadMs - arrMs)) * 100)),
+          ),
         };
       })()
     : null;
