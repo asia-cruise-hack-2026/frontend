@@ -1,1 +1,1 @@
-export { BottomSheet, InlineSheet, SheetHandle } from "./bottom-sheet/BottomSheet";
+export { BottomSheet, OverlaySheet, SheetHandle } from "./bottom-sheet/BottomSheet";

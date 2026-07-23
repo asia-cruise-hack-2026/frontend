@@ -37,7 +37,7 @@ import {
 } from "@/entities/transport";
 import { type Locale, useI18n } from "@/shared/i18n";
 import { useCruiseId } from "@/shared/store";
-import { InlineSheet } from "@/shared/ui";
+import { OverlaySheet } from "@/shared/ui";
 
 import { MoveMap } from "./MoveMap";
 
@@ -188,10 +188,15 @@ export function MovePage() {
     navigate({ to: "/app" });
   };
 
-  // 디자인 taxiMapShow/taxiMapH 이식 — dest(idle)에선 지도 없음, 이후엔 지도 + 바텀시트
-  const mapVisible = !(callStatus === "idle" && step === "dest");
-  const mapHeight = callStatus !== "idle" ? 220 : step === "pickup" ? 300 : 180;
+  // 전면 지도 + 오버레이 시트 — 시트를 접어도 스텝은 유지되고 지도에서 마커로 목적지를 고를 수 있다
+  const [sheetCollapsed, setSheetCollapsed] = useState(false);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 단계 변경을 트리거로 시트를 다시 펼치는 의도적 deps
+  useEffect(() => {
+    setSheetCollapsed(false);
+  }, [step, callStatus]);
   const showFloatingBack = callStatus === "idle" && step !== "dest";
+  const sheetTitle =
+    callStatus === "idle" ? (step === "dest" ? t("nav_move") : t(stepTitleKey(step))) : undefined;
 
   const stepContent = (
     <>
@@ -273,133 +278,61 @@ export function MovePage() {
     </>
   );
 
-  if (!mapVisible) {
-    return (
-      <FlexBox
-        flexDirection="column"
-        sx={(theme) => ({
-          height: "100%",
-          background: theme.semantic.background.normal.alternative,
-        })}
-      >
-        <Header step={step} callStatus={callStatus} onBack={goBack} />
-        <Box sx={{ flex: 1, minHeight: 0, overflowY: "auto" }}>{stepContent}</Box>
-      </FlexBox>
-    );
-  }
-
-  return (
-    <FlexBox
-      flexDirection="column"
-      sx={(theme) => ({
-        height: "100%",
-        overflow: "hidden", // 시트 슬라이드 진입/이탈이 컨테이너 밖으로 그려지지 않게
-        background: theme.semantic.background.normal.alternative,
-      })}
-    >
-      {/* 상단 지도 — 디자인 taxiMapH(핀: 내 위치·목적지) */}
-      <Box sx={{ position: "relative", flexShrink: 0 }}>
-        <MoveMap
-          dest={destSpot ? { lat: destSpot.lat, lng: destSpot.lng } : null}
-          myPos={myPos}
-          height={mapHeight}
-        />
-        {showFloatingBack && (
-          <Box
-            as="button"
-            type="button"
-            onClick={goBack}
-            aria-label="back"
-            sx={(theme) => ({
-              position: "absolute",
-              top: "14px",
-              left: "16px",
-              width: "38px",
-              height: "38px",
-              borderRadius: "999px",
-              border: "none",
-              cursor: "pointer",
-              background: "rgba(255,255,255,.95)",
-              backdropFilter: "blur(6px)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: theme.semantic.label.normal,
-              boxShadow: "0 2px 8px rgba(0,0,0,.15)",
-              zIndex: 3,
-            })}
-          >
-            <IconArrowLeft sx={{ fontSize: "22px" }} />
-          </Box>
-        )}
-      </Box>
-
-      {/* 바텀시트 — 공용 InlineSheet(디자인 taxi 시트): 슬라이드업 진입 + 드래그로 이전 단계 */}
-      <InlineSheet
-        title={callStatus === "idle" ? t(stepTitleKey(step)) : undefined}
-        onDismiss={goBack}
-        dismissible={callStatus === "idle"}
-      >
-        {stepContent}
-      </InlineSheet>
-    </FlexBox>
-  );
-}
-
-/* ─────────────── 헤더 (탭 루트=타이틀만, 하위 단계=뒤로+타이틀) ─────────────── */
-
-function Header({
-  step,
-  callStatus,
-  onBack,
-}: {
-  step: Step;
-  callStatus: CallStatus;
-  onBack: () => void;
-}) {
-  const { t } = useI18n();
-  const showBack = callStatus === "idle" && step !== "dest";
-  const title = showBack ? t(stepTitleKey(step)) : t("nav_move");
-
   return (
     <Box
       sx={(theme) => ({
-        padding: showBack ? "10px 20px 10px" : "18px 20px 14px",
-        background: theme.semantic.background.normal.normal,
+        position: "relative",
+        height: "100%",
+        overflow: "hidden", // 시트 슬라이드가 컨테이너 밖으로 그려지지 않게
+        background: theme.semantic.background.normal.alternative,
       })}
     >
-      {showBack && (
+      {/* 전면 지도 — 후보 마커 탭으로도 목적지 선택 가능 */}
+      <MoveMap
+        dest={destSpot}
+        myPos={myPos}
+        spots={searchingDest && step === "dest" ? destSearchResults : spots}
+        onSpotClick={callStatus === "idle" ? selectDest : undefined}
+      />
+
+      {showFloatingBack && (
         <Box
           as="button"
           type="button"
-          onClick={onBack}
+          onClick={goBack}
           aria-label="back"
           sx={(theme) => ({
-            width: "36px",
-            height: "36px",
-            margin: "0 0 6px -8px",
+            position: "absolute",
+            top: "14px",
+            left: "16px",
+            width: "38px",
+            height: "38px",
             borderRadius: "999px",
             border: "none",
             cursor: "pointer",
-            background: theme.semantic.fill.normal,
+            background: "rgba(255,255,255,.95)",
+            backdropFilter: "blur(6px)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             color: theme.semantic.label.normal,
+            boxShadow: "0 2px 8px rgba(0,0,0,.15)",
+            zIndex: 3,
           })}
         >
-          <IconArrowLeft sx={{ fontSize: "20px" }} />
+          <IconArrowLeft sx={{ fontSize: "22px" }} />
         </Box>
       )}
-      <Box
-        sx={(theme) => ({
-          fontWeight: 700,
-          fontSize: showBack ? "19px" : "20px",
-          color: theme.semantic.label.normal,
-        })}
+
+      {/* 오버레이 바텀시트 — 내리면 peek으로 접히고(지도·스텝 유지), 탭/스와이프로 재출현 */}
+      <OverlaySheet
+        collapsed={sheetCollapsed}
+        onCollapsedChange={setSheetCollapsed}
+        collapsible={callStatus === "idle"}
+        title={sheetTitle}
       >
-        {title}
-      </Box>
+        {stepContent}
+      </OverlaySheet>
     </Box>
   );
 }

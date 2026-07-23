@@ -28,81 +28,82 @@ export function SheetHandle({ margin = "0 auto 14px" }: { margin?: string }) {
   );
 }
 
-interface InlineSheetProps {
-  /** 드래그로 임계값 넘게 내렸을 때 — 이전 단계 복귀 등. 시트는 내려갔다 새 콘텐츠로 다시 올라온다 */
-  onDismiss?: () => void;
-  /** 드래그 허용 (호출 진행 중 등 잠금 구간은 false) */
-  dismissible?: boolean;
+const PEEK_PX = 62; // 접힘(peek) 상태에서 보이는 높이 — 핸들 + 타이틀
+
+interface OverlaySheetProps {
+  collapsed: boolean;
+  onCollapsedChange: (collapsed: boolean) => void;
+  /** 접기/펼치기 허용 (호출 진행 중 등 잠금 구간은 false) */
+  collapsible?: boolean;
   title?: string;
+  maxHeight?: string; // 기본 "70%" — 뒤 지도가 항상 보이게
   children: ReactNode;
 }
 
 /**
- * 인라인 바텀시트 — 지도 위에 겹치는 비모달 시트(디자인 taxi 섹션).
- * BottomSheet와 동일한 진입 슬라이드업·핸들 드래그 동작을 공유하되, 딤·fixed 없이 레이아웃 요소로 동작한다.
- * 부모는 overflow hidden인 세로 flex 컨테이너여야 한다(시트가 flex:1).
+ * 전면 지도 페이지 위 오버레이 바텀시트 — 핸들을 끌어내리면 접혀서 peek(핸들+타이틀)만 남고
+ * 페이지(지도)는 그대로 유지된다. peek을 탭하거나 위로 스와이프하면 다시 펼쳐진다.
+ * BottomSheet와 동일한 슬라이드업 진입·드래그 모션을 공유한다.
  */
-export function InlineSheet({
-  onDismiss,
-  dismissible = onDismiss != null,
+export function OverlaySheet({
+  collapsed,
+  onCollapsedChange,
+  collapsible = true,
   title,
+  maxHeight = "70%",
   children,
-}: InlineSheetProps) {
+}: OverlaySheetProps) {
   // 진입 슬라이드업
   const [shown, setShown] = useState(false);
-  const [leaving, setLeaving] = useState(false);
   useEffect(() => {
     setShown(true);
   }, []);
 
   const [dragY, setDragY] = useState(0);
-  const dragRef = useRef({ startY: 0, dragging: false });
-  const leavingRef = useRef(false);
+  const dragRef = useRef({ startY: 0, dragging: false, moved: false, lastDy: 0 });
 
-  // 내려간 뒤 onDismiss(단계 복귀) → 새 콘텐츠로 다시 슬라이드업
-  const dismiss = useCallback(() => {
-    if (leavingRef.current || !onDismiss) return;
-    leavingRef.current = true;
-    setLeaving(true);
-    setTimeout(() => {
-      onDismiss();
-      leavingRef.current = false;
-      setLeaving(false);
-      setDragY(0);
-    }, CLOSE_MS);
-  }, [onDismiss]);
-
-  const onHeaderPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (!dismissible || leaving) return;
-    dragRef.current = { startY: e.clientY, dragging: true };
+  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (!collapsible) return;
+    dragRef.current = { startY: e.clientY, dragging: true, moved: false, lastDy: 0 };
     e.currentTarget.setPointerCapture(e.pointerId);
   };
-  const onHeaderPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (!dragRef.current.dragging) return;
-    setDragY(Math.max(0, e.clientY - dragRef.current.startY));
+  const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const d = dragRef.current;
+    if (!d.dragging) return;
+    const dy = e.clientY - d.startY;
+    d.lastDy = dy;
+    if (Math.abs(dy) > 6) d.moved = true;
+    if (!collapsed) setDragY(Math.max(0, dy));
   };
   const endDrag = () => {
-    if (!dragRef.current.dragging) return;
-    dragRef.current.dragging = false;
-    if (dragY > DRAG_CLOSE_PX) dismiss();
-    else setDragY(0);
+    const d = dragRef.current;
+    if (!d.dragging) return;
+    d.dragging = false;
+    if (!collapsed) {
+      if (dragY > DRAG_CLOSE_PX) onCollapsedChange(true);
+      setDragY(0);
+    } else if (!d.moved || d.lastDy < -40) {
+      // peek 탭 또는 위로 스와이프 → 재출현
+      onCollapsedChange(false);
+    }
   };
 
-  const translate = !shown || leaving ? "100%" : `${dragY}px`;
+  const translate = !shown ? "100%" : collapsed ? `calc(100% - ${PEEK_PX}px)` : `${dragY}px`;
 
   return (
     <Box
       sx={(theme) => ({
-        flex: 1,
-        minHeight: 0,
+        position: "absolute",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 5,
+        maxHeight,
         display: "flex",
         flexDirection: "column",
         background: theme.semantic.background.normal.normal,
         borderRadius: "24px 24px 0 0",
-        marginTop: "-18px",
-        position: "relative",
-        zIndex: 2,
-        boxShadow: "0 -6px 20px rgba(0,0,0,.06)",
+        boxShadow: "0 -6px 20px rgba(0,0,0,.12)",
         transform: `translateY(${translate})`,
         transition: dragRef.current.dragging
           ? "none"
@@ -111,21 +112,21 @@ export function InlineSheet({
       })}
     >
       <Box
-        onPointerDown={onHeaderPointerDown}
-        onPointerMove={onHeaderPointerMove}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         sx={{
           flexShrink: 0,
           touchAction: "none",
-          cursor: dismissible ? "grab" : undefined,
+          cursor: collapsible ? "grab" : undefined,
         }}
       >
         <SheetHandle margin="10px auto 2px" />
         {title != null && (
           <Box
             sx={(theme) => ({
-              padding: "10px 20px 0",
+              padding: "6px 20px 8px",
               fontWeight: 700,
               fontSize: "19px",
               color: theme.semantic.label.normal,
@@ -243,6 +244,10 @@ export function BottomSheet({
       <Box
         onClick={(e: ReactMouseEvent) => e.stopPropagation()}
         sx={(theme) => ({
+          // 앱 모바일 컬럼(430px)을 넘지 않게 — 넓은 뷰포트에서도 컬럼 폭 유지
+          width: "100%",
+          maxWidth: "430px",
+          margin: "0 auto",
           background: theme.semantic.background.normal.normal,
           borderRadius: "24px 24px 0 0",
           maxHeight,
