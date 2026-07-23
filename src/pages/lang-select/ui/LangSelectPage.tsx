@@ -1,18 +1,15 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Box, Button, FlexBox, addOpacity } from "@wanteddev/wds";
 import { IconCircleCheckFill } from "@wanteddev/wds-icon";
-import { useState } from "react";
 
-import { LOCALE_META, LOCALES, type Locale, useI18n } from "@/shared/i18n";
+import { LOCALE_META, LOCALES, useI18n } from "@/shared/i18n";
 
-/** 언어 선택 (진입 화면) — 프로토타입 "Language select" 이식 */
+/** 언어 선택 (진입 화면) — 프로토타입 "Language select" 이식. 탭 즉시 앱 언어 전환 */
 export function LangSelectPage() {
   const { t, locale, setLocale } = useI18n();
   const navigate = useNavigate();
-  const [selected, setSelected] = useState<Locale>(locale);
 
   const confirm = () => {
-    setLocale(selected);
     navigate({ to: "/cruise" });
   };
 
@@ -64,13 +61,13 @@ export function LangSelectPage() {
         <FlexBox flexDirection="column" gap="10px">
           {LOCALES.map((l) => {
             const meta = LOCALE_META[l];
-            const active = l === selected;
+            const active = l === locale;
             return (
               <Box
                 as="button"
                 key={l}
                 type="button"
-                onClick={() => setSelected(l)}
+                onClick={() => setLocale(l)}
                 sx={(theme) => ({
                   display: "flex",
                   alignItems: "center",
