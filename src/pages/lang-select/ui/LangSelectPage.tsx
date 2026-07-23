@@ -69,7 +69,7 @@ export function LangSelectPage() {
             letterSpacing: ".02em",
           })}
         >
-          Omong
+          OMONG
         </Box>
         <Box
           as="h1"

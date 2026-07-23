@@ -12,7 +12,7 @@ export const Route = createRootRoute({
         name: "viewport",
         content: "width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover",
       },
-      { title: "TAMRA PASS" },
+      { title: "OMONG" },
     ],
     links: [
       { rel: "preconnect", href: "https://cdn.jsdelivr.net" },
