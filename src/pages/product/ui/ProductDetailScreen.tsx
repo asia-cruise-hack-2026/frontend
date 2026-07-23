@@ -5,41 +5,18 @@ import {
   IconArrowLeft,
   IconArrowUpRight,
   IconCircleCheckFill,
-  IconCircleClose,
   IconCircleCloseFill,
   IconCircleInfoFill,
-  IconCoffee,
-  IconCoins,
-  IconHeart,
   IconLocation,
   IconPassportFill,
-  IconSparkleFill,
-  IconSun,
   IconTag,
-  IconTemplate,
   IconTriangleExclamationFill,
 } from "@wanteddev/wds-icon";
 import { type ReactNode, useState } from "react";
 
-import { getGood, type Product, IMPORT_STATUS_META } from "@/entities/product";
+import { getGood, IMPORT_STATUS_META } from "@/entities/product";
 import { type StringKey, useI18n } from "@/shared/i18n";
 import { sessionActions } from "@/shared/store";
-
-// product.icon(문자열) → WDS 아이콘. mock 데이터(entities/product/api/mock.ts)에 나오는 값 전부 커버,
-// 타입이 plain string이라 신규 값 대비 fallback 유지.
-const PRODUCT_ICONS: Record<string, ReactNode> = {
-  heart: <IconHeart sx={{ fontSize: "60px" }} />,
-  sun: <IconSun sx={{ fontSize: "60px" }} />,
-  coffee: <IconCoffee sx={{ fontSize: "60px" }} />,
-  sparkleFill: <IconSparkleFill sx={{ fontSize: "60px" }} />,
-  coins: <IconCoins sx={{ fontSize: "60px" }} />,
-  circleClose: <IconCircleClose sx={{ fontSize: "60px" }} />,
-  template: <IconTemplate sx={{ fontSize: "60px" }} />,
-};
-
-function HeroIcon({ product }: { product: Product }) {
-  return PRODUCT_ICONS[product.icon] ?? <IconTemplate sx={{ fontSize: "60px" }} />;
-}
 
 // IMPORT_STATUS_META.iconName(문자열) → WDS 아이콘. 4개 status 전부 커버(entities/product/lib/importStatus.ts).
 const STATUS_ICONS: Record<string, ReactNode> = {
@@ -86,15 +63,16 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
   const [delivery, setDelivery] = useState<DeliveryOption>("ship");
 
   const { data: product } = useQuery({
-    queryKey: ["good", productId],
-    queryFn: () => getGood(productId),
+    queryKey: ["good", productId, locale],
+    queryFn: () => getGood(productId, locale),
+    retry: false,
   });
 
   if (!product) return null;
 
   // labelKey는 entities/product/lib/importStatus.ts 주석대로 "useI18n t()로 라벨 해석용"이나
   // 엔티티 쪽 타입은 plain string(화면 책임) — StringKey로 좁혀 t()에 연결.
-  const statusMeta = IMPORT_STATUS_META[product.status];
+  const statusMeta = IMPORT_STATUS_META[product.importStatus];
 
   const handleAddCart = () => {
     sessionActions.addToCart(product.id);
@@ -105,17 +83,20 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
     <FlexBox flexDirection="column" sx={{ minHeight: "100dvh" }}>
       <Box sx={{ flex: 1, overflowY: "auto" }}>
         <Box
-          sx={{
+          sx={(theme) => ({
             position: "relative",
             height: "190px",
-            background: product.color,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: product.iconColor,
-          }}
+            background: theme.semantic.fill.normal,
+          })}
         >
-          <HeroIcon product={product} />
+          <img
+            src={product.thumbnail}
+            alt={product.name}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
+          />
           <Box
             as="button"
             type="button"
@@ -149,7 +130,7 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
               color="accent"
               accentColor="semantic.primary.normal"
             >
-              {t(`cat_${product.cat}`)}
+              {product.categoryLabel}
             </ContentBadge>
           </Box>
           <Box
@@ -162,8 +143,19 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
               color: theme.semantic.label.normal,
             })}
           >
-            {product.name[locale]}
+            {product.name}
           </Box>
+          {product.description && (
+            <Box
+              sx={(theme) => ({
+                fontSize: "14px",
+                lineHeight: 1.55,
+                color: theme.semantic.label.alternative,
+              })}
+            >
+              {product.description}
+            </Box>
+          )}
           <Box
             sx={(theme) => ({
               fontWeight: 700,
@@ -179,7 +171,7 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
         {/* 탐나오 상세 링크 — 디자인 최종 추가 */}
         <Box
           as="a"
-          href="https://www.tamnao.com/web/goods/jeju.do"
+          href={product.detailUrl || "https://www.tamnao.com/web/goods/jeju.do"}
           target="_blank"
           rel="noopener"
           sx={(theme) => ({
@@ -310,7 +302,7 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
                   marginTop: "2px",
                 })}
               >
-                {product.customs[locale]}
+                {product.customsNote}
               </Box>
             </Box>
           </FlexBox>
@@ -349,7 +341,7 @@ export function ProductDetailScreen({ productId }: { productId: string }) {
                   marginTop: "2px",
                 })}
               >
-                {product.line[locale]}
+                {product.cruiseLineNote}
               </Box>
             </Box>
           </FlexBox>

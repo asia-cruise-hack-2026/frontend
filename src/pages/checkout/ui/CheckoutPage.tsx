@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Box, Button, FlexBox } from "@wanteddev/wds";
 import { useState } from "react";
 
-import { getGood, type Product } from "@/entities/product";
+import { getGood } from "@/entities/product";
 import { useI18n } from "@/shared/i18n";
 import { useCart } from "@/shared/store";
 
@@ -18,10 +18,16 @@ export function CheckoutPage() {
   const cartIds = useCart();
 
   const { data: items = [] } = useQuery({
-    queryKey: ["cart-goods", cartIds],
+    queryKey: ["cart-goods", cartIds, locale],
     queryFn: async () => {
-      const goods = await Promise.all(cartIds.map((id) => getGood(id)));
-      return goods.filter((g): g is Product => g !== undefined).map(productToCartItem);
+      // 삭제/유실된 상품은 조용히 제외 (allSettled)
+      const results = await Promise.allSettled(cartIds.map((id) => getGood(id, locale)));
+      return results
+        .filter(
+          (r): r is PromiseFulfilledResult<Awaited<ReturnType<typeof getGood>>> =>
+            r.status === "fulfilled",
+        )
+        .map((r) => productToCartItem(r.value));
     },
   });
   const isEmpty = items.length === 0;
@@ -309,13 +315,17 @@ function CartRow({ item, last }: { item: CartItem; last: boolean }) {
           flexShrink: 0,
           borderRadius: "11px",
           background: theme.semantic.fill.normal,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "22px",
+          overflow: "hidden",
         })}
       >
-        {item.emoji}
+        <img
+          src={item.thumbnail}
+          alt=""
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          onError={(e) => {
+            e.currentTarget.style.display = "none";
+          }}
+        />
       </Box>
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Box
@@ -327,7 +337,7 @@ function CartRow({ item, last }: { item: CartItem; last: boolean }) {
             color: theme.semantic.label.normal,
           })}
         >
-          {item.name[locale]}
+          {item.name}
         </Box>
         <Box
           as="span"
@@ -338,7 +348,7 @@ function CartRow({ item, last }: { item: CartItem; last: boolean }) {
             marginTop: "1px",
           })}
         >
-          {item.meta[locale]}
+          {item.meta}
         </Box>
         <Box
           as="span"

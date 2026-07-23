@@ -1,15 +1,15 @@
-import type { LocalizedText } from "@/entities/cruise";
-
+/** 서버 응답을 요청 언어로 해석 완료한 상품 (GET /goods) */
 export interface Product {
   id: string;
-  cat: "food" | "cosmetics" | "alcohol" | "souvenir";
+  category: string; // "food" | "cosmetics" | "souvenir" — 키는 서버 주도라 열어둠
+  categoryLabel: string;
+  name: string;
+  description: string;
   price: number;
-  status: "allowed" | "conditional" | "restricted" | "prohibited";
-  color: string;
-  iconColor: string;
-  icon: string;
-  name: LocalizedText;
-  desc: LocalizedText;
-  customs: LocalizedText; // 세관 안내
-  line: LocalizedText; // 선사 규정
+  thumbnail: string;
+  importStatus: "allowed" | "conditional" | "restricted" | "prohibited";
+  importLabel: string;
+  customsNote: string;
+  cruiseLineNote: string;
+  detailUrl: string;
 }

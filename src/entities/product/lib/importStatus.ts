@@ -11,7 +11,7 @@ export interface ImportStatusMeta {
   labelKey: StringKey;
 }
 
-export const IMPORT_STATUS_META: Record<Product["status"], ImportStatusMeta> = {
+export const IMPORT_STATUS_META: Record<Product["importStatus"], ImportStatusMeta> = {
   allowed: {
     bg: "#EAF7EE",
     color: "#12A150",

@@ -960,6 +960,24 @@ export const strings = {
     zh: "删除邮轮选择",
     ja: "クルーズ選択を削除",
   },
+  shop_search_ph: {
+    ko: "상품 검색",
+    en: "Search products",
+    zh: "搜索商品",
+    ja: "商品を検索",
+  },
+  splash_tap_hint: {
+    ko: "화면을 탭해 수면을 출렁여 보세요",
+    en: "Tap the screen to ripple the water",
+    zh: "点击屏幕，让水面荡漾",
+    ja: "画面をタップして水面を揺らしてみて",
+  },
+  splash_credit: {
+    ko: "제주 공식 · 탐나오 제휴",
+    en: "Official Jeju · with Tamnao",
+    zh: "济州官方 · 携手Tamnao",
+    ja: "済州公式 · Tamnao提携",
+  },
 } as const;
 
 export type StringKey = keyof typeof strings;

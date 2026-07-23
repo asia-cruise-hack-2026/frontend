@@ -1,39 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { Box, FlexBox } from "@wanteddev/wds";
+import { Box, FlexBox, SearchField } from "@wanteddev/wds";
 import {
   IconBusinessBag,
   IconCircle,
   IconCircleCheckFill,
-  IconCircleClose,
   IconCircleCloseFill,
   IconCircleInfoFill,
-  IconCoffee,
-  IconCoins,
-  IconHeart,
-  IconSparkleFill,
-  IconSun,
-  IconTemplate,
   IconTriangleExclamationFill,
   IconVerifiedCheckFill,
 } from "@wanteddev/wds-icon";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 
-import { IMPORT_STATUS_META, listGoods, type Product } from "@/entities/product";
+import { IMPORT_STATUS_META, listGoodCategories, listGoods } from "@/entities/product";
 import { useI18n } from "@/shared/i18n";
 import { useCart } from "@/shared/store";
-
-// 디자인 :664 상품 아이콘(mock 데이터 icon 필드) — wds-icon 이름 매핑. 없으면 IconCircle 코드 fallback.
-const PRODUCT_ICONS: Record<string, ReactNode> = {
-  heart: <IconHeart sx={{ fontSize: "30px" }} />,
-  sun: <IconSun sx={{ fontSize: "30px" }} />,
-  coffee: <IconCoffee sx={{ fontSize: "30px" }} />,
-  sparkleFill: <IconSparkleFill sx={{ fontSize: "30px" }} />,
-  coins: <IconCoins sx={{ fontSize: "30px" }} />,
-  circleClose: <IconCircleClose sx={{ fontSize: "30px" }} />,
-  template: <IconTemplate sx={{ fontSize: "30px" }} />,
-};
-const FALLBACK_PRODUCT_ICON = <IconCircle sx={{ fontSize: "30px" }} />;
 
 // 디자인 :665 반입상태 뱃지 아이콘(IMPORT_STATUS_META.iconName) — wds-icon 이름 매핑. 없으면 IconCircle 코드 fallback.
 const STATUS_ICONS: Record<string, ReactNode> = {
@@ -44,27 +25,56 @@ const STATUS_ICONS: Record<string, ReactNode> = {
 };
 const FALLBACK_STATUS_ICON = <IconCircle sx={{ fontSize: "12px" }} />;
 
-type CatKey = "all" | Product["cat"];
+const PAGE_SIZE = 20;
 
-/** 쇼핑 — 프로토타입 "Shop"(:639-677) 이식. */
+/** 쇼핑 — 프로토타입 "Shop"(:639-677) 이식 + 실데이터(/goods): 카테고리·검색·무한스크롤. */
 export function ShopScreen() {
   const { t, locale, money } = useI18n();
   const navigate = useNavigate();
   const cart = useCart();
-  const [activeCat, setActiveCat] = useState<CatKey>("all");
+  const [activeCat, setActiveCat] = useState("all");
 
-  const { data: products = [] } = useQuery({
-    queryKey: ["products", activeCat],
-    queryFn: () => listGoods({ category: activeCat }),
+  // 검색 — 300ms 디바운스
+  const [query, setQuery] = useState("");
+  const [debouncedQ, setDebouncedQ] = useState("");
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedQ(query.trim()), 300);
+    return () => clearTimeout(id);
+  }, [query]);
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ["good-categories", locale],
+    queryFn: () => listGoodCategories(locale),
   });
 
-  const catTabs: { key: CatKey; label: string }[] = [
-    { key: "all", label: t("cat_all") },
-    { key: "food", label: t("cat_food") },
-    { key: "cosmetics", label: t("cat_cosmetics") },
-    { key: "alcohol", label: t("cat_alcohol") },
-    { key: "souvenir", label: t("cat_souvenir") },
-  ];
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ["goods", activeCat, debouncedQ, locale],
+    initialPageParam: 1,
+    queryFn: ({ pageParam }) =>
+      listGoods({
+        lang: locale,
+        category: activeCat === "all" ? undefined : activeCat,
+        q: debouncedQ || undefined,
+        page: pageParam,
+        size: PAGE_SIZE,
+      }),
+    getNextPageParam: (last) =>
+      last.page * PAGE_SIZE < last.totalCount ? last.page + 1 : undefined,
+  });
+  const products = data?.pages.flatMap((p) => p.items) ?? [];
+  const totalCount = data?.pages[0]?.totalCount ?? 0;
+
+  // 무한스크롤 센티널
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) void fetchNextPage();
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <Box
@@ -73,7 +83,7 @@ export function ShopScreen() {
         background: theme.semantic.background.normal.alternative,
       })}
     >
-      {/* 헤더(타이틀+카테고리 필터) — 디자인 :642-654, 스티키 */}
+      {/* 헤더(타이틀+검색+카테고리 필터) — 디자인 :642-654, 스티키 */}
       <Box
         sx={(theme) => ({
           padding: "14px 20px 10px",
@@ -138,32 +148,44 @@ export function ShopScreen() {
             )}
           </Box>
         </FlexBox>
+        <Box sx={{ marginTop: "10px" }}>
+          <SearchField
+            width="100%"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t("shop_search_ph")}
+          />
+        </Box>
         <FlexBox gap="8px" sx={{ overflowX: "auto", marginTop: "12px" }}>
-          {catTabs.map((tab) => {
-            const active = activeCat === tab.key;
-            return (
-              <Box
-                key={tab.key}
-                as="button"
-                type="button"
-                onClick={() => setActiveCat(tab.key)}
-                sx={(theme) => ({
-                  flex: "0 0 auto",
-                  border: "none",
-                  cursor: "pointer",
-                  borderRadius: "999px",
-                  padding: "7px 14px",
-                  fontWeight: active ? 700 : 500,
-                  fontSize: "13px",
-                  background: active ? "transparent" : theme.semantic.fill.normal,
-                  color: active ? theme.semantic.primary.normal : theme.semantic.label.neutral,
-                  boxShadow: active ? `inset 0 0 0 1.5px ${theme.semantic.primary.normal}` : "none",
-                })}
-              >
-                {tab.label}
-              </Box>
-            );
-          })}
+          {(categories.length ? categories : [{ key: "all", label: t("cat_all"), count: 0 }]).map(
+            (tab) => {
+              const active = activeCat === tab.key;
+              return (
+                <Box
+                  key={tab.key}
+                  as="button"
+                  type="button"
+                  onClick={() => setActiveCat(tab.key)}
+                  sx={(theme) => ({
+                    flex: "0 0 auto",
+                    border: "none",
+                    cursor: "pointer",
+                    borderRadius: "999px",
+                    padding: "7px 14px",
+                    fontWeight: active ? 700 : 500,
+                    fontSize: "13px",
+                    background: active ? "transparent" : theme.semantic.fill.normal,
+                    color: active ? theme.semantic.primary.normal : theme.semantic.label.neutral,
+                    boxShadow: active
+                      ? `inset 0 0 0 1.5px ${theme.semantic.primary.normal}`
+                      : "none",
+                  })}
+                >
+                  {tab.label}
+                </Box>
+              );
+            },
+          )}
         </FlexBox>
       </Box>
 
@@ -207,7 +229,7 @@ export function ShopScreen() {
         }}
       >
         {products.map((p) => {
-          const meta = IMPORT_STATUS_META[p.status];
+          const meta = IMPORT_STATUS_META[p.importStatus];
           return (
             <Box
               key={p.id}
@@ -230,17 +252,21 @@ export function ShopScreen() {
               })}
             >
               <Box
-                sx={{
+                sx={(theme) => ({
                   position: "relative",
                   height: "96px",
-                  background: p.color,
-                  color: p.iconColor,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+                  background: theme.semantic.fill.normal,
+                })}
               >
-                {PRODUCT_ICONS[p.icon] ?? FALLBACK_PRODUCT_ICON}
+                <img
+                  src={p.thumbnail}
+                  alt=""
+                  loading="lazy"
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
                 <FlexBox
                   as="span"
                   alignItems="center"
@@ -275,9 +301,13 @@ export function ShopScreen() {
                     fontSize: "14px",
                     lineHeight: 1.35,
                     color: theme.semantic.label.normal,
+                    overflow: "hidden",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
                   })}
                 >
-                  {p.name[locale]}
+                  {p.name}
                 </Box>
                 <Box
                   sx={(theme) => ({
@@ -291,7 +321,7 @@ export function ShopScreen() {
                     WebkitBoxOrient: "vertical",
                   })}
                 >
-                  {p.desc[locale]}
+                  {p.description}
                 </Box>
                 <Box
                   sx={(theme) => ({
@@ -308,6 +338,35 @@ export function ShopScreen() {
           );
         })}
       </Box>
+
+      {/* 빈 결과 */}
+      {products.length === 0 && totalCount === 0 && data && (
+        <Box
+          sx={(theme) => ({
+            padding: "36px 0 48px",
+            textAlign: "center",
+            fontSize: "14px",
+            color: theme.semantic.label.alternative,
+          })}
+        >
+          {t("no_results")}
+        </Box>
+      )}
+
+      {/* 무한스크롤 센티널 */}
+      <div ref={sentinelRef} style={{ height: 1 }} />
+      {isFetchingNextPage && (
+        <Box
+          sx={(theme) => ({
+            padding: "0 0 24px",
+            textAlign: "center",
+            fontSize: "12px",
+            color: theme.semantic.label.assistive,
+          })}
+        >
+          …
+        </Box>
+      )}
     </Box>
   );
 }
