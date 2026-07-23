@@ -11,6 +11,7 @@ import {
   IconCoffee,
   IconLocation,
   IconPencil,
+  IconPlus,
   IconSparkleFill,
   IconSun,
   IconTriangleExclamationFill,
@@ -22,6 +23,7 @@ import { getCruise } from "@/entities/cruise";
 import {
   availableMinutes,
   buildCourse,
+  courseSlack,
   listSpots,
   spotIconKind,
   type CourseStop,
@@ -731,11 +733,14 @@ export function AiPackagePage() {
 
   const available = cruise ? availableMinutes(cruise) : 0;
   const course = cruise ? buildCourse(spots, cruise) : null;
-  const fits = course ? course.totalMin <= available : true;
+  // 실거리 slack 모델(진입leg+체류+스팟간 이동+복귀leg 누적 vs 탑승마감) — 디자인 renderVals :1537-1562와 동일.
+  const slack = cruise ? courseSlack(spots, cruise) : null;
+  const fits = slack ? slack.fits : true;
   const fitsBg = fits ? "#EAF7EE" : "#FFF4E5";
   const FitsIcon = fits ? IconCircleCheckFill : IconTriangleExclamationFill;
   const courseTime = course ? hm(course.totalMin, locale) : "";
   const availableTime = hm(available, locale);
+  const canAddMore = slack ? slack.slackMin >= 50 : true;
 
   // 스왑 후보 — 현재 항구 스팟 중 pkgSpotIds에 없는 것 (디자인 renderVals :1535 swapCandidates 이식)
   const swapCandidates = allSpots.filter((s) => !pkgSpotIds.includes(s.id));
@@ -918,6 +923,85 @@ export function AiPackagePage() {
                 {t("pkg_empty")}
               </Box>
             )}
+
+            {/* 장소 추가 — 디자인 :478-487. 편집모드+여유(slackMin>=50)면 추가 버튼, 아니면 경고 배너 */}
+            {editMode &&
+              (canAddMore ? (
+                <Box
+                  as="button"
+                  type="button"
+                  onClick={() => navigate({ to: "/app/theme" })}
+                  sx={(theme) => ({
+                    width: "100%",
+                    marginTop: "8px",
+                    border: `1.5px dashed ${theme.semantic.line.normal.normal}`,
+                    background: theme.semantic.background.normal.normal,
+                    borderRadius: "12px",
+                    padding: "13px",
+                    cursor: "pointer",
+                    fontWeight: 600,
+                    fontSize: "14px",
+                    color: theme.semantic.primary.normal,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "6px",
+                  })}
+                >
+                  <IconPlus sx={{ fontSize: "18px" }} />
+                  {t("spot_add_more")}
+                </Box>
+              ) : (
+                <FlexBox
+                  alignItems="flex-start"
+                  gap="9px"
+                  sx={{
+                    width: "100%",
+                    marginTop: "8px",
+                    border: "1.5px dashed rgba(232,130,14,.4)",
+                    background: "#FFF7EC",
+                    borderRadius: "12px",
+                    padding: "12px 14px",
+                  }}
+                >
+                  <Box
+                    as="span"
+                    sx={{
+                      display: "inline-flex",
+                      color: "#B5620A",
+                      flexShrink: 0,
+                      marginTop: "1px",
+                    }}
+                  >
+                    <IconTriangleExclamationFill sx={{ fontSize: "18px" }} />
+                  </Box>
+                  <Box>
+                    <Box
+                      as="span"
+                      sx={(theme) => ({
+                        display: "block",
+                        fontWeight: 700,
+                        fontSize: "13px",
+                        color: theme.semantic.label.normal,
+                      })}
+                    >
+                      {t("add_full")}
+                    </Box>
+                    <Box
+                      as="span"
+                      sx={(theme) => ({
+                        display: "block",
+                        fontSize: "12px",
+                        color: theme.semantic.label.alternative,
+                        marginTop: "2px",
+                        lineHeight: 1.45,
+                      })}
+                    >
+                      {t("add_full_sub")}
+                    </Box>
+                  </Box>
+                </FlexBox>
+              ))}
           </Box>
 
           {/* CTA — 디자인 :496-497. S4 transport 미구현이라 /app으로 임시 이동 */}
