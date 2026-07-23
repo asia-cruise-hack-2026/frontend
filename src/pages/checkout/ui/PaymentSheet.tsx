@@ -1,7 +1,8 @@
 import { Box, FlexBox } from "@wanteddev/wds";
-import { type MouseEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useI18n } from "@/shared/i18n";
+import { BottomSheet } from "@/shared/ui";
 
 import { ct } from "../model/strings";
 import { approxCny, methodsForSegment, type PayMethod, segmentForLocale } from "../model/payment";
@@ -21,11 +22,6 @@ export function PaymentSheet({ total, onClose, onPaid }: PaymentSheetProps) {
   const methods = methodsForSegment(segmentForLocale(locale));
   const [selected, setSelected] = useState<PayMethod>(methods[0]);
   const [phase, setPhase] = useState<Phase>("select");
-  const [shown, setShown] = useState(false);
-
-  useEffect(() => {
-    setShown(true);
-  }, []);
 
   useEffect(() => {
     if (phase !== "processing") return;
@@ -36,52 +32,27 @@ export function PaymentSheet({ total, onClose, onPaid }: PaymentSheetProps) {
   const closable = phase === "select";
 
   return (
-    <Box
-      onClick={() => closable && onClose()}
-      sx={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 200,
-        background: "rgba(15, 20, 30, 0.46)",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-end",
-      }}
-    >
-      <Box
-        onClick={(e: MouseEvent) => e.stopPropagation()}
-        sx={(theme) => ({
-          background: theme.semantic.background.normal.normal,
-          borderRadius: "22px 22px 0 0",
-          maxHeight: "92dvh",
-          overflowY: "auto",
-          paddingBottom: "max(20px, env(safe-area-inset-bottom))",
-          transform: shown ? "translateY(0)" : "translateY(100%)",
-          transition: "transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)",
-          "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-        })}
-      >
-        {phase === "select" && (
-          <MethodSelect
-            methods={methods}
-            selected={selected}
-            onSelect={setSelected}
-            onClose={onClose}
-            onNext={() => setPhase("window")}
-            payLabel={`${ct("pay_amount", locale)} · ${money(total)}`}
-          />
-        )}
-        {phase === "window" && (
-          <PayWindow
-            method={selected}
-            total={total}
-            onBack={() => setPhase("select")}
-            onPay={() => setPhase("processing")}
-          />
-        )}
-        {phase === "processing" && <Processing color={selected.brandColor} />}
-      </Box>
-    </Box>
+    <BottomSheet onClose={onClose} dimClosable={closable} maxHeight="92dvh">
+      {phase === "select" && (
+        <MethodSelect
+          methods={methods}
+          selected={selected}
+          onSelect={setSelected}
+          onClose={onClose}
+          onNext={() => setPhase("window")}
+          payLabel={`${ct("pay_amount", locale)} · ${money(total)}`}
+        />
+      )}
+      {phase === "window" && (
+        <PayWindow
+          method={selected}
+          total={total}
+          onBack={() => setPhase("select")}
+          onPay={() => setPhase("processing")}
+        />
+      )}
+      {phase === "processing" && <Processing color={selected.brandColor} />}
+    </BottomSheet>
   );
 }
 

@@ -23,7 +23,7 @@ import {
 import { type ReactNode, useEffect, useState } from "react";
 
 import { getCruise } from "@/entities/cruise";
-import { listReachableSpots, type ReachableSpot } from "@/entities/spot";
+import { listReachableSpots, type ReachableSpot, searchReachableSpots } from "@/entities/spot";
 import {
   GLOBAL_CARS,
   TAXI_DRIVER,
@@ -37,6 +37,7 @@ import {
 } from "@/entities/transport";
 import { type Locale, useI18n } from "@/shared/i18n";
 import { useCruiseId } from "@/shared/store";
+import { SheetHandle } from "@/shared/ui";
 
 import { MoveMap } from "./MoveMap";
 
@@ -104,8 +105,22 @@ export function MovePage() {
 
   const [step, setStep] = useState<Step>("dest");
   const [callStatus, setCallStatus] = useState<CallStatus>("idle");
-  const [destId, setDestId] = useState<string | null>(null);
+  // 검색 결과에서 고른 스팟은 추천 목록에 없을 수 있어 id가 아니라 스팟 객체를 보관한다.
+  const [destSpot, setDestSpot] = useState<ReachableSpot | null>(null);
   const [destQuery, setDestQuery] = useState("");
+
+  // "어디로 갈까요?" — 2자 이상이면 전체 도달 가능 스팟 서버 검색(300ms 디바운스)
+  const [debouncedDestQ, setDebouncedDestQ] = useState("");
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedDestQ(destQuery.trim()), 300);
+    return () => clearTimeout(id);
+  }, [destQuery]);
+  const searchingDest = debouncedDestQ.length >= 2;
+  const { data: destSearchResults = [] } = useQuery({
+    queryKey: ["spot-search", cruiseId, debouncedDestQ, locale],
+    queryFn: () => searchReachableSpots(cruiseId ?? "", debouncedDestQ, locale),
+    enabled: !!cruiseId && searchingDest,
+  });
   const [pickupName, setPickupName] = useState<string | null>(null);
   const [pickupQuery, setPickupQuery] = useState("");
   const [service, setService] = useState<Service>("normal");
@@ -121,7 +136,6 @@ export function MovePage() {
   }, [callStatus]);
 
   const portLabel = cruise?.portName ?? "";
-  const destSpot = spots.find((s) => s.id === destId);
   const destLabel = destSpot?.name ?? "";
   const pickupLabel = pickupName ?? portLabel;
 
@@ -146,8 +160,8 @@ export function MovePage() {
       : money(vehicleType === "van" ? fareVan : fareNormal);
   const confirmIsVan = service === "global" ? globalCar.van : vehicleType === "van";
 
-  const selectDest = (id: string) => {
-    setDestId(id);
+  const selectDest = (spot: ReachableSpot) => {
+    setDestSpot(spot);
     setStep("pickup");
   };
   const selectPickup = (name: string) => {
@@ -170,7 +184,7 @@ export function MovePage() {
     setCallStatus("idle");
     setRideStage("coming");
     setStep("dest");
-    setDestId(null);
+    setDestSpot(null);
     navigate({ to: "/app" });
   };
 
@@ -185,7 +199,7 @@ export function MovePage() {
         <>
           {step === "dest" && (
             <DestStep
-              spots={spots}
+              spots={searchingDest ? destSearchResults : spots}
               query={destQuery}
               onQueryChange={setDestQuery}
               onSelect={selectDest}
@@ -333,15 +347,7 @@ export function MovePage() {
           boxShadow: "0 -6px 20px rgba(0,0,0,.06)",
         })}
       >
-        <Box
-          sx={(theme) => ({
-            width: "38px",
-            height: "4px",
-            borderRadius: "999px",
-            background: theme.semantic.line.normal.normal,
-            margin: "10px auto 2px",
-          })}
-        />
+        <SheetHandle margin="10px auto 2px" />
         {callStatus === "idle" && (
           <Box
             sx={(theme) => ({
@@ -429,11 +435,13 @@ function DestStep({
   spots: ReachableSpot[];
   query: string;
   onQueryChange: (value: string) => void;
-  onSelect: (id: string) => void;
+  onSelect: (spot: ReachableSpot) => void;
 }) {
   const { t } = useI18n();
+  // 2자 미만은 추천 목록 로컬 필터, 2자 이상은 서버 검색 결과가 spots로 내려온다(MovePage)
   const q = query.trim().toLowerCase();
-  const results = spots.filter((s) => !q || s.name.toLowerCase().includes(q));
+  const results =
+    q.length >= 2 ? spots : spots.filter((s) => !q || s.name.toLowerCase().includes(q));
 
   return (
     <Box sx={{ padding: "8px 20px 22px" }}>
@@ -460,7 +468,7 @@ function DestStep({
             icon={<IconPinFill sx={{ fontSize: "18px" }} />}
             title={spot.name}
             sub={`${spot.categoryLabel} · ${spot.km}km`}
-            onClick={() => onSelect(spot.id)}
+            onClick={() => onSelect(spot)}
           />
         ))}
         {results.length === 0 && (

@@ -51,6 +51,11 @@
 
 `pnpm check`·`typecheck`·`build` + Orca 브라우저(8787): 스플래시 1회 노출·전환, 쇼핑 목록/검색/무한스크롤/상세/장바구니→결제→완료→쇼핑홈·카트 비움, 뒤로가기 히스토리, 이동 탭 지도+바텀시트 레이아웃·추천 실데이터. 지도 마커는 리퍼러 등록 완료 상태에서 실렌더 확인.
 
+## F. 후속 승인분 (2026-07-24 추가)
+
+- **move 서버 검색(D) 구현 확정**: 2자 이상 + 300ms 디바운스 → `GET /spots?cruiseId&q&sort=distance&size=20`. 2자 미만은 추천 10곳 로컬 필터. 선택 스팟은 id가 아닌 **객체로 보관**(검색 결과가 추천 목록에 없어도 안전).
+- **공용 바텀시트**: 디자인 감사 결과 모달형(SWAP SPOT SHEET :1029 — 딤 .32·라운드 24·핸들 38×4·닫기 34px·슬라이드업)과 인라인형(taxi) 2종. `shared/ui/bottom-sheet/BottomSheet.tsx` 신설(+`SheetHandle`) 후 소비처 통일: PaymentSheet(기존 라운드 22·핸들 없음·딤 .46 → 공용 스펙으로 통일, `dimClosable`로 결제 진행 중 잠금 유지), AiPackage 스왑 시트(공용 대체), Move 인라인 시트(SheetHandle 공유). 디자인 최종본 `Jeju Cruise App(최종).dc.html`을 design/incoming에 추가(기존 파일은 코드 주석의 라인 참조 보존을 위해 유지).
+
 ## 비범위
 
-move 서버 검색 배선(D 결정 대기) · 택시 위치 시뮬 마커 · explore/final 실지도 · 주문 내역(백엔드 orders API 미사용 — 결제는 기존 PaymentSheet mock 유지).
+택시 위치 시뮬 마커 · explore/final 실지도 · 주문 내역(백엔드 orders API 미사용 — 결제는 기존 PaymentSheet mock 유지).

@@ -14,6 +14,16 @@ interface ApiSpot {
   driveMinutes: number;
 }
 
+const toReachable = (s: ApiSpot): ReachableSpot => ({
+  id: s.id,
+  name: s.name,
+  categoryLabel: s.category.label,
+  km: s.distanceKm,
+  lat: s.lat,
+  lng: s.lng,
+  driveMinutes: s.driveMinutes,
+});
+
 /** 크루즈 체류시간 안에 다녀올 수 있는 스팟 — 항구 거리순 상위 N */
 export const listReachableSpots = async (
   cruiseId: string,
@@ -23,13 +33,17 @@ export const listReachableSpots = async (
   const res = await api<{ items: ApiSpot[] }>(
     `/spots?cruiseId=${encodeURIComponent(cruiseId)}&sort=distance&size=${size}&lang=${lang}`,
   );
-  return res.items.map((s) => ({
-    id: s.id,
-    name: s.name,
-    categoryLabel: s.category.label,
-    km: s.distanceKm,
-    lat: s.lat,
-    lng: s.lng,
-    driveMinutes: s.driveMinutes,
-  }));
+  return res.items.map(toReachable);
+};
+
+/** 전체 도달 가능 스팟 대상 이름 검색 (서버 q= LIKE) — "어디로 갈까요?" */
+export const searchReachableSpots = async (
+  cruiseId: string,
+  q: string,
+  lang: Locale,
+): Promise<ReachableSpot[]> => {
+  const res = await api<{ items: ApiSpot[] }>(
+    `/spots?cruiseId=${encodeURIComponent(cruiseId)}&q=${encodeURIComponent(q)}&sort=distance&size=20&lang=${lang}`,
+  );
+  return res.items.map(toReachable);
 };

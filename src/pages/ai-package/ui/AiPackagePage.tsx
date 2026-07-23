@@ -30,6 +30,7 @@ import {
 } from "@/entities/spot";
 import { type Locale, type StringKey, useI18n } from "@/shared/i18n";
 import { sessionActions, useCruiseId, usePkgSpotIds } from "@/shared/store";
+import { BottomSheet } from "@/shared/ui";
 
 const AI_STEP_KEYS = [
   "ai_step1",
@@ -708,124 +709,27 @@ function SwapSpotSheet({
   onPick: (id: string) => void;
   onClose: () => void;
 }) {
-  // 슬라이드업 진입 — PaymentSheet.tsx(checkout)와 동일 패턴(shown 지연 + translateY transition)
-  const [shown, setShown] = useState(false);
-  useEffect(() => {
-    setShown(true);
-  }, []);
-
   return (
-    <Box
-      sx={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 20,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-end",
-      }}
-    >
-      <Box
-        onClick={onClose}
-        sx={{ position: "absolute", inset: 0, background: "rgba(0,0,0,.32)" }}
-      />
-      <Box
-        sx={(theme) => ({
-          position: "relative",
-          background: theme.semantic.background.normal.normal,
-          borderRadius: "24px 24px 0 0",
-          maxHeight: "74%",
-          display: "flex",
-          flexDirection: "column",
-          boxShadow: "0 -8px 30px rgba(0,0,0,.16)",
-          transform: shown ? "translateY(0)" : "translateY(100%)",
-          transition: "transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)",
-          "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-        })}
-      >
-        <Box sx={{ padding: "16px 22px 10px", flexShrink: 0 }}>
+    <BottomSheet onClose={onClose} title={t("swap_title")} subtitle={t("swap_sub")}>
+      <FlexBox flexDirection="column" gap="10px" sx={{ padding: "6px 22px 26px" }}>
+        {candidates.map((spot) => (
+          <SwapCandidateCard key={spot.id} spot={spot} locale={locale} t={t} onPick={onPick} />
+        ))}
+        {candidates.length === 0 && (
           <Box
+            as="p"
             sx={(theme) => ({
-              width: "38px",
-              height: "4px",
-              borderRadius: "999px",
-              background: theme.semantic.line.normal.normal,
-              margin: "0 auto 14px",
+              textAlign: "center",
+              fontSize: "13px",
+              color: theme.semantic.label.assistive,
+              padding: "22px 0",
             })}
-          />
-          <FlexBox alignItems="flex-start" justifyContent="space-between" gap="10px">
-            <Box sx={{ minWidth: 0 }}>
-              <Box
-                as="span"
-                sx={(theme) => ({
-                  display: "block",
-                  fontWeight: 700,
-                  fontSize: "18px",
-                  color: theme.semantic.label.normal,
-                })}
-              >
-                {t("swap_title")}
-              </Box>
-              <Box
-                as="span"
-                sx={(theme) => ({
-                  display: "block",
-                  fontSize: "13px",
-                  color: theme.semantic.label.alternative,
-                  marginTop: "3px",
-                  lineHeight: 1.45,
-                })}
-              >
-                {t("swap_sub")}
-              </Box>
-            </Box>
-            <Box
-              as="button"
-              type="button"
-              aria-label="close"
-              onClick={onClose}
-              sx={(theme) => ({
-                width: "34px",
-                height: "34px",
-                border: "none",
-                background: theme.semantic.fill.normal,
-                borderRadius: "999px",
-                cursor: "pointer",
-                color: theme.semantic.label.neutral,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              })}
-            >
-              <IconClose sx={{ fontSize: "18px" }} />
-            </Box>
-          </FlexBox>
-        </Box>
-        <FlexBox
-          flexDirection="column"
-          gap="10px"
-          sx={{ flex: 1, overflowY: "auto", padding: "6px 22px 26px" }}
-        >
-          {candidates.map((spot) => (
-            <SwapCandidateCard key={spot.id} spot={spot} locale={locale} t={t} onPick={onPick} />
-          ))}
-          {candidates.length === 0 && (
-            <Box
-              as="p"
-              sx={(theme) => ({
-                textAlign: "center",
-                fontSize: "13px",
-                color: theme.semantic.label.assistive,
-                padding: "22px 0",
-              })}
-            >
-              {t("swap_empty")}
-            </Box>
-          )}
-        </FlexBox>
-      </Box>
-    </Box>
+          >
+            {t("swap_empty")}
+          </Box>
+        )}
+      </FlexBox>
+    </BottomSheet>
   );
 }
 
