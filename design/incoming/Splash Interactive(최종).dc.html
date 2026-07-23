@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/wanted-design-system-2064fe32-020b-43a1-be54-2d86c1d84f93/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/wanted-design-system-2064fe32-020b-43a1-be54-2d86c1d84f93/tokens/fig-tokens.css">
+<link rel="stylesheet" href="_ds/wanted-design-system-2064fe32-020b-43a1-be54-2d86c1d84f93/tokens/typography.css">
+<link rel="stylesheet" href="_ds/wanted-design-system-2064fe32-020b-43a1-be54-2d86c1d84f93/tokens/base.css">
+<link rel="stylesheet" href="_ds/wanted-design-system-2064fe32-020b-43a1-be54-2d86c1d84f93/styles.css">
+<script src="_ds/wanted-design-system-2064fe32-020b-43a1-be54-2d86c1d84f93/_ds_bundle.js"></script>
+<style>
+  body{margin:0;background:#EEF1F5;}
+  a{color:var(--primary-normal-4);} a:hover{color:var(--primary-strong);}
+  @keyframes sp-wave{from{transform:translateX(0)}to{transform:translateX(-390px)}}
+  @keyframes sp-fade{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  @keyframes sp-fadein{from{opacity:0}to{opacity:1}}
+  @keyframes sp-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @keyframes sp-hint{0%,100%{opacity:.55}50%{opacity:1}}
+  @keyframes sp-ring{from{transform:translate(-50%,-50%) scale(0);opacity:.8}to{transform:translate(-50%,-50%) scale(1);opacity:0}}
+  @keyframes sp-fillr{from{transform:translate(-50%,-50%) scale(.05);opacity:.4}to{transform:translate(-50%,-50%) scale(1);opacity:0}}
+  @keyframes sp-bubble{from{transform:translate(-50%,-50%) scale(1);opacity:.85}to{transform:translate(calc(-50% + var(--dx)),calc(-50% - 175px)) scale(.25);opacity:0}}
+  @keyframes sp-bubrise{0%{transform:translateY(0) translateX(0);opacity:0}12%{opacity:.5}88%{opacity:.5}100%{transform:translateY(-780px) translateX(var(--wobble,10px));opacity:0}}
+  @keyframes sp-pop{0%{opacity:0;transform:scale(.72)}60%{opacity:1;transform:scale(1.06)}100%{opacity:1;transform:scale(1)}}
+  @keyframes sp-glow{0%,100%{opacity:.65;transform:translate(-50%,-58%) scale(1)}50%{opacity:1;transform:translate(-50%,-58%) scale(1.08)}}
+  @keyframes sp-refl{0%,100%{transform:scaleY(-1) translateX(-4px) skewX(-2deg)}50%{transform:scaleY(-1) translateX(4px) skewX(2deg)}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;font-family:var(--font-sans);">
+<div onPointerDown="{{ onTap }}" style="position:relative;width:390px;height:844px;border-radius:46px;overflow:hidden;box-shadow:0 30px 90px rgba(15,40,80,.22),inset 0 0 0 1px rgba(0,0,0,.05);background:linear-gradient(168deg,#0A4FE0 0%,#0066FF 52%,#2E7BFF 100%);font-family:var(--font-sans);user-select:none;cursor:pointer;touch-action:none;">
+
+  <div style="position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:120%;height:44%;background:radial-gradient(closest-side,rgba(255,255,255,.30),rgba(255,255,255,0) 70%);pointer-events:none;z-index:1;"></div>
+
+  <!-- ambient light specks -->
+  <div style="position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden;">
+    <span style="position:absolute;left:16%;top:20%;width:6px;height:6px;border-radius:999px;background:rgba(255,255,255,.7);filter:blur(.3px);animation:sp-amb 6.5s ease-in-out infinite;"></span>
+    <span style="position:absolute;left:78%;top:16%;width:9px;height:9px;border-radius:999px;background:rgba(255,255,255,.55);filter:blur(.5px);animation:sp-amb 8s ease-in-out infinite 1.2s;"></span>
+    <span style="position:absolute;left:48%;top:12%;width:4px;height:4px;border-radius:999px;background:rgba(255,255,255,.8);animation:sp-amb 6s ease-in-out infinite 3s;"></span>
+    <span style="position:absolute;left:86%;top:30%;width:6px;height:6px;border-radius:999px;background:rgba(255,255,255,.55);filter:blur(.4px);animation:sp-amb 8.5s ease-in-out infinite 1.8s;"></span>
+    <span style="position:absolute;left:10%;top:34%;width:5px;height:5px;border-radius:999px;background:rgba(255,255,255,.6);animation:sp-amb 7.5s ease-in-out infinite 3.6s;"></span>
+  </div>
+
+  <div style="position:absolute;top:0;left:0;right:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-weight:600;font-size:15px;color:#fff;z-index:8;">
+    <span>9:41</span>
+    <span style="width:22px;height:11px;border:1.4px solid #fff;border-radius:3px;position:relative;"><span style="position:absolute;inset:1.5px;width:70%;background:#fff;border-radius:1px;"></span></span>
+  </div>
+
+  <!-- hero: large centred logo with a reflection on the water -->
+  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;pointer-events:none;">
+    <div style="position:relative;display:flex;flex-direction:column;align-items:center;">
+      <div style="position:absolute;top:50%;left:50%;width:340px;height:240px;background:radial-gradient(closest-side,rgba(255,255,255,.34),rgba(255,255,255,0) 70%);animation:sp-glow 3.6s ease-in-out infinite;"></div>
+      <img src="logo-omong-white.svg" alt="Omong" style="position:relative;height:84px;width:auto;display:block;filter:drop-shadow(0 6px 18px rgba(2,20,70,.35));animation:sp-pop .85s cubic-bezier(.2,.9,.3,1.2) both;" />
+      <img src="logo-omong-white.svg" alt="" aria-hidden="true" style="position:absolute;top:100%;margin-top:12px;height:84px;width:auto;display:block;opacity:.18;-webkit-mask-image:linear-gradient(to bottom,#000,transparent 82%);mask-image:linear-gradient(to bottom,#000,transparent 82%);animation:sp-refl 4.2s ease-in-out infinite;" />
+    </div>
+  </div>
+
+  <!-- RISING WATER -->
+  <div style="position:absolute;left:0;right:0;bottom:0;height:{{ waterH }}%;z-index:4;pointer-events:none;transition:height .55s cubic-bezier(.34,1.1,.4,1);background:linear-gradient(180deg,rgba(6,45,120,.30) 0%,rgba(4,28,92,.52) 100%);box-shadow:0 -8px 30px rgba(3,25,80,.25);">
+    <svg viewBox="0 0 780 120" preserveAspectRatio="none" style="position:absolute;top:-16px;left:0;width:780px;height:32px;fill:rgba(6,45,120,.30);animation:sp-wave 8s linear infinite;"><path d="M0,40 C65,85 130,85 195,40 S325,-5 390,40 S520,85 585,40 S715,-5 780,40 L780,120 L0,120 Z"></path></svg>
+    <svg viewBox="0 0 780 120" preserveAspectRatio="none" style="position:absolute;top:-16px;left:0;width:780px;height:32px;fill:none;stroke:rgba(255,255,255,.5);stroke-width:2.5;animation:sp-wave 8s linear infinite;"><path d="M0,40 C65,85 130,85 195,40 S325,-5 390,40 S520,85 585,40 S715,-5 780,40"></path></svg>
+    <svg viewBox="0 0 780 120" preserveAspectRatio="none" style="position:absolute;top:-10px;left:0;width:780px;height:32px;fill:none;stroke:rgba(255,255,255,.22);stroke-width:2;animation:sp-wave 5.5s linear infinite;"><path d="M0,40 C65,85 130,85 195,40 S325,-5 390,40 S520,85 585,40 S715,-5 780,40"></path></svg>
+    <!-- bubbles inside the water -->
+    <span style="position:absolute;left:18%;bottom:0;width:12px;height:12px;border-radius:999px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3);--wobble:12px;animation:sp-bubrise 12s linear infinite;"></span>
+    <span style="position:absolute;left:34%;bottom:0;width:7px;height:7px;border-radius:999px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.26);--wobble:-10px;animation:sp-bubrise 10s linear infinite 2.5s;"></span>
+    <span style="position:absolute;left:52%;bottom:0;width:16px;height:16px;border-radius:999px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.24);--wobble:9px;animation:sp-bubrise 14s linear infinite 1.4s;"></span>
+    <span style="position:absolute;left:68%;bottom:0;width:9px;height:9px;border-radius:999px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.28);--wobble:-13px;animation:sp-bubrise 11s linear infinite 4s;"></span>
+    <span style="position:absolute;left:82%;bottom:0;width:11px;height:11px;border-radius:999px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.24);--wobble:10px;animation:sp-bubrise 13s linear infinite 6s;"></span>
+    <span style="position:absolute;left:44%;bottom:0;width:6px;height:6px;border-radius:999px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3);--wobble:-8px;animation:sp-bubrise 9.5s linear infinite 7.5s;"></span>
+  </div>
+
+  <!-- tap ripple layer -->
+  <div style="position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden;">
+    <sc-for list="{{ ripples }}" as="rp" hint-placeholder-count="0">
+      <span style="position:absolute;left:{{ rp.x }}px;top:{{ rp.y }}px;width:560px;height:560px;border-radius:999px;background:radial-gradient(closest-side,rgba(255,255,255,.26),rgba(255,255,255,0) 70%);animation:sp-fillr .95s ease-out forwards;"></span>
+      <span style="position:absolute;left:{{ rp.x }}px;top:{{ rp.y }}px;width:520px;height:520px;border-radius:999px;box-shadow:inset 0 0 0 3px rgba(255,255,255,.5);animation:sp-ring .95s cubic-bezier(.2,.6,.3,1) forwards;"></span>
+      <span style="position:absolute;left:{{ rp.x }}px;top:{{ rp.y }}px;width:300px;height:300px;border-radius:999px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.38);animation:sp-ring .95s cubic-bezier(.2,.6,.3,1) .08s forwards;"></span>
+      <sc-for list="{{ rp.bubbles }}" as="b" hint-placeholder-count="0">
+        <span style="position:absolute;left:{{ rp.x }}px;top:{{ rp.y }}px;width:{{ b.size }}px;height:{{ b.size }}px;border-radius:999px;background:rgba(255,255,255,.85);box-shadow:inset 0 0 0 1px rgba(255,255,255,.5);--dx:{{ b.dx }}px;animation:sp-bubble {{ b.dur }}s ease-out {{ b.delay }}s forwards;"></span>
+      </sc-for>
+    </sc-for>
+  </div>
+
+  <!-- bottom credit + loading -->
+  <div style="position:absolute;left:44px;right:44px;bottom:62px;z-index:7;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:16px;">
+    <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.9);animation:sp-hint 2.2s ease-in-out infinite;">화면을 탭해 수면을 출렁여 보세요</div>
+    <div style="display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:rgba(255,255,255,.82);">
+      <span style="color:#7FFFB0;display:inline-flex;"><x-import component-from-global-scope="WantedDesignSystem_2064fe.Icon" name="verifiedCheckFill" size="15" hint-size="15px,15px"></x-import></span>제주 공식 · 탐나오 제휴
+    </div>
+  </div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844}}">
+class Component extends DCLogic {
+  state = { pct: 0, surge: 0, ripples: [] };
+  _rid = 0;
+  _rts = [];
+  componentDidMount(){
+    this._pg = setInterval(()=>{
+      this.setState(s=>{
+        const n = Math.min(100, s.pct + (s.pct<70?3.2:1.8));
+        if(n>=100) clearInterval(this._pg);
+        return { pct:n };
+      });
+    }, 50);
+  }
+  componentWillUnmount(){ clearInterval(this._pg); clearTimeout(this._sg); this._rts.forEach(t=>clearTimeout(t)); }
+  onTap = (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    const id = ++this._rid;
+    const cnt = 5 + Math.floor(Math.random()*3);
+    const bubbles = Array.from({length:cnt}, (_,k)=>({
+      k, dx: Math.round((Math.random()*2-1)*70), size: 6 + Math.round(Math.random()*11),
+      dur: +(0.9 + Math.random()*0.6).toFixed(2), delay: +(Math.random()*0.12).toFixed(2)
+    }));
+    this.setState(s=>({ ripples:[...s.ripples, {id,x,y,bubbles}], surge: 6 }));
+    clearTimeout(this._sg);
+    this._sg = setTimeout(()=>this.setState({ surge: 0 }), 360);
+    const t = setTimeout(()=>{ this.setState(s=>({ ripples:s.ripples.filter(rp=>rp.id!==id) })); }, 1000);
+    this._rts.push(t);
+  };
+  renderVals(){
+    const base = Math.min(42, this.state.pct * 0.42);
+    const waterH = Math.round(Math.min(48, base + this.state.surge));
+    return { onTap:this.onTap, waterH, ripples:this.state.ripples };
+  }
+}
+</script>
+</body>
+</html>
