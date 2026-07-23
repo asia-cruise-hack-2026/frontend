@@ -124,7 +124,6 @@ export function MovePage() {
   const confirmLabel = t(vehicleType === "van" ? "car_van" : "car_normal");
   const confirmMeta = `${VEHICLES[vehicleType].car[locale]} · ${minutes}${t("min")}`;
   const confirmFare = money(vehicleType === "van" ? fareVan : fareNormal);
-  const confirmIsVan = vehicleType === "van";
 
   const selectDest = (spot: ReachableSpot) => {
     setDestSpot(spot);
@@ -201,7 +200,15 @@ export function MovePage() {
             <ConfirmStep
               pickupLabel={pickupLabel}
               destLabel={destLabel}
-              carIcon={confirmIsVan ? <VanGlyph size={22} /> : <CarGlyph size={22} />}
+              carIcon={
+                // 디자인 :936 — 아이콘 대신 차량 렌더 에셋(taxi-standard/jumbo.png)
+                <img
+                  src={VEHICLES[vehicleType].img}
+                  alt=""
+                  aria-hidden="true"
+                  style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+                />
+              }
               carLabel={confirmLabel}
               carMeta={confirmMeta}
               carFare={confirmFare}
@@ -768,6 +775,7 @@ function ConfirmStep({
 
       <FlexBox
         alignItems="center"
+        gap="12px"
         sx={(theme) => ({
           background: theme.semantic.background.normal.normal,
           borderRadius: "16px",
@@ -776,6 +784,27 @@ function ConfirmStep({
           marginBottom: "18px",
         })}
       >
+        <Box
+          as="span"
+          sx={(theme) => ({
+            width: "40px",
+            height: "40px",
+            borderRadius: "11px",
+            background: theme.semantic.fill.normal,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          })}
+        >
+          {/* 토스 공식 심볼(static.toss.im 96px) — public/images/tosspay.png */}
+          <img
+            src="/images/tosspay.png"
+            alt=""
+            aria-hidden="true"
+            style={{ width: "26px", height: "26px", objectFit: "contain", display: "block" }}
+          />
+        </Box>
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Box
             as="span"
@@ -1505,28 +1534,6 @@ function CarGlyph({ size = 24 }: { size?: number }) {
       <path d="M5 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
       <path d="M15 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
       <path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6m-6 -6h15m-6 0v-5" />
-    </svg>
-  );
-}
-
-// 디자인 :872 원본 SVG(대형 밴 아이콘) — WDS 대응 아이콘 없어 코드로 직접(D2).
-function VanGlyph({ size = 24 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M3 16V8.5A1.5 1.5 0 0 1 4.5 7H14l5 5V16" />
-      <path d="M3 16h16M4.6 16v1.6M17.4 16v1.6M9 7v5M3.5 12H19" />
-      <circle cx="7" cy="16" r="1.6" />
-      <circle cx="16" cy="16" r="1.6" />
     </svg>
   );
 }
