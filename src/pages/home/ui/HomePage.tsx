@@ -229,7 +229,7 @@ export function HomePage() {
                     color="primary"
                     size="large"
                     fullWidth
-                    onClick={() => navigate({ to: "/app/explore" })}
+                    onClick={() => navigate({ to: "/app/concept" })}
                   >
                     {t("home_ai_fill")}
                   </Button>
@@ -262,7 +262,7 @@ export function HomePage() {
                   <Box
                     as="button"
                     type="button"
-                    onClick={() => navigate({ to: "/app/explore" })}
+                    onClick={() => navigate({ to: "/app/concept" })}
                     sx={(theme) => ({
                       flex: 1,
                       textAlign: "left",
