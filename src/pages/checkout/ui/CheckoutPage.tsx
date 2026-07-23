@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { Box, Button, FlexBox } from "@wanteddev/wds";
 import { useState } from "react";
 
 import { getGood } from "@/entities/product";
 import { useI18n } from "@/shared/i18n";
-import { useCart } from "@/shared/store";
+import { sessionActions, useCart } from "@/shared/store";
 
 import { type CartItem, cartTotal, hasRestricted, productToCartItem } from "../model/cart";
 import { ct } from "../model/strings";
@@ -15,7 +15,14 @@ import { PaymentSheet } from "./PaymentSheet";
 export function CheckoutPage() {
   const { locale, t, money } = useI18n();
   const navigate = useNavigate();
+  const router = useRouter();
   const cartIds = useCart();
+
+  // 뒤로가기 = 진입 이전 화면(히스토리). 직접 URL 진입 등 히스토리 없으면 쇼핑 홈으로.
+  const goBack = () => {
+    if (router.history.canGoBack()) router.history.back();
+    else void navigate({ to: "/app/shop" });
+  };
 
   const { data: items = [] } = useQuery({
     queryKey: ["cart-goods", cartIds, locale],
@@ -38,9 +45,12 @@ export function CheckoutPage() {
   const [agreed, setAgreed] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [paid, setPaid] = useState(false);
+  // 결제 완료 시 카트를 비우므로, 완료 화면 금액은 결제 시점 값으로 고정한다.
+  const [paidTotal, setPaidTotal] = useState(0);
 
   if (paid) {
-    return <OrderSuccess total={total} onDone={() => navigate({ to: "/pay-demo" })} />;
+    // 쇼핑 결제 완료 → 쇼핑 홈. (비쇼핑 결제 플로우가 생기면 /app 홈으로 분기할 것)
+    return <OrderSuccess total={paidTotal} onDone={() => navigate({ to: "/app/shop" })} />;
   }
 
   const payDisabled = isEmpty || (needAgree && !agreed);
@@ -59,7 +69,7 @@ export function CheckoutPage() {
         <Box
           as="button"
           type="button"
-          onClick={() => navigate({ to: "/pay-demo" })}
+          onClick={goBack}
           aria-label="back"
           sx={(theme) => ({
             width: "38px",
@@ -271,7 +281,9 @@ export function CheckoutPage() {
           onClose={() => setSheetOpen(false)}
           onPaid={() => {
             setSheetOpen(false);
+            setPaidTotal(total);
             setPaid(true);
+            sessionActions.clearCart();
           }}
         />
       )}

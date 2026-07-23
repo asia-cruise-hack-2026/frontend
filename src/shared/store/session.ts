@@ -95,6 +95,7 @@ export const sessionActions = {
     })),
   removeFromCart: (id: string) =>
     store.setState((s) => ({ ...s, cart: s.cart.filter((x) => x !== id) })),
+  clearCart: () => store.setState((s) => ({ ...s, cart: [] })),
   reset: () =>
     store.setState(() => ({ cruiseId: null, pkgSpotIds: [], transportMode: null, cart: [] })),
 };
