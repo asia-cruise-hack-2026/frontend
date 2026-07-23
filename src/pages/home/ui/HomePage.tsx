@@ -236,6 +236,11 @@ export function HomePage() {
                 opacity: 0.5,
               }}
             >
+              <style>
+                {"@keyframes hm-wave{to{transform:translateX(-292px)}}" +
+                  ".hm-wave-path{animation:hm-wave 8s linear infinite}" +
+                  "@media (prefers-reduced-motion: reduce){.hm-wave-path{animation:none}}"}
+              </style>
               <svg
                 viewBox="0 0 390 40"
                 preserveAspectRatio="none"
@@ -249,7 +254,11 @@ export function HomePage() {
                 }}
                 aria-hidden="true"
               >
-                <path d="M0,20 C48,34 97,34 146,20 S243,6 292,20 S390,34 439,20 L439,40 L0,40 Z" />
+                {/* 디자인 파도 1주기(292u)를 3주기로 이어 path를 -292px 루프 — user unit 이동이라 스트레치와 무관하게 이음새 없음 */}
+                <path
+                  className="hm-wave-path"
+                  d="M0,20 C48,34 97,34 146,20 S243,6 292,20 S389,34 438,20 S535,6 584,20 S681,34 730,20 S827,6 876,20 L876,40 L0,40 Z"
+                />
               </svg>
             </Box>
             <FlexBox
@@ -377,7 +386,8 @@ export function HomePage() {
                   as="span"
                   sx={(theme) => ({
                     position: "absolute",
-                    left: `${derived.stayPct}%`,
+                    // 32px 원 반경만큼 클램프 — 초반(pct≈0)에 배가 트랙 왼쪽 밖으로 걸치지 않게
+                    left: `clamp(16px, ${derived.stayPct}%, calc(100% - 16px))`,
                     top: "50%",
                     transform: "translate(-50%,-50%)",
                     width: "32px",
