@@ -23,7 +23,7 @@ import {
 import { type ReactNode, useEffect, useState } from "react";
 
 import { getCruise } from "@/entities/cruise";
-import { listSpots, type Spot } from "@/entities/spot";
+import { listReachableSpots, type ReachableSpot } from "@/entities/spot";
 import {
   GLOBAL_CARS,
   TAXI_DRIVER,
@@ -37,6 +37,8 @@ import {
 } from "@/entities/transport";
 import { type Locale, useI18n } from "@/shared/i18n";
 import { useCruiseId } from "@/shared/store";
+
+import { MoveMap } from "./MoveMap";
 
 const CALL_SIM_MS = 2400; // 디자인 callTaxi 타이밍(:1169) 이식.
 
@@ -82,11 +84,23 @@ export function MovePage() {
     queryFn: () => getCruise(cruiseId ?? "", locale),
     enabled: !!cruiseId,
   });
-  const portKey = cruise?.portKey ?? "jeju";
   const { data: spots = [] } = useQuery({
-    queryKey: ["spots", portKey],
-    queryFn: () => listSpots({ portKey }),
+    queryKey: ["reachable-spots", cruiseId, locale],
+    queryFn: () => listReachableSpots(cruiseId ?? "", locale),
+    enabled: !!cruiseId,
   });
+
+  // 내 위치 — 보편적 택시앱처럼 현재 위치 기반(거부/실패 시 마커 생략, 항구 중심 유지)
+  const [myPos, setMyPos] = useState<{ lat: number; lng: number } | null>(null);
+  useEffect(() => {
+    if (!("geolocation" in navigator)) return;
+    const id = navigator.geolocation.watchPosition(
+      (pos) => setMyPos({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => {},
+      { enableHighAccuracy: true, maximumAge: 10_000 },
+    );
+    return () => navigator.geolocation.clearWatch(id);
+  }, []);
 
   const [step, setStep] = useState<Step>("dest");
   const [callStatus, setCallStatus] = useState<CallStatus>("idle");
@@ -108,7 +122,7 @@ export function MovePage() {
 
   const portLabel = cruise?.portName ?? "";
   const destSpot = spots.find((s) => s.id === destId);
-  const destLabel = destSpot?.name[locale] ?? "";
+  const destLabel = destSpot?.name ?? "";
   const pickupLabel = pickupName ?? portLabel;
 
   const km = destSpot?.km ?? 0;
@@ -160,15 +174,13 @@ export function MovePage() {
     navigate({ to: "/app" });
   };
 
-  return (
-    <Box
-      sx={(theme) => ({
-        minHeight: "100%",
-        background: theme.semantic.background.normal.alternative,
-      })}
-    >
-      <Header step={step} callStatus={callStatus} onBack={goBack} />
+  // 디자인 taxiMapShow/taxiMapH 이식 — dest(idle)에선 지도 없음, 이후엔 지도 + 바텀시트
+  const mapVisible = !(callStatus === "idle" && step === "dest");
+  const mapHeight = callStatus !== "idle" ? 220 : step === "pickup" ? 300 : 180;
+  const showFloatingBack = callStatus === "idle" && step !== "dest";
 
+  const stepContent = (
+    <>
       {callStatus === "idle" && (
         <>
           {step === "dest" && (
@@ -244,7 +256,107 @@ export function MovePage() {
           onFinish={finishRide}
         />
       )}
-    </Box>
+    </>
+  );
+
+  if (!mapVisible) {
+    return (
+      <FlexBox
+        flexDirection="column"
+        sx={(theme) => ({
+          height: "100%",
+          background: theme.semantic.background.normal.alternative,
+        })}
+      >
+        <Header step={step} callStatus={callStatus} onBack={goBack} />
+        <Box sx={{ flex: 1, minHeight: 0, overflowY: "auto" }}>{stepContent}</Box>
+      </FlexBox>
+    );
+  }
+
+  return (
+    <FlexBox
+      flexDirection="column"
+      sx={(theme) => ({
+        height: "100%",
+        background: theme.semantic.background.normal.alternative,
+      })}
+    >
+      {/* 상단 지도 — 디자인 taxiMapH(핀: 내 위치·목적지) */}
+      <Box sx={{ position: "relative", flexShrink: 0 }}>
+        <MoveMap
+          dest={destSpot ? { lat: destSpot.lat, lng: destSpot.lng } : null}
+          myPos={myPos}
+          height={mapHeight}
+        />
+        {showFloatingBack && (
+          <Box
+            as="button"
+            type="button"
+            onClick={goBack}
+            aria-label="back"
+            sx={(theme) => ({
+              position: "absolute",
+              top: "14px",
+              left: "16px",
+              width: "38px",
+              height: "38px",
+              borderRadius: "999px",
+              border: "none",
+              cursor: "pointer",
+              background: "rgba(255,255,255,.95)",
+              backdropFilter: "blur(6px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: theme.semantic.label.normal,
+              boxShadow: "0 2px 8px rgba(0,0,0,.15)",
+              zIndex: 3,
+            })}
+          >
+            <IconArrowLeft sx={{ fontSize: "22px" }} />
+          </Box>
+        )}
+      </Box>
+
+      {/* 바텀시트 — 디자인 taxiSheetRadius/-18px 오버랩/핸들/그림자 */}
+      <Box
+        sx={(theme) => ({
+          flex: 1,
+          minHeight: 0,
+          overflowY: "auto",
+          background: theme.semantic.background.normal.normal,
+          borderRadius: "20px 20px 0 0",
+          marginTop: "-18px",
+          position: "relative",
+          zIndex: 2,
+          boxShadow: "0 -6px 20px rgba(0,0,0,.06)",
+        })}
+      >
+        <Box
+          sx={(theme) => ({
+            width: "38px",
+            height: "4px",
+            borderRadius: "999px",
+            background: theme.semantic.line.normal.normal,
+            margin: "10px auto 2px",
+          })}
+        />
+        {callStatus === "idle" && (
+          <Box
+            sx={(theme) => ({
+              padding: "10px 20px 0",
+              fontWeight: 700,
+              fontSize: "19px",
+              color: theme.semantic.label.normal,
+            })}
+          >
+            {t(stepTitleKey(step))}
+          </Box>
+        )}
+        {stepContent}
+      </Box>
+    </FlexBox>
   );
 }
 
@@ -314,14 +426,14 @@ function DestStep({
   onQueryChange,
   onSelect,
 }: {
-  spots: Spot[];
+  spots: ReachableSpot[];
   query: string;
   onQueryChange: (value: string) => void;
   onSelect: (id: string) => void;
 }) {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const q = query.trim().toLowerCase();
-  const results = spots.filter((s) => !q || s.name[locale].toLowerCase().includes(q));
+  const results = spots.filter((s) => !q || s.name.toLowerCase().includes(q));
 
   return (
     <Box sx={{ padding: "8px 20px 22px" }}>
@@ -346,8 +458,8 @@ function DestStep({
           <PlaceRow
             key={spot.id}
             icon={<IconPinFill sx={{ fontSize: "18px" }} />}
-            title={spot.name[locale]}
-            sub={`${spot.cat[locale]} · ${spot.km}km`}
+            title={spot.name}
+            sub={`${spot.categoryLabel} · ${spot.km}km`}
             onClick={() => onSelect(spot.id)}
           />
         ))}
