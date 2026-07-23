@@ -33,25 +33,29 @@ export function PaymentSheet({ total, onClose, onPaid }: PaymentSheetProps) {
 
   return (
     <BottomSheet onClose={onClose} dimClosable={closable} maxHeight="92dvh">
-      {phase === "select" && (
-        <MethodSelect
-          methods={methods}
-          selected={selected}
-          onSelect={setSelected}
-          onClose={onClose}
-          onNext={() => setPhase("window")}
-          payLabel={`${ct("pay_amount", locale)} · ${money(total)}`}
-        />
+      {(close) => (
+        <>
+          {phase === "select" && (
+            <MethodSelect
+              methods={methods}
+              selected={selected}
+              onSelect={setSelected}
+              onClose={close}
+              onNext={() => setPhase("window")}
+              payLabel={`${ct("pay_amount", locale)} · ${money(total)}`}
+            />
+          )}
+          {phase === "window" && (
+            <PayWindow
+              method={selected}
+              total={total}
+              onBack={() => setPhase("select")}
+              onPay={() => setPhase("processing")}
+            />
+          )}
+          {phase === "processing" && <Processing color={selected.brandColor} />}
+        </>
       )}
-      {phase === "window" && (
-        <PayWindow
-          method={selected}
-          total={total}
-          onBack={() => setPhase("select")}
-          onPay={() => setPhase("processing")}
-        />
-      )}
-      {phase === "processing" && <Processing color={selected.brandColor} />}
     </BottomSheet>
   );
 }
@@ -75,18 +79,7 @@ function MethodSelect({
 }) {
   const { locale } = useI18n();
   return (
-    <Box sx={{ padding: "8px 20px 20px" }}>
-      <FlexBox justifyContent="center" sx={{ padding: "8px 0 14px" }}>
-        <Box
-          sx={(theme) => ({
-            width: "40px",
-            height: "5px",
-            borderRadius: "3px",
-            background: theme.semantic.line.normal.normal,
-          })}
-        />
-      </FlexBox>
-
+    <Box sx={{ padding: "0 20px 20px" }}>
       <FlexBox alignItems="center" justifyContent="space-between" sx={{ marginBottom: "4px" }}>
         <Box
           as="h2"
@@ -231,7 +224,6 @@ function PayWindow({
           background: method.brandColor,
           color: method.onBrand,
           padding: "16px 18px",
-          borderRadius: "22px 22px 0 0",
         }}
       >
         <Box

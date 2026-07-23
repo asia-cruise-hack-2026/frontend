@@ -340,7 +340,7 @@ export function MovePage() {
           minHeight: 0,
           overflowY: "auto",
           background: theme.semantic.background.normal.normal,
-          borderRadius: "20px 20px 0 0",
+          borderRadius: "24px 24px 0 0", // 공용 BottomSheet와 동일 라운드로 통일
           marginTop: "-18px",
           position: "relative",
           zIndex: 2,
