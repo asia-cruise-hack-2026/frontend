@@ -1,3 +1,5 @@
+import type { StringKey } from "@/shared/i18n";
+
 import type { Product } from "../model/types";
 
 // 디자인 SM(:1615-1618) 이식 — 반입상태 뱃지 메타(배경·색상·아이콘·라벨 키). iconName은 wds-icon
@@ -6,7 +8,7 @@ export interface ImportStatusMeta {
   bg: string;
   color: string;
   iconName: string;
-  labelKey: string;
+  labelKey: StringKey;
 }
 
 export const IMPORT_STATUS_META: Record<Product["status"], ImportStatusMeta> = {
